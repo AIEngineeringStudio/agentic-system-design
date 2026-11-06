@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Architect's Field Notes · PDF Converter</title>
+<style id="skill-css">
+/* The original PDF skill style sheet is embedded below. */
+/* Architect's Field Notes — original study-guide design recreation.
+   Standalone builder embeds this file into its generated HTML. */
+:root {
+  --navy: #112c3a;
+  --header: #193a4b;
+  --ink: #273944;
+  --heading: #17313e;
+  --muted: #75838d;
+  --line: #d9e2e7;
+  --zebra: #f6f8f9;
+  --accent: #64c8e6;
+  --accent-soft: #eaf8fc;
+}
+@page {
+  size: A4;
+  margin: 19mm 19mm 19mm;
+  @top-left {
+    content: "INTERVIEW / FIELD GUIDE";
+    color: #75838d;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    font-size: 7pt;
+    letter-spacing: .05em;
+    vertical-align: middle;
+  }
+  @top-right {
+    content: string(running-topic);
+    color: #75838d;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    font-size: 7pt;
+    letter-spacing: .02em;
+    vertical-align: middle;
+  }
+  @bottom-left {
+    content: "SENIOR / PRINCIPAL SOLUTION ARCHITECT";
+    color: #9aa5ae;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    font-size: 6.3pt;
+    letter-spacing: .03em;
+    vertical-align: middle;
+  }
+  @bottom-right {
+    content: counter(page, decimal-leading-zero);
+    color: #394b56;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    font-weight: 700;
+    font-size: 7pt;
+    vertical-align: middle;
+  }
+}
+@page cover {
+  size: A4;
+  margin: 0;
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Inter", "DejaVu Sans", sans-serif;
+  font-size: 9.4pt;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink);
+  background: #fff;
+  overflow-wrap: break-word;
+}
+.cover {
+  page: cover;
+  break-after: page;
+  height: 297mm;
+  width: 210mm;
+  overflow: hidden;
+  position: relative;
+  background: var(--navy);
+  color: #fff;
+  padding: 29.6mm 26mm;
+}
+.cover::before, .cover::after {
+  content: "";
+  position: absolute;
+  border: .55pt solid rgba(255,255,255,.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.cover::before { width: 158mm; height: 158mm; right: -84mm; top: -61mm; }
+.cover::after { width: 108mm; height: 108mm; right: -28mm; bottom: -75mm; }
+.cover-brand {
+  font-size: 9.5pt;
+  font-weight: 800;
+  letter-spacing: .31em;
+  text-transform: uppercase;
+  color: #dceaf0;
+}
+.cover-series {
+  font-size: 8pt;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #98b3c1;
+  margin-top: 7mm;
+}
+.cover-accent-bar {
+  position: absolute;
+  left: 26mm; top: 80mm;
+  height: 3.5mm; width: 21mm;
+  background: var(--accent);
+}
+.cover-title {
+  position: absolute;
+  left: 25.5mm; right: 25mm; top: 97mm;
+  font-family: "Inter Display", "Inter", "DejaVu Sans", sans-serif;
+  font-size: 42pt;
+  font-weight: 800;
+  letter-spacing: -.043em;
+  line-height: 1.08;
+  color: #fff;
+}
+.cover-title .second { display: block; color: var(--accent); }
+.cover-title.long { font-size: 37pt; }
+.cover-sub {
+  position: absolute;
+  left: 26mm; right: 31mm; top: 173.5mm;
+  color: #bdcdd5;
+  font-size: 11.5pt;
+  line-height: 1.7;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.cover-note {
+  color: #91aab7;
+  text-transform: none;
+  font-size: 9pt;
+  letter-spacing: .01em;
+  margin-top: 7mm;
+  line-height: 1.6;
+}
+.cover-bottom {
+  position: absolute;
+  bottom: 31mm; left: 26mm;
+  font-size: 7.8pt;
+  line-height: 1.9;
+  letter-spacing: .065em;
+  color: #cfdae0;
+}
+.cover-rule {
+  position: absolute;
+  bottom: 62mm; height: .35pt;
+  left: 26mm; right: 26mm;
+  background: rgba(255,255,255,.15);
+}
+.cover-number {
+  position: absolute;
+  bottom: 29mm; right: 26mm;
+  color: var(--accent);
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 39pt;
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
+/* Introduction + automatically generated navigable contents. */
+.preface { break-after: page; }
+.preface-label, .toc-overline {
+  color: var(--accent);
+  font-size: 7.6pt;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+.preface h1 { display: none; }
+.preface h2 {
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 14pt;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  color: var(--heading);
+  margin: 5mm 0 5mm;
+  border-bottom: .5pt solid var(--line);
+  padding-bottom: 2.5mm;
+}
+.preface p { font-size: 9.5pt; line-height: 1.6; }
+.toc { border-top: .5pt solid var(--line); margin-top: 8mm; padding-top: 6.5mm; }
+.toc h2 {
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 21pt;
+  letter-spacing: -.03em;
+  margin: 2mm 0 5mm;
+  border: 0;
+  padding: 0;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li {
+  display: flex;
+  align-items: baseline;
+  gap: 5mm;
+  font-size: 9.1pt;
+  padding: 2.7mm 1mm;
+  border-top: .5pt solid #e7ecef;
+  break-inside: avoid;
+}
+.toc li:last-child { border-bottom: .5pt solid #e7ecef; }
+.toc .toc-num { width: 8mm; flex: 0 0 8mm; font-size: 7.5pt; font-weight: 800; color: var(--accent); }
+.toc a { color: var(--ink); text-decoration: none; }
+/* Continuous editorial body: sections can flow across pages. */
+.content { padding: 0; }
+.content h2 {
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 17.2pt;
+  font-weight: 700;
+  color: var(--heading);
+  line-height: 1.28;
+  letter-spacing: -.024em;
+  margin: 11mm 0 5mm;
+  padding-top: 5.5mm;
+  border-top: .6pt solid var(--line);
+  break-after: avoid;
+}
+.content h2::before {
+  content: "CHAPTER";
+  display: block;
+  color: var(--accent);
+  font-size: 7pt;
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .19em;
+  margin-bottom: 2.2mm;
+}
+.content h2:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+.content h3 {
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 11.6pt;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -.012em;
+  color: var(--heading);
+  margin: 7mm 0 2.5mm;
+  break-after: avoid;
+}
+.content h4, .preface h3 { font-size: 10pt; color: var(--heading); margin: 5mm 0 2mm; break-after: avoid; }
+p { margin: 0 0 3.15mm; orphans: 2; widows: 2; }
+strong, b { font-weight: 700; color: #1a3341; }
+a { color: #23778e; text-decoration: none; }
+hr { height: 0; border: none; border-top: .55pt solid #d9e2e7; margin: 7mm 0; }
+ul, ol { margin: 2.5mm 0 4mm; padding-left: 6mm; }
+li { padding-left: .5mm; margin: 1.5mm 0; }
+li::marker { color: var(--accent); }
+li p { margin: 0; }
+blockquote {
+  background: var(--accent-soft);
+  border-left: 2.5pt solid var(--accent);
+  margin: 4mm 0 6mm;
+  padding: 4mm 5.2mm;
+  color: #2b4654;
+  font-size: 9.4pt;
+  line-height: 1.56;
+}
+blockquote p { margin-bottom: 2.3mm; }
+blockquote p:last-child { margin-bottom: 0; }
+blockquote strong { color: #143743; }
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  font-size: 8pt;
+  line-height: 1.42;
+  color: var(--ink);
+  margin: 3.6mm 0 4.8mm;
+  overflow-wrap: anywhere;
+}
+thead { display: table-header-group; }
+thead th {
+  background: var(--header);
+  color: #fff;
+  text-align: left;
+  font-weight: 700;
+  padding: 2.2mm 2.4mm;
+  vertical-align: top;
+  border-right: 1pt solid rgba(255,255,255,.04);
+}
+thead th strong { color: #fff; }
+tbody td { border-bottom: .35pt solid #e3e9ed; padding: 2.3mm 2.4mm; vertical-align: top; }
+tbody tr:nth-child(even) { background: var(--zebra); }
+tr { break-inside: avoid; }
+table.wide { font-size: 7.15pt; }
+table.wide th, table.wide td { padding: 1.8mm; }
+code {
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: .91em;
+  color: #22445a;
+}
+pre {
+  color: #dce9f0;
+  background: #173746;
+  padding: 4mm 5mm;
+  font-size: 8.3pt;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 4mm 0;
+}
+pre code { color: inherit; }
+.task-list-item { list-style: none; margin-left: -5mm; }
+.task-box {
+  display: inline-block;
+  border: .85pt solid #7b8b93;
+  width: 2.6mm; height: 2.6mm;
+  margin-right: 3mm;
+  vertical-align: baseline;
+}
+.task-box.checked { background: var(--accent); border-color: var(--accent); }
+img { max-width: 100%; height: auto; }
+.caption { color: var(--muted); font-size: 7.8pt; }
+@media screen { body { max-width: 210mm; margin: 0 auto; box-shadow: 0 0 25px #ddd; } }
+
+</style>
+<style>
+/* The publisher UI is not printed. The field-notes pages use the bundled style unmodified. */
+@media screen {
+ html,body{background:#eef2f4;max-width:none;margin:0;box-shadow:none;}
+ body{font:14px/1.5 "Inter",Arial,sans-serif;}
+ .app-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:13px;background:white;padding:16px 26px;border-bottom:1px solid #d7e1e5;box-shadow:0 4px 14px #112c3a10}
+ .logo{font-size:16px;font-weight:800;color:#112c3a;letter-spacing:-.02em}.logo small{display:block;text-transform:uppercase;color:#75838d;font-weight:700;font-size:10px;letter-spacing:.15em;margin-top:1px}
+ .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+ .btn,select,input[type=text]{border:1px solid #cbd7dc;background:#fff;color:#17313e;border-radius:7px;padding:10px 12px;font:inherit;max-width:310px;min-height:41px}
+ .btn{cursor:pointer;font-weight:700;white-space:nowrap}.btn.primary{background:#112c3a;color:#fff;border-color:#112c3a}.btn:disabled,select:disabled{opacity:.48;cursor:not-allowed}
+ .btn:hover:not(:disabled){border-color:#54aeb5}.btn.primary:hover:not(:disabled){background:#193a4b}
+ .file-picker{display:inline-flex;align-items:center}.file-picker input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+ .app-subhead{max-width:1150px;margin:22px auto 0;padding:0 18px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;align-items:center;color:#536977;font-size:12px}
+ .app-settings{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.app-settings label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#60737d}
+ .app-settings select{min-width:128px;padding:7px 9px;min-height:36px}
+ .app-status{color:#566c77}
+ .guidance{max-width:1150px;padding:12px 18px;margin:0 auto;color:#647883;font-size:12px}
+ .app-stage{padding:12px 18px 44px}.app-preview{width:210mm;max-width:100%;margin:0 auto;background:white;box-shadow:0 16px 47px #112c3a28;overflow:hidden}
+ .app-preview .cover{height:297mm;min-height:297mm}
+ .app-preview .preface,.app-preview .content{padding:19mm;max-width:none;}
+ .app-preview .preface{min-height:220mm}.app-preview .content{border-top:1px solid #e1e8ea;}
+ .app-preview .content h2:first-child{margin-top:0}
+ .app-empty{margin:54px auto;max-width:690px;text-align:center;background:white;border:1px dashed #c6d5da;padding:56px 25px;border-radius:14px}
+ .app-empty h1{font-size:25px;line-height:1.3;margin:0 0 10px;color:#112c3a}.app-empty p{margin:0;color:#607784;font-size:14px}
+ .helper{max-width:680px;margin:18px auto 0;color:#69808b;font-size:13px;text-align:center}
+ .content a,.preface a{word-wrap:break-word}
+}
+@media screen and (max-width:800px){.app-header{padding:12px}.actions{width:100%}.btn,select{font-size:12px}.app-subhead{margin-top:12px}.app-preview .cover{transform-origin:top left}}
+@media print{
+ :root{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ html,body{background:#fff;margin:0;max-width:none;box-shadow:none}
+ .app-header,.app-subhead,.guidance,.app-empty,.helper{display:none!important}
+ .app-stage,.app-preview{margin:0!important;padding:0!important;width:auto!important;max-width:none!important;box-shadow:none!important;overflow:visible!important}
+ #preview[hidden]{display:none!important}
+ .cover{page:cover!important;break-after:page;height:297mm!important}
+ .preface{break-after:page!important}
+ .content{padding:0!important}
+}
+@page{size:A4;}
+</style>
+<style id="theme-style"></style>
+</head>
+<body>
+<header class="app-header">
+ <div class="logo">The Architect's Field Notes <small>Offline Markdown → PDF publisher</small></div>
+ <div class="actions">
+  <label class="file-picker"><span class="btn primary" tabindex="0">Add Markdown files</span><input id="files" type="file" accept=".md,.markdown,text/markdown,text/plain" multiple aria-label="Add Markdown files"></label>
+  <select id="guide" aria-label="Select a guide" disabled><option>No guides selected</option></select>
+  <button class="btn primary" id="print" disabled>Print / Save as PDF</button>
+  <button class="btn" id="html-export" disabled>Download styled HTML</button>
+ </div>
+</header>
+<div class="app-subhead">
+ <div class="app-status" id="status" role="status">Your files remain on this device. No uploads or internet required.</div>
+ <div class="app-settings"><label for="theme">Accent theme</label><select id="theme" disabled><option value="auto">Auto by topic</option><option value="teal">Teal — Collaboration</option><option value="amber">Amber — Adaptability</option><option value="lavender">Lavender — Communication</option><option value="coral">Coral — Time management</option><option value="cyan">Cyan — Problem solving</option></select></div>
+</div>
+<p class="guidance">PDF settings: choose <b>Save as PDF</b>, <b>A4</b>, <b>100% scale</b>, <b>margins: None</b>, <b>background graphics: On</b>, and <b>browser headers/footers: Off</b>. Print each guide separately.</p>
+<div class="app-stage"><section class="app-empty" id="empty"><h1>Publish beautiful study guides</h1><p>Select one or more Markdown files. Every guide gets a navy cover, topic-colored accent, introduction, linked contents, tables, callouts, and print-ready A4 pages.</p><div class="helper">Built using the Architect's Field Notes PDF Style Skill. This offline browser version uses the print dialog; its companion Python builder can export PDFs directly.</div></section><div class="app-preview" id="preview" hidden></div></div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id), files=[], palette={teal:['#19BAA1','#EAF8F5'],amber:['#EEAA63','#FFF3E7'],lavender:['#8399F2','#F0F2FF'],coral:['#FA967C','#FFF1ED'],cyan:['#64C8E6','#EAF8FC']};
+let current=-1;
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const plain=s=>String(s||'').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1').replace(/[*_`~]/g,'').trim();
+const slug=s=>plain(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-')||'section';
+const isURL=s=>/^(https?:\/\/|mailto:|#|\.\.?\/)/i.test(s);
+function inl(s){
+ s=String(s).replace(/&#x20;|&nbsp;/gi,' ').replace(/\\([\\`*{}\[\]()#+\-.!_>])/g,'$1');
+ let code=[];s=s.replace(/`([^`]+)`/g,(_,v)=>{code.push('<code>'+esc(v)+'</code>');return '\u0001'+(code.length-1)+'\u0002'});
+ s=esc(s).replace(/&lt;br\s*\/?&gt;/gi,'<br>');
+ s=s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g,(_,alt,u)=>isURL(u)?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+(alt||'Image link')+'</a>':esc(alt));
+ s=s.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g,(_,label,u)=>isURL(u)?'<a href="'+esc(u)+'"'+(/^https?:/i.test(u)?' target="_blank" rel="noopener"':'')+'>'+label+'</a>':label);
+ s=s.replace(/\*\*([^*]+?)\*\*/g,'<strong>$1</strong>').replace(/__([^_]+?)__/g,'<strong>$1</strong>');
+ s=s.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'<em>$1</em>').replace(/(?<!_)_([^_\n]+)_(?!_)/g,'<em>$1</em>');
+ s=s.replace(/~~([^~]+)~~/g,'<s>$1</s>');
+ return s.replace(/\u0001(\d+)\u0002/g,(_,n)=>code[Number(n)]||'');
+}
+const hpat=/^ {0,3}(#{1,6})\s+(.+?)\s*#*\s*$/;
+const lpat=/^( {0,20})([-*+]|\d+[.)])\s+(.*)$/;
+const separator=s=>/^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(s);
+const hr=s=>/^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/.test(s);
+const startsBlock=s=>!!(hpat.test(s)||/^\s*>/.test(s)||/^\s*(```|~~~)/.test(s)||lpat.test(s)||hr(s));
+function cells(s){return s.trim().replace(/^\|/,'').replace(/\|$/,'').split(/(?<!\\)\|/).map(x=>x.trim().replace(/\\\|/g,'|'))}
+function parseMarkdown(source){
+ const lines=source.replace(/\r\n?/g,'\n').split('\n');let out=[],i=0;
+ while(i<lines.length){let l=lines[i],t=l.trim();if(!t){i++;continue}
+  let fence=l.match(/^\s*(`{3,}|~{3,})(.*)$/);if(fence){const marker=fence[1][0],len=fence[1].length,body=[];i++;while(i<lines.length&&!new RegExp('^\\s*'+marker+'{'+len+',}\\s*$').test(lines[i]))body.push(lines[i++]);if(i<lines.length)i++;out.push('<pre><code>'+esc(body.join('\n'))+'</code></pre>');continue}
+  let head=l.match(hpat);if(head){const lev=head[1].length;out.push('<h'+lev+'>'+inl(head[2])+'</h'+lev+'>');i++;continue}
+  if(hr(t)){out.push('<hr>');i++;continue}
+  if(i+1<lines.length&&t.includes('|')&&separator(lines[i+1])){const hdr=cells(l),cls=hdr.length>=5?' class="wide"':'';i+=2;let table='<table'+cls+'><thead><tr>'+hdr.map(x=>'<th>'+inl(x)+'</th>').join('')+'</tr></thead><tbody>';
+   while(i<lines.length&&lines[i].trim()&&lines[i].includes('|')){let vals=cells(lines[i++]);table+='<tr>'+hdr.map((_,k)=>'<td>'+inl(vals[k]??'')+'</td>').join('')+'</tr>'}out.push(table+'</tbody></table>');continue}
+  if(/^\s*>/.test(l)){let quoted=[];while(i<lines.length&&(/^\s*>/.test(lines[i])||(!lines[i].trim()&&i+1<lines.length&&/^\s*>/.test(lines[i+1])))){quoted.push(lines[i].replace(/^\s*>\s?/,''));i++}out.push('<blockquote>'+parseMarkdown(quoted.join('\n'))+'</blockquote>');continue}
+  let lm=l.match(lpat);if(lm){let base=lm[1].length,ordered=/\d/.test(lm[2]),items=[];let firstNum=ordered?parseInt(lm[2],10):1;
+   while(i<lines.length){let now=lines[i].match(lpat);if(!now||now[1].length!==base||/\d/.test(now[2])!==ordered)break;
+    let inner=[now[3]];i++;
+    while(i<lines.length){let next=lines[i],nmatch=next.match(lpat);if(nmatch&&nmatch[1].length===base)break;
+     if(!next.trim()){let j=i+1;while(j<lines.length&&!lines[j].trim())j++;if(j>=lines.length){i=j;break}let aft=lines[j].match(lpat);let ind=(lines[j].match(/^\s*/)||[''])[0].length;
+      if((aft&&aft[1].length===base)||ind<=base){i=j;break}inner.push('');i++;continue}
+     let ind=(next.match(/^ */)||[''])[0].length;if(ind<=base&&!/^\s+/.test(next))break;
+     let strip=Math.min(ind,base+2);inner.push(next.slice(strip));i++;
+    }
+    let innerHTML=parseMarkdown(inner.join('\n'));if(/^<p>[\s\S]*<\/p>$/.test(innerHTML)&&!innerHTML.includes('</p><p>'))innerHTML=innerHTML.slice(3,-4);
+    innerHTML=innerHTML.replace(/^<p>\s*\[([ xX])\]\s*/,(m,c)=>'<p><span class="task-box'+(c.toLowerCase()==='x'?' checked':'')+'"></span>');
+    if(/^\[([ xX])\]\s*/.test(inner[0])){innerHTML=innerHTML.replace(/^\[([ xX])\]\s*/,(m,c)=>'<span class="task-box'+(c.toLowerCase()==='x'?' checked':'')+'"></span>')}
+    items.push('<li'+(/^\[([ xX])\]/.test(inner[0])?' class="task-list-item"':'')+'>'+innerHTML+'</li>');
+    while(i<lines.length&&!lines[i].trim())i++;
+   }
+   out.push('<'+(ordered?'ol start="'+firstNum+'"':'ul')+'>'+items.join('')+'</'+(ordered?'ol':'ul')+'>');continue}
+  let paragraph=[l];i++;while(i<lines.length&&lines[i].trim()&&!startsBlock(lines[i])&&!(i+1<lines.length&&lines[i].includes('|')&&separator(lines[i+1])))paragraph.push(lines[i++]);
+  let body=paragraph.map(v=>v.trimEnd()).join('\n').replace(/ {2,}\n/g,'\u0003').replace(/\n/g,' ').replace(/\u0003/g,'<br>');out.push('<p>'+inl(body).replace(/&lt;br&gt;/g,'<br>')+'</p>');
+ }
+ return out.join('\n');
+}
+function removeOldToc(md){let lines=md.split('\n'),out=[],old=false;for(let l of lines){if(/^#{1,3}\s+(?:Table of contents|Contents|Navigation)\s*$/i.test(l)){old=true;continue}if(old){if(/^#{1,2}\s+/.test(l))old=false;else continue}out.push(l)}return out.join('\n')}
+function parseMetadata(raw){raw=raw.replace(/^\uFEFF/,'');const meta={};if(!raw.startsWith('---\n'))return {meta,body:raw};let end=raw.indexOf('\n---',4);if(end===-1)return {meta,body:raw};const rows=raw.slice(4,end).split('\n');let arrKey='';for(let row of rows){const match=row.match(/^([a-zA-Z_][\w-]*):\s*(.*)$/);if(match){arrKey=match[1];let val=match[2].trim();if(val.startsWith('[')&&val.endsWith(']'))meta[arrKey]=val.slice(1,-1).split(',').map(v=>v.trim().replace(/^['"]|['"]$/g,''));else meta[arrKey]=val.replace(/^['"]|['"]$/g,'');}else if(arrKey&&/^\s+-\s+/.test(row)){if(!Array.isArray(meta[arrKey]))meta[arrKey]=[];meta[arrKey].push(row.trim().replace(/^-\s*/, '').replace(/^['"]|['"]$/g,''));}}return {meta,body:raw.slice(end+4).replace(/^\s*\n/,'')};}
+function filenameTitle(name){return name.replace(/\.markdown$|\.md$/i,'').replace(/^\d+[_ .-]*/,'').replace(/(?:_Study_Guide|_Expanded|\(\d+\))+/gi,'').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/_/g,' ').replace(/\s+/g,' ').trim()}
+function inferTheme(n){n=n.toLowerCase();if(/collaboration|teamwork/.test(n))return 'teal';if(/adaptab/.test(n))return 'amber';if(/communicat/.test(n))return 'lavender';if(/time.management|prioriti/.test(n))return 'coral';return 'cyan'}
+function labelForTitle(name){const n=name.toLowerCase();if(/collaboration|teamwork/.test(n))return 'Collaboration & Teamwork';if(/adaptab/.test(n))return 'Adaptability';if(/communicat/.test(n))return 'Communication Skills';if(/problem.solv|making.decisions/.test(n))return 'Problem Solving & Decision Making';if(/time.management|prioriti/.test(n))return 'Time Management & Prioritization';return filenameTitle(name)}
+function balanced(title){if(title.includes(' & ')){let [a,...b]=title.split(' & ');return[a,'& '+b.join(' & ')]}if(title.length<=19)return[title];let p=title.split(' '),idx=1,best=Infinity;for(let i=1;i<p.length;i++){let score=Math.abs(p.slice(0,i).join(' ').length-title.length/2);if(score<best)best=score,idx=i}return[p.slice(0,idx).join(' '),p.slice(idx).join(' ')]}
+function sourceParts(raw,name){let {meta,body}=parseMetadata(raw);const h1=body.match(/^#\s+(.+)$/m);let title=String(meta.title||labelForTitle(name));if(!meta.title&&!/Collaboration|Adaptab|Communication|Problem Solving|Time Management/i.test(title)&&h1)title=plain(h1[1]);if(h1)body=body.slice(0,h1.index)+body.slice(h1.index+h1[0].length);body=removeOldToc(body);let numbered=Array.from(body.matchAll(/^##\s+\d+[.\s]\s*.+$/gm));let chapters=numbered.length?numbered:Array.from(body.matchAll(/^##\s+(.+)$/gm));let first=chapters.length?chapters[0].index:0;let content=body.slice(first).trim();let bodyChapters=Array.from(content.matchAll(/^##\s+(.+)$/gm));return{meta,title,preface:body.slice(0,first).trim(),content,chapters:bodyChapters.map(x=>x[1])}}
+function setupAnchors(root){let seen=new Map();for(let h of root.querySelectorAll('h1,h2,h3,h4,h5,h6')){let key=slug(h.textContent);let n=(seen.get(key)||0)+1;seen.set(key,n);h.id=n===1?key:key+'-'+n}}
+function makeGuide(doc,idx){let src=sourceParts(doc.raw,doc.name);const theme=doc.theme==='auto'?String(src.meta.theme||inferTheme(doc.name)):doc.theme;let [accent,soft]=palette[theme]||palette.cyan;
+ let title=src.title,coverLines=src.meta.cover_lines||balanced(title);if(typeof coverLines==='string')coverLines=coverLines.split('|').map(x=>x.trim());if(!Array.isArray(coverLines)||!coverLines.length)coverLines=balanced(title);coverLines=coverLines.slice(0,2);
+ let num=String(src.meta.number||idx+1).padStart(2,'0'),total=String(src.meta.total||files.length).padStart(2,'0');let brand=src.meta.brand||"THE ARCHITECT'S FIELD NOTES",series=src.meta.series||'BEHAVIORAL INTERVIEW STUDY GUIDE';
+ let tagline=src.meta.tagline||'THINK CLEARLY. DECIDE WITH EVIDENCE. DELIVER WITH CONFIDENCE.';let note=src.meta.cover_note||'Evidence-based STAR answers, senior-level judgment, and focused interview rehearsal.';
+ let audience=src.meta.audience||'SENIOR / PRINCIPAL SOLUTION ARCHITECT INTERVIEWS';let introLabel=src.meta.intro_label||'YOUR STUDY COMPANION';
+ let cls=Math.max(...coverLines.map(x=>x.length))>24?' long':'';
+ let titleMarkup=esc(coverLines[0]||title)+(coverLines[1]?'<span class="second">'+esc(coverLines[1])+'</span>':'');
+ let cover='<section class="cover"><div class="cover-brand">'+esc(brand)+'</div><div class="cover-series">'+esc(series)+' &nbsp;/&nbsp; '+esc(num)+' OF '+esc(total)+'</div><div class="cover-accent-bar"></div><div class="cover-title'+cls+'">'+titleMarkup+'</div><div class="cover-sub">'+esc(tagline)+'<div class="cover-note">'+esc(note)+'</div></div><div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR '+esc(audience)+'<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div><div class="cover-number">'+esc(num)+'</div></section>';
+ let prefaceHTML=src.preface?parseMarkdown(src.preface).replace(/^(?:\s*<hr>)+/,'').replace(/(?:<hr>\s*)+$/,''):'<p>Study guide prepared from the selected Markdown file.</p>';
+ let htmlBody=parseMarkdown(src.content);
+ const div=document.createElement('div');div.innerHTML=htmlBody;setupAnchors(div);let toc=Array.from(div.querySelectorAll('h2')).map((el,i)=>'<li><span class="toc-num">'+String(i+1).padStart(2,'0')+'</span><a href="#'+esc(el.id)+'">'+esc(el.textContent)+'</a></li>').join('');
+ let intro='<section class="preface"><div class="preface-label">'+esc(introLabel)+'</div>'+prefaceHTML+'<nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol>'+toc+'</ol></nav></section>';
+ let interior='<main class="content">'+div.innerHTML+'</main>';
+ let themeCss=':root{--accent:'+accent+';--accent-soft:'+soft+';}@page{@top-right{content:"'+String(src.meta.footer_right||title.toUpperCase()).replace(/["\\]/g,' ')+'";}@bottom-left{content:"'+String(src.meta.footer_left||'SENIOR / PRINCIPAL SOLUTION ARCHITECT').replace(/["\\]/g,' ')+'";}}';
+ return{html:cover+intro+interior,css:themeCss,title,accent,chapters:src.chapters.length,theme};
+}
+function show(index){if(!files[index])return;current=index;let data=makeGuide(files[index],index);$('preview').innerHTML=data.html;$('preview').hidden=false;$('empty').hidden=true;$('guide').value=String(index);$('theme').value=files[index].theme;$('theme-style').textContent=data.css;
+ $('print').disabled=false;$('html-export').disabled=false;$('status').textContent=files[index].name+' · '+data.chapters+' chapters · '+data.theme+' theme · A4 · ready for PDF';document.title=data.title+' | Field Notes PDF Publisher';}
+$('files').addEventListener('change',async event=>{let added=Array.from(event.target.files||[]);for(let file of added){if(!/\.(md|markdown)$/i.test(file.name)){continue}let raw=await file.text(),pos=files.findIndex(x=>x.name===file.name);let obj={name:file.name,raw,theme:'auto'};if(pos>=0){obj.theme=files[pos].theme;files[pos]=obj}else files.push(obj)}files.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));$('guide').innerHTML=files.map((f,i)=>'<option value="'+i+'">'+esc(labelForTitle(f.name))+'</option>').join('');$('guide').disabled=!files.length;$('theme').disabled=!files.length;event.target.value='';if(files.length)show(0)});
+$('guide').addEventListener('change',e=>show(Number(e.target.value)));
+$('theme').addEventListener('change',e=>{if(current<0)return;files[current].theme=e.target.value;show(current)});
+$('print').addEventListener('click',()=>{if(current>=0)window.print()});
+$('html-export').addEventListener('click',()=>{if(current<0)return;let item=makeGuide(files[current],current),base=document.getElementById('skill-css').textContent;
+ const style=base+'\n'+item.css+'\n@media screen{body{max-width:210mm;margin:0 auto;box-shadow:0 0 20px #dce2e6;}}';
+ let out='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(item.title)+'</title><style>'+style+'</style></head><body>'+item.html+'</body></html>';
+ let blob=new Blob([out],{type:'text/html;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=files[current].name.replace(/\.markdown$|\.md$/i,'')+'_Field_Notes.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+});
+</script>
+</body></html>

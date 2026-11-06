@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Offline Markdown → Tabbed HTML / PDF Converter</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f3f7fc;
+            --paper: #fff;
+            --ink: #17304a;
+            --muted: #5b7085;
+            --line: #d8e3ee;
+            --blue: #1e56a0;
+            --soft: #eaf2fb
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.55
+        }
+
+        .wrap {
+            max-width: 1300px;
+            margin: auto;
+            padding: 24px
+        }
+
+        header {
+            padding: 22px 26px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            margin-bottom: 18px
+        }
+
+        h1 {
+            font-size: clamp(23px, 3vw, 32px);
+            letter-spacing: -.035em;
+            margin: 0 0 7px
+        }
+
+        p {
+            margin: 7px 0;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns:minmax(330px, .95fr) minmax(390px, 1.25fr);
+            gap: 17px
+        }
+
+        .card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 18px;
+            min-width: 0
+        }
+
+        .card h2 {
+            font-size: 17px;
+            margin: 0 0 9px
+        }
+
+        .label {
+            font-size: 12px;
+            font-weight: 750;
+            color: #315776;
+            margin: 7px 0
+        }
+
+        .upload {
+            border: 2px dashed #9bb9d5;
+            border-radius: 9px;
+            background: #f9fcff;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            display: block
+        }
+
+        .upload:hover, .upload.drag {
+            background: #eaf4ff;
+            border-color: #2a75bf
+        }
+
+        .upload input {
+            display: block;
+            margin: 7px auto 0;
+            max-width: 100%
+        }
+
+        textarea {
+            width: 100%;
+            resize: vertical;
+            border: 1px solid #becfe0;
+            border-radius: 9px;
+            padding: 13px;
+            min-height: 400px;
+            line-height: 1.45;
+            font: 12.5px/1.48 ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #18364f
+        }
+
+        .actions {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin: 13px 0
+        }
+
+        .btn {
+            font: 700 13px system-ui, sans-serif;
+            border: 1px solid #c4d4e5;
+            border-radius: 9px;
+            background: #fff;
+            color: #1d4f83;
+            cursor: pointer;
+            padding: 10px 13px
+        }
+
+        .btn:hover {
+            background: #edf5fd
+        }
+
+        .btn.primary {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue)
+        }
+
+        .btn.primary:hover {
+            background: #16467f
+        }
+
+        .note {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #576d81
+        }
+
+        .status {
+            font-size: 12.5px;
+            font-weight: 650;
+            color: #22685d;
+            min-height: 21px;
+            margin-top: 9px
+        }
+
+        .preview {
+            width: 100%;
+            height: min(82vh, 980px);
+            min-height: 520px;
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 8px
+        }
+
+        .instructions {
+            padding-left: 20px;
+            color: #48637d;
+            font-size: 13px
+        }
+
+        .instructions li {
+            margin: 5px 0
+        }
+
+        .chip {
+            background: #ecf4fd;
+            border: 1px solid #cfe2f5;
+            color: #27577e;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 9px
+        }
+
+        @media (max-width: 920px) {
+            .grid {
+                grid-template-columns:1fr
+            }
+
+            .preview {
+                height: 620px
+            }
+
+            .wrap {
+                padding: 12px
+            }
+
+            header {
+                padding: 18px
+            }
+
+            .card {
+                padding: 14px
+            }
+        }
+
+        @media print {
+            .card:first-child, header, .actions, .upload, .status, .instructions {
+                display: none !important
+            }
+
+            .grid {
+                display: block
+            }
+
+            .wrap {
+                margin: 0;
+                padding: 0
+            }
+
+            .card {
+                border: 0;
+                padding: 0
+            }
+
+            .preview {
+                height: 100vh;
+                border: 0
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <header><h1>Markdown → Tabbed HTML / PDF</h1>
+        <p>Standalone converter. Load any Markdown file or paste text. Section
+            headings (<code>## Heading</code>) become navigation tabs. No
+            upload, network connection, account or external JavaScript library
+            is required.</p><span class="chip">Light mode · Offline · Print-friendly</span>
+    </header>
+    <div class="grid">
+        <section class="card"><h2>1. Markdown source</h2><label class="upload"
+                                                                id="drop">Drop a
+            .md file here, or choose a file<input type="file" id="file"
+                                                  accept=".md,.markdown,text/markdown,text/plain"></label>
+            <div class="label">Or paste / edit Markdown</div>
+            <textarea id="editor" spellcheck="false"
+                      aria-label="Markdown source"
+                      placeholder="# My plan&#10;&#10;## Overview&#10;Content&#10;&#10;## Module 1&#10;More content"></textarea>
+            <div class="actions">
+                <button class="btn" type="button" id="previewBtn">Update
+                    preview
+                </button>
+                <button class="btn primary" type="button" id="htmlBtn">Download
+                    tabbed HTML
+                </button>
+                <button class="btn primary" type="button" id="pdfBtn">Export
+                    PDF
+                </button>
+            </div>
+            <p id="status" class="status" role="status" aria-live="polite"></p>
+            <h2>How to export</h2>
+            <ol class="instructions">
+                <li>Choose a <strong>.md</strong> file, or paste the Markdown
+                    text.
+                </li>
+                <li>Click <strong>Update preview</strong> to view the tabbed
+                    version.
+                </li>
+                <li>Click <strong>Download tabbed HTML</strong> to save one
+                    independent HTML file.
+                </li>
+                <li>Click <strong>Export PDF</strong>. Your browser opens a
+                    print-ready view. Choose <strong>Save as PDF</strong> as the
+                    printer/destination. The printable view includes every
+                    section, not just the active tab.
+                </li>
+            </ol>
+            <p class="note">PDF export uses the browser's built-in Print → Save
+                as PDF facility. It does not automatically write a PDF file
+                without the browser print dialog. Headings, tables, lists,
+                inline code and fenced code blocks are supported. Advanced
+                Markdown extensions may render as plain text.</p></section>
+        <section class="card"><h2>2. Live tabbed preview</h2>
+            <p class="note">The preview uses the same renderer as the exported
+                HTML. Try switching tabs or searching within the preview.</p>
+            <iframe id="preview" class="preview" title="Tabbed plan preview"
+                    sandbox="allow-scripts allow-modals allow-downloads"></iframe>
+        </section>
+    </div>
+</div>
+<script>
+    'use strict';
+    const VIEW_CSS = "\n:root{color-scheme:light;--bg:#f4f7fb;--paper:#ffffff;--ink:#192b43;--muted:#576b80;--line:#dfe6ef;--blue:#1e56a0;--blue-soft:#eaf2ff;--accent:#0b6b65;--shadow:0 10px 28px rgba(23,49,76,.07)}\n*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,\"Segoe UI\",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.57}button,input{font:inherit}\n.shell{max-width:1210px;margin:0 auto;padding:25px 23px 60px}.header{border:1px solid var(--line);background:var(--paper);border-radius:16px;padding:24px 28px 19px;box-shadow:var(--shadow)}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}.header h1{line-height:1.16;font-size:clamp(24px,3.3vw,36px);margin:9px 0 10px;letter-spacing:-.035em;max-width:1000px}.lede{font-size:14px;color:var(--muted);margin:6px 0}.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:17px}.btn{border-radius:9px;border:1px solid #c8d7e7;color:#174b83;background:#fff;padding:9px 13px;cursor:pointer;font-size:13px;font-weight:650}.btn:hover{background:var(--blue-soft)}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn.primary:hover{background:#184883}.btn:focus-visible,.tab:focus-visible,input:focus-visible{outline:3px solid #9bc9f6;outline-offset:2px}.search{min-width:190px;flex:1;max-width:330px;padding:10px 12px;border:1px solid #cbd8e8;border-radius:9px;background:#fff;color:var(--ink);font-size:13px}.count{color:var(--muted);font-size:12px}.tabbar{position:sticky;top:0;z-index:20;display:flex;gap:5px;overflow-x:auto;scrollbar-width:thin;margin:18px 0 0;padding:10px 5px 11px;background:rgba(244,247,251,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}.tab{white-space:nowrap;cursor:pointer;border:1px solid transparent;border-radius:9px;background:transparent;padding:9px 12px;color:#465d76;font-size:12.5px;font-weight:700}.tab[aria-selected=\"true\"]{background:#e6f0fd;color:#104789;border-color:#c5ddfa}.tab:hover{background:#edf3fa}.tab[hidden]{display:none}.panel{border:1px solid var(--line);border-radius:0 0 15px 15px;background:#fff;min-height:400px;padding:29px 35px 40px;box-shadow:var(--shadow)}.section[hidden]{display:none}.section-title{font-size:24px;line-height:1.3;letter-spacing:-.02em;color:#163452;margin:0 0 18px;padding-bottom:13px;border-bottom:1px solid var(--line)}.md-body h3{font-size:18px;margin:26px 0 8px;color:#1d466e;line-height:1.32}.md-body h4{font-size:15px;margin:19px 0 8px;color:#1d466e}.md-body p{margin:9px 0 14px}.md-body ul,.md-body ol{padding-left:24px;margin:9px 0 17px}.md-body li{margin:5px 0}.md-body strong{color:#102e4a}.md-body a{color:#115da9;text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}.md-body code{background:#f0f4fa;border-radius:4px;padding:1px 4px;font-size:.94em;color:#205176}.md-body pre{white-space:pre;overflow-x:auto;border:1px solid #dce6f1;background:#f4f7fb;padding:17px;border-radius:10px;line-height:1.4;font-size:12.5px;color:#233f59;margin:13px 0 19px}.md-body pre code{background:transparent;padding:0;color:inherit}.md-body blockquote{margin:13px 0;border-left:3px solid #81a9d3;background:#f5f9ff;padding:9px 15px;color:#3d5b76}.md-body hr{border:0;border-top:1px solid var(--line);margin:23px 0}.table-scroll{overflow-x:auto;margin:13px 0 23px;border:1px solid var(--line);border-radius:10px}.md-body table{border-collapse:collapse;width:100%;font-size:12.8px;line-height:1.42}.md-body th{color:#143a63;background:#eaf2fb;white-space:normal;font-weight:750}.md-body th,.md-body td{padding:9px 11px;text-align:left;vertical-align:top;border-bottom:1px solid #e5ebf2;min-width:92px}.md-body tr:nth-child(even) td{background:#fafcfe}.md-body tbody tr:last-child td{border-bottom:0}.md-body td:first-child,.md-body th:first-child{min-width:40px}.md-body table code{white-space:nowrap}.empty{padding:30px;text-align:center;color:var(--muted)}.footer{margin:19px 6px;color:#647a90;font-size:12px}.stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.stat{font-size:12px;background:#f1f6fd;border:1px solid #dce8f5;padding:5px 10px;border-radius:40px;color:#275479}\n@media(max-width:720px){.shell{padding:12px 10px 45px}.header{padding:17px 16px}.panel{padding:19px 15px}.tabbar{margin-top:10px}.toolbar{align-items:stretch}.search{width:100%;max-width:none;flex-basis:100%}.section-title{font-size:21px}.md-body table{font-size:12px}}\n@page{size:letter;margin:14mm 13mm 14mm 13mm}\n@media print{html,body{background:white!important;color:#111!important;font-size:10px;line-height:1.42}.shell{max-width:none;margin:0;padding:0}.header{box-shadow:none;border:0;border-bottom:2px solid #1e56a0;border-radius:0;padding:0 0 12px;margin-bottom:12px}.header h1{font-size:20px;margin:6px 0}.eyebrow{font-size:9px}.lede{font-size:10px}.toolbar,.tabbar,.footer,.count,.stats{display:none!important}.panel{border:0;box-shadow:none;min-height:0;padding:0}.section,.section[hidden]{display:block!important;break-before:page;page-break-before:always}.section:first-child{break-before:auto;page-break-before:auto}.section-title{font-size:17px;margin-top:0;margin-bottom:8px;padding-bottom:7px}.md-body h3{font-size:12px;margin:15px 0 5px}.md-body h4{font-size:10px;margin:10px 0 3px}.md-body p{margin:4px 0 7px}.md-body ul,.md-body ol{margin:4px 0 8px}.md-body li{margin:2px 0}.md-body pre{font-size:8px;white-space:pre-wrap;overflow-wrap:anywhere;padding:8px;break-inside:avoid;page-break-inside:avoid}.md-body table{font-size:8.1px;line-height:1.27}.md-body th,.md-body td{padding:4px 6px;min-width:0;overflow-wrap:anywhere}.md-body thead{display:table-header-group}.md-body tr{break-inside:avoid;page-break-inside:avoid}.table-scroll{overflow:visible;border:1px solid #ddd;break-inside:auto}.md-body h3,.md-body h4{break-after:avoid;page-break-after:avoid}.md-body a{color:#222;text-decoration:none}.md-body a::after{content:\"\"}}\n";
+    const VIEW_JS = "\n(function(){\n'use strict';\nconst MD = window.PLAN_MARKDOWN || '';\nconst ESC = s =\u003e String(s).replace(/\u0026/g,'\u0026amp;').replace(/\u003c/g,'\u0026lt;').replace(/\u003e/g,'\u0026gt;').replace(/\"/g,'\u0026quot;').replace(/'/g,'\u0026#39;');\nconst safeUrl = u =\u003e {const val=String(u).trim(); return /^(https?:\\/\\/|mailto:|#)/i.test(val)?val:'#';};\nfunction inline(s){\n  let t=ESC(s), slots=[];\n  t=t.replace(/`([^`]+)`/g,(_,x)=\u003e{const k='@@INLINE'+slots.length+'@@';slots.push('\u003ccode\u003e'+x+'\u003c/code\u003e');return k;});\n  t=t.replace(/\\[([^\\]]+)\\]\\(([^\\s)]+)\\)/g,(_,label,url)=\u003e'\u003ca href=\"'+ESC(safeUrl(url.replace(/\u0026amp;/g,'\u0026')))+'\" rel=\"noopener noreferrer\" target=\"_blank\"\u003e'+label+'\u003c/a\u003e');\n  t=t.replace(/\\*\\*(.+?)\\*\\*/g,'\u003cstrong\u003e$1\u003c/strong\u003e').replace(/__(.+?)__/g,'\u003cstrong\u003e$1\u003c/strong\u003e');\n  t=t.replace(/(^|[^*])\\*([^*\\n]+)\\*/g,'$1\u003cem\u003e$2\u003c/em\u003e');\n  t=t.replace(/~~(.+?)~~/g,'\u003cdel\u003e$1\u003c/del\u003e');\n  t=t.replace(/@@INLINE(\\d+)@@/g,(_,i)=\u003eslots[Number(i)]||'');\n  return t;\n}\nfunction isRule(l){return /^\\s*(?:---+|\\*\\*\\*+|___+)\\s*$/.test(l);}\nfunction isFence(l){return /^\\s*```/.test(l);}\nfunction isHeading(l){return /^#{1,6}\\s+/.test(l);}\nfunction isList(l){return /^\\s{0,3}(?:[-*+]\\s+|\\d+[.)]\\s+)/.test(l);}\nfunction isTableSep(l){return /^\\s*\\|?\\s*:?-{3,}:?\\s*(?:\\|\\s*:?-{3,}:?\\s*)+\\|?\\s*$/.test(l);}\nfunction cells(row){let t=row.trim();if(t.startsWith('|'))t=t.slice(1);if(t.endsWith('|'))t=t.slice(0,-1);return t.split(/(?\u003c!\\\\)\\|/).map(x=\u003ex.replace(/\\\\\\|/g,'|').trim());}\nfunction renderMarkdown(src){\n const a=String(src).replace(/\\r\\n?/g,'\\n').split('\\n'),out=[];let i=0;\n function boundary(k){const l=a[k]||'';return !l.trim()||isFence(l)||isHeading(l)||isRule(l)||isList(l)||/^\u003e/.test(l)||((k+1)\u003ca.length\u0026\u0026l.includes('|')\u0026\u0026isTableSep(a[k+1]||''));}\n while(i\u003ca.length){let l=a[i];if(!l.trim()){i++;continue;}\n  if(isFence(l)){const lang=l.trim().slice(3).trim().replace(/[^a-zA-Z0-9_-]/g,'');i++;const cs=[];while(i\u003ca.length\u0026\u0026!isFence(a[i]))cs.push(a[i++]);if(i\u003ca.length)i++;out.push('\u003cpre\u003e\u003ccode'+(lang?' class=\"language-'+lang+'\"':'')+'\u003e'+ESC(cs.join('\\n'))+'\u003c/code\u003e\u003c/pre\u003e');continue;}\n  const h=l.match(/^(#{1,6})\\s+(.+)$/);if(h){const n=h[1].length;out.push('\u003ch'+n+'\u003e'+inline(h[2])+'\u003c/h'+n+'\u003e');i++;continue;}\n  if(isRule(l)){out.push('\u003chr\u003e');i++;continue;}\n  if(i+1\u003ca.length\u0026\u0026l.includes('|')\u0026\u0026isTableSep(a[i+1])){const headers=cells(l);i+=2;const trs=[];while(i\u003ca.length\u0026\u0026a[i].trim()\u0026\u0026a[i].includes('|')){trs.push(cells(a[i]));i++;}\n   let s='\u003cdiv class=\"table-scroll\"\u003e\u003ctable\u003e\u003cthead\u003e\u003ctr\u003e'+headers.map(v=\u003e'\u003cth\u003e'+inline(v)+'\u003c/th\u003e').join('')+'\u003c/tr\u003e\u003c/thead\u003e\u003ctbody\u003e';\n   for(const rr of trs){s+='\u003ctr\u003e'+headers.map((_,idx)=\u003e'\u003ctd\u003e'+inline(rr[idx]||'')+'\u003c/td\u003e').join('')+'\u003c/tr\u003e';}\n   out.push(s+'\u003c/tbody\u003e\u003c/table\u003e\u003c/div\u003e');continue;}\n  if(/^\u003e/.test(l)){let chunks=[];while(i\u003ca.length\u0026\u0026/^\u003e/.test(a[i]))chunks.push(a[i++].replace(/^\u003e\\s?/,''));out.push('\u003cblockquote\u003e'+chunks.map(x=\u003e'\u003cp\u003e'+inline(x)+'\u003c/p\u003e').join('')+'\u003c/blockquote\u003e');continue;}\n  if(isList(l)){const ordered=/^\\s{0,3}\\d+[.)]\\s+/.test(l),tag=ordered?'ol':'ul';let items=[];\n   while(i\u003ca.length\u0026\u0026isList(a[i])\u0026\u0026(/^\\s{0,3}\\d+[.)]\\s+/.test(a[i])===ordered)){\n     let item=a[i++].replace(/^\\s{0,3}(?:[-*+]\\s+|\\d+[.)]\\s+)/,'');\n     const task=item.match(/^\\[([ xX])\\]\\s+(.*)$/);\n     if(task)item='\u003cinput type=\"checkbox\" disabled '+(task[1].toLowerCase()==='x'?'checked ':'')+'aria-label=\"Task status\"\u003e '+task[2];\n     items.push('\u003cli\u003e'+inline(item)+'\u003c/li\u003e');\n   }\n   out.push('\u003c'+tag+'\u003e'+items.join('')+'\u003c/'+tag+'\u003e');continue;}\n  let p=[l];i++;while(i\u003ca.length\u0026\u0026!boundary(i)){p.push(a[i]);i++;}\n  out.push('\u003cp\u003e'+p.map(inline).join(' ').replace(/  +/g,' ')+'\u003c/p\u003e');\n }\n return out.join('\\n');\n}\nfunction stripMd(s){return String(s).replace(/[`*_~]/g,'').replace(/\\[([^\\]]+)\\]\\([^)]*\\)/g,'$1').trim();}\nfunction sectionsFor(md){const lines=String(md).replace(/\\r\\n?/g,'\\n').split('\\n');const titleLine=lines.find(l=\u003e/^#\\s+/.test(l));const title=titleLine?stripMd(titleLine.replace(/^#\\s+/,'')):'Markdown plan';let parts=[];let cur=null;let intro=[];let fence=false;\n for(const line of lines){if(/^\\s*```/.test(line))fence=!fence;if(!fence\u0026\u0026/^##\\s+/.test(line)){if(cur)parts.push(cur);cur={title:stripMd(line.replace(/^##\\s+/,'')),lines:[]};}else if(cur){cur.lines.push(line);}else if(!/^#\\s+/.test(line)){intro.push(line);}}\n if(cur)parts.push(cur);\n if(!parts.length){parts=[{title:'Document',lines:lines.filter(l=\u003e!/^#\\s+/.test(l))}];intro=[];}\n return {title,intro:renderMarkdown(intro.join('\\n')),parts:parts.map((p,i)=\u003e({id:'tab-'+i,title:p.title,html:renderMarkdown(p.lines.join('\\n')),raw:p.lines.join('\\n')}))};\n}\nfunction download(name,blob){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=\u003eURL.revokeObjectURL(u),2500);}\nconst data=sectionsFor(MD), header=document.querySelector('#planTitle'), lede=document.querySelector('#planIntro'), bar=document.querySelector('#tabs'), panel=document.querySelector('#sections'), search=document.querySelector('#search'), count=document.querySelector('#matchCount');\nheader.textContent=data.title;\nlede.innerHTML=data.intro || '\u003cp\u003eArchitecture case-study plan. Use the tabs to navigate.\u003c/p\u003e';\nconst all=[];\nfor(const section of data.parts){const b=document.createElement('button');b.type='button';b.className='tab';b.setAttribute('role','tab');b.id='tab-button-'+section.id;b.setAttribute('aria-controls',section.id);b.textContent=section.title;const article=document.createElement('section');article.className='section';article.id=section.id;article.setAttribute('role','tabpanel');article.setAttribute('aria-labelledby',b.id);article.innerHTML='\u003ch2 class=\"section-title\"\u003e'+ESC(section.title)+'\u003c/h2\u003e\u003cdiv class=\"md-body\"\u003e'+section.html+'\u003c/div\u003e';bar.append(b);panel.append(article);const item={...section,button:b,article:article};all.push(item);b.addEventListener('click',()=\u003eactivate(item.id));}\nlet active=all[0]?.id;\nfunction activate(id){const target=all.find(x=\u003ex.id===id\u0026\u0026!x.button.hidden)||all.find(x=\u003e!x.button.hidden);if(!target)return;active=target.id;all.forEach(x=\u003e{const on=x.id===active;x.button.setAttribute('aria-selected',String(on));x.button.tabIndex=on?0:-1;x.article.hidden=!on;});}\nfunction onSearch(){const q=search.value.trim().toLowerCase();let n=0;for(const x of all){const isMatch=!q||(x.title+' '+x.raw).toLowerCase().includes(q);x.button.hidden=!isMatch;if(isMatch)n++;}count.textContent=n+' of '+all.length+' sections';if(!all.some(x=\u003ex.id===active\u0026\u0026!x.button.hidden))activate(all.find(x=\u003e!x.button.hidden)?.id);const empty=document.querySelector('#empty');empty.hidden=n!==0;if(n===0)all.forEach(x=\u003ex.article.hidden=true);}\nsearch.addEventListener('input',onSearch);\nbar.addEventListener('keydown',e=\u003e{if(!['ArrowRight','ArrowLeft','Home','End'].includes(e.key))return;const items=all.filter(x=\u003e!x.button.hidden);let index=items.findIndex(x=\u003ex.id===active);if(e.key==='Home')index=0;else if(e.key==='End')index=items.length-1;else index=(index+(e.key==='ArrowRight'?1:-1)+items.length)%items.length;if(items[index]){activate(items[index].id);items[index].button.focus();}e.preventDefault();});\ndocument.getElementById('downloadMd').addEventListener('click',()=\u003edownload('system_design_interview_plan.md',new Blob([MD],{type:'text/markdown;charset=utf-8'})));\ndocument.getElementById('printPdf').addEventListener('click',()=\u003ewindow.print());\ndocument.getElementById('showAll').addEventListener('click',()=\u003e{search.value='';onSearch();const shown=all.every(x=\u003e!x.article.hidden);if(shown){activate(active||all[0]?.id);document.getElementById('showAll').textContent='Show all sections';}else{all.forEach(x=\u003e{x.article.hidden=false;x.button.setAttribute('aria-selected',String(x.id===active));});document.getElementById('showAll').textContent='Return to tabs';}});\nactivate(active);onSearch();\n})();\n";
+    const VIEW_TEMPLATE = "\u003c!doctype html\u003e\n\u003chtml lang=\"en\"\u003e\n\u003chead\u003e\u003cmeta charset=\"utf-8\"\u003e\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\"\u003e\n\u003cmeta name=\"color-scheme\" content=\"light\"\u003e\u003ctitle\u003eSystem design preparation — tabbed plan\u003c/title\u003e\n\u003cstyle\u003e__CSS__\u003c/style\u003e\u003c/head\u003e\n\u003cbody\u003e\u003cmain class=\"shell\"\u003e\u003cheader class=\"header\"\u003e\u003cdiv class=\"eyebrow\"\u003eSolution Architect · Interview preparation\u003c/div\u003e\u003ch1 id=\"planTitle\"\u003eSystem design preparation\u003c/h1\u003e\n\u003cdiv id=\"planIntro\" class=\"lede md-body\"\u003e\u003c/div\u003e\n\u003cdiv class=\"toolbar\"\u003e\u003cinput id=\"search\" type=\"search\" class=\"search\" placeholder=\"Find a module or topic…\" aria-label=\"Find a module or topic\"\u003e\n\u003cspan id=\"matchCount\" class=\"count\"\u003e\u003c/span\u003e\u003cbutton class=\"btn\" id=\"showAll\" type=\"button\"\u003eShow all sections\u003c/button\u003e\u003cbutton class=\"btn\" id=\"downloadMd\" type=\"button\"\u003eDownload Markdown\u003c/button\u003e\u003cbutton class=\"btn primary\" id=\"printPdf\" type=\"button\"\u003ePrint / Save PDF\u003c/button\u003e\u003c/div\u003e\u003c/header\u003e\n\u003cnav class=\"tabbar\" id=\"tabs\" role=\"tablist\" aria-label=\"Preparation sections\"\u003e\u003c/nav\u003e\u003cdiv id=\"sections\" class=\"panel\"\u003e\u003c/div\u003e\u003cdiv id=\"empty\" class=\"empty\" hidden\u003eNo matching sections. Clear the search to see the full plan.\u003c/div\u003e\n\u003cfooter class=\"footer\"\u003eOffline and self-contained. For PDF: Print / Save PDF → choose “Save as PDF” in your browser. All sections appear in print, even when one tab is selected.\u003c/footer\u003e\u003c/main\u003e\n\u003cscript\u003ewindow.PLAN_MARKDOWN=__DATA__;\u003c/script\u003e\u003cscript\u003e__JS__\u003c/script\u003e\n\u003c/body\u003e\u003c/html\u003e";
+    const MARKDOWN_DEFAULT = "# System Design Interview Preparation — American Express Solution Architect\n\n**Interview:** Wednesday, November 4, 2026  \n**Goal:** Develop broad coverage of system-design patterns with extra depth in payments and enterprise architecture.  \n**Learning style:** Worked designs, explicit trade-offs, brief concepts at point of use. **No quizzes, mock interviews, timed blocks, or assessments.**\n\n## 1. Overview\n\n### Core strategy\n\nStudy **73 system-design problems across 8 modules**, but do **not** memorize 73 isolated diagrams. Understand the reusable architectural decisions underneath them. Cover the breadth first; then deepen the problems that combine the most essential patterns.\n\n1. **Decision-first:** Start with a real requirement, then derive each component from it.\n2. **One baseline before complexity:** Begin with the simplest acceptable design, and add components only to address a named constraint.\n3. **Explain choices:** For every database, protocol, queue, cache, and deployment choice, compare plausible alternatives.\n4. **Use financial examples as an anchor:** Payments, ledgers, fraud, reconciliation, security and auditability expose important correctness requirements.\n5. **Think like a Solution Architect:** Include existing systems, integration contracts, organizational ownership, cost, migration, governance and operational readiness.\n6. **No assessments:** This is a guided reference and explanation plan, not an examination program.\n\n### Success criteria\n\n- Recognize core architectural patterns when a new problem is described.\n- Explain **why** a design fits its constraints and **when** it would stop fitting.\n- Describe data flow, state ownership, consistency, failure recovery, and security boundaries clearly.\n- Reuse solved patterns across domains without forcing the same technology into every design.\n\n### Scope and priorities\n\n| Track | Coverage | Treatment |\n|---|---:|---|\n| Architecture fundamentals | 20 connected concepts | Explain in context, before or during designs |\n| Payments / financial systems | 16 case studies | Highest domain depth |\n| Scalable applications | 12 case studies | Broad reusable patterns |\n| Distributed transactions / workflows | 10 case studies | Consistency and failure depth |\n| Data and streaming | 9 case studies | Batch/stream/data ownership |\n| Reliability and cloud | 9 case studies | High-availability and recovery |\n| Security and enterprise | 9 case studies | Solution Architect lens |\n| Advanced systems | 8 case studies | Breadth/extensions |\n| **Total design cases** | **73** | **16 recommended full deep dives** |\n\n**Important:** This plan is tailored to the Solution Architect role and financial-services domain. It is **not** a claim that American Express will ask these exact questions.\n\n## 2. Method — How Each Design Is Explained\n\nUse this structure consistently; increase or decrease detail according to the case.\n\n| Step | What we cover | Why it comes now |\n|---|---|---|\n| 1. Define the problem | Actors, system boundary, success criteria, functional requirements | Prevent building the wrong system |\n| 2. Rank constraints | Correctness, security, latency, availability, throughput, cost | Architectural choices depend on priorities |\n| 3. Scale and assumptions | Requests/sec, peak factors, read/write ratio, storage, retention; label unknowns | Quantifies which optimizations are necessary |\n| 4. Interfaces | APIs, commands/events, error semantics, idempotency contracts | Establishes behavior before components |\n| 5. State and data | Entities, source of truth, key constraints, consistency | Financial errors usually start here |\n| 6. Minimum viable architecture | Services, database, synchronous path, external systems | Avoid needless complexity |\n| 7. Derive design choices | Alternatives, chosen option, why alternatives lose | Demonstrates architecture judgment |\n| 8. Walk critical flows | Success, retry, duplicate, timeout, failure, recovery | Exposes hidden state transitions |\n| 9. Scale and protect | Partitioning, cache, rate limits, backpressure, observability | Add only where justified |\n| 10. Enterprise review | Security, compliance, migration, ownership, DR, cost | Makes it an operational solution |\n| 11. Final diagram and trade-offs | ASCII architecture and explicit limitations | Communicates the complete design |\n\n### Example: deriving a payment API\n\n**Problem:** A merchant calls an API to authorize a payment. The merchant may retry after a timeout, and processing depends on an external payment network.\n\n1. **Requirement — one logical operation:** A repeated client request must not create a second financial operation. **Choice:** accept an idempotency key; bind it to a request fingerprint and persist an operation record. **Why:** networks can time out after the server has begun work.\n2. **Requirement — durable state:** Payment state changes need atomic constraints. **Choice:** begin with a relational transactional store. **Why:** uniqueness and state transitions matter more than schemaless flexibility at this stage.\n3. **Requirement — prompt decision:** The merchant needs an immediate approve/decline/unknown answer. **Choice:** synchronous processing for the authorization decision. **Why:** an entirely asynchronous response does not satisfy that interface.\n4. **Requirement — decoupled side effects:** Reporting and notifications must not increase payment latency. **Choice:** publish events after committing state, using a transactional outbox. **Why:** prevents a database commit succeeding while an independent event publish fails silently.\n5. **Requirement — ambiguous provider result:** A timeout is not a decline. **Choice:** represent `UNKNOWN/PENDING`, query or reconcile external status, and only retry according to provider idempotency rules. **Why:** blind retries may duplicate charges.\n6. **Requirement — sensitive data:** Minimize raw card data propagation. **Choice:** tokenization, tight access controls, encrypted transport and storage, audit logging. **Why:** reduce exposure and compliance scope.\n\n```text\nMerchant\n   |\n   v\nAPI Gateway --\u003e AuthN/AuthZ / request limits\n   |\n   v\nPayment API --\u003e Idempotency + payment state DB\n   |\n   v\nAuthorization adapter --\u003e External network/processor\n   |\n   +--\u003e Result/state update --\u003e Transactional outbox\n                                  |\n                                  v\n                             Event transport\n                                  |\n                                  +--\u003e Notifications\n                                  +--\u003e Analytics\n                                  +--\u003e Reconciliation\n```\n\n**Concepts introduced only when needed:** idempotency (same logical request yields no additional side effect); ACID transaction (atomic, consistent, isolated and durable database work); outbox (publish an event from durable committed state); reconciliation (compare independent records to detect and resolve mismatches).\n\n## 3. Module 1 — Architecture Foundations\n\nThese are **20 connected decisions**, not 20 detached lectures. Each one will be revisited in a case study.\n\n| Topic | Learn to reason about | First useful case |\n|---|---|---|\n| 1. Functional vs. quality requirements | What the system does vs. how well it must do it | Payment authorization |\n| 2. Back-of-envelope capacity | Average/peak RPS, data volume, bottlenecks | URL shortener |\n| 3. System boundaries | Who owns state, where trust changes | Payment gateway |\n| 4. API contracts | REST/gRPC/events, versioning, errors, retries | API gateway |\n| 5. Data modeling | Constraints, indexes, keys and state machines | Ledger |\n| 6. Relational vs. NoSQL | Transactions, queries, partitioning, flexibility | Ledger vs. feed |\n| 7. Consistency | Strong, eventual; stale reads; read-your-writes | Booking |\n| 8. Replication | Read scaling, availability, failover lag | Multi-region reads |\n| 9. Partitioning/sharding | Capacity, hot keys, routing, rebalancing | Event pipeline |\n| 10. Caching | Hit rate, invalidation, TTL, stampede | News feed |\n| 11. Message queues | Worker decoupling, retries, dead-letter queues | Notifications |\n| 12. Event streams | Ordering, partition keys, replay, consumer groups | Fraud stream |\n| 13. Distributed transactions | ACID locality, Saga, compensations | Checkout |\n| 14. Idempotency | Retry without extra business effect | Payments |\n| 15. Concurrency | Race conditions, optimistic/pessimistic locking | Ticketing |\n| 16. Backpressure | Bound load when downstream systems slow | Ingestion |\n| 17. Resilience | Timeouts, retries, circuit breakers, bulkheads | Payment gateway |\n| 18. Observability | Logs, metrics, traces, business invariants | Authorization |\n| 19. Security by design | Authentication, authorization, threat boundaries | IAM/token vault |\n| 20. Operational architecture | SLOs, DR, rollout, runbooks and cost | Active-passive DR |\n\n### Foundational rules of thumb — with limitations\n\n- **Do not default to microservices.** Start with cohesive boundaries; split when independent ownership, scaling or deployment justifies it.\n- **Do not cache correctness-critical balances as the source of truth.** A cache can accelerate reads but needs an explicit freshness contract.\n- **Do not assume “exactly once” across arbitrary external systems.** Combine at-least-once delivery with idempotent business effects and reconciliation where needed.\n- **Do not treat network timeout as operation failure.** Model ambiguous outcomes explicitly.\n- **Do not introduce multi-region writes casually.** Consistency and conflict resolution can dominate the design.\n- **Do not name a database before describing the access patterns and invariants.**\n\n## 4. Module 2 — Payments and Financial Systems\n\n**Priority: highest domain depth.** Trace authorization, clearing, settlement, dispute and audit as **distinct phases**; do not flatten them into a single database write.\n\n| # | Design problem | Why this case matters / critical choices |\n|---:|---|---|\n| 1 | Credit-card authorization | Low-latency synchronous decision; idempotency; uncertain responses; risk checks |\n| 2 | Merchant payment gateway | API authentication, partner integration, retry contracts, provider failures |\n| 3 | Capture, clearing and settlement | Different financial phases; batch/event workflows; finality and reconciliation |\n| 4 | Multi-provider payment orchestration | Routing, circuit breakers, provider-specific semantics, fallback safety |\n| 5 | Double-entry financial ledger | Debit/credit invariants; immutable entries; transactional posting; auditability |\n| 6 | Refunds and reversals | State machine, partial refunds, duplicate requests, external status |\n| 7 | Chargebacks/disputes | Long-running workflow, deadlines, evidence, exception queues |\n| 8 | Peer-to-peer transfer | Atomic ledger entries, holds, concurrency, recipient identity |\n| 9 | Recurring billing/subscriptions | Scheduling, retry policy, failed payments, idempotent cycles |\n| 10 | Real-time fraud detection | Feature freshness, scoring latency, rules + models, fail-open/closed trade-off |\n| 11 | Limits and velocity controls | Atomic counters, sliding windows, hot accounts, correct risk decisions |\n| 12 | Merchant onboarding / KYC | Human reviews, third-party checks, long-lived durable orchestration |\n| 13 | Reconciliation engine | Match ledgers to external files/events; discrepancies; reprocessing |\n| 14 | Transaction notifications | Outbox, event consumers, delivery retries, user preferences |\n| 15 | Rewards / loyalty points | Earn/burn events, balances, expiry, reversals and consistency |\n| 16 | Card tokenization vault | Sensitive data isolation, tokens, HSM/KMS, audit and access boundaries |\n\n### Cross-cutting payment concepts to introduce in these designs\n\n- **Financial invariants:** e.g., a balanced ledger posting must not partially commit; define the invariant before choosing storage.\n- **Idempotency scope:** identify the business action, request fingerprint, retention period and response replay rules.\n- **Authorization vs. settlement:** a decision to approve an authorization is not the same as final movement of money.\n- **Exactly-once business effect:** messaging may redeliver; deduplication and atomic state transitions protect the actual financial effect.\n- **Unknown results:** reconcile with independent sources rather than treating timeouts as failure.\n- **PII/cardholder-data boundaries:** classify and minimize data flows; use applicable PCI/security controls.\n- **Fraud vs. reliability:** sometimes a failing risk service implies decline, sometimes controlled fallback; derive it from policy and threat model.\n\n## 5. Module 3 — Scalable Distributed Applications\n\n| # | Design problem | Main architectural choice |\n|---:|---|---|\n| 17 | URL shortener | Unique IDs, key-value lookup, redirects, hot-key caching |\n| 18 | Distributed rate limiter | Token bucket vs. sliding window; atomic distributed counters |\n| 19 | API gateway | Authentication boundary, routing, rate limits, request policies |\n| 20 | Multi-channel notifications | Fan-out, queue vs. stream, retries, dead-letter handling |\n| 21 | Distributed job scheduler | Leader election, claiming work, duplicate-safe execution |\n| 22 | Webhook delivery platform | Delivery contracts, signed payloads, retry windows, backoff |\n| 23 | WhatsApp-style chat | WebSocket vs. polling, ordering, offline delivery, fan-out |\n| 24 | Social media feed | Fan-out on write vs. fan-out on read, celebrity skew |\n| 25 | Search autocomplete | Prefix index/trie, ranking, freshness, cache |\n| 26 | File sharing | Object storage, metadata DB, pre-signed URLs, authorization |\n| 27 | Video streaming | Transcoding jobs, CDN, segments, adaptive bitrate |\n| 28 | E-commerce checkout | State transitions, reservation, payment, order Saga |\n\n### Distinct patterns to extract\n\n- **Read-heavy vs. write-heavy:** drives indexing, denormalization, caching and partitioning.\n- **Push vs. pull:** for chat, feeds and notifications; connection management costs matter.\n- **Fan-out on write vs. read:** precompute for cheap reads or compute on demand for lower write amplification.\n- **Queue vs. log:** a work queue distributes tasks; an event log enables independent consumers/replay, with product-specific semantics.\n- **Object storage vs. database blobs:** separate large content delivery from searchable metadata and authorization.\n\n## 6. Module 4 — Distributed Transactions and Workflows\n\n| # | Design problem | Main architectural choice |\n|---:|---|---|\n| 29 | Inventory reservation | Atomic stock decrement, TTL reservations, expiry races |\n| 30 | Ticket booking | Optimistic vs. pessimistic locking; unique seat constraints |\n| 31 | Driver-to-rider matching | Geospatial index, freshness, claim ownership, concurrency |\n| 32 | Order fulfillment | Saga orchestration vs. choreography; compensating actions |\n| 33 | Coupon redemption | Global limits, per-user uniqueness, hot keys |\n| 34 | Wallet balance | Immutable ledger vs. mutable read model; concurrent spending |\n| 35 | Shipment tracking | Event ingestion, out-of-order events, eventual consistency |\n| 36 | Durable workflow engine | State machines, timers, retries, cancellation and recovery |\n| 37 | Transactional outbox | Atomic data update + durable event intent; relay deduplication |\n| 38 | Idempotent consumer | At-least-once events, inbox table, replay-safe side effects |\n\n### Key distinction\n\nA **database transaction** protects changes inside its transactional boundary. A **Saga** coordinates a longer business workflow across systems; compensation is not the same as magically rolling back completed external actions. Explain what must be compensated, what cannot be undone, and how operators recover stuck workflows.\n\n## 7. Module 5 — Data Architecture and Streaming\n\n| # | Design problem | Main architectural choice |\n|---:|---|---|\n| 39 | Event ingestion pipeline | Brokers, partitions, ordering keys, schema evolution |\n| 40 | Real-time analytics dashboard | Stream aggregations, materialized views, freshness SLA |\n| 41 | Metrics and log platform | High-cardinality cost, time-series storage, retention |\n| 42 | Search indexing pipeline | Source DB vs. derived index; update lag and rebuild |\n| 43 | Change Data Capture | Database log tailing vs. application dual writes |\n| 44 | Data warehouse ETL/ELT | OLTP vs. OLAP, batch vs. incremental, lineage |\n| 45 | Immutable audit trail | Tamper resistance, sequence, retention, access controls |\n| 46 | Customer 360 profile | Identity matching, source-of-truth ownership, privacy |\n| 47 | Data retention and deletion | Policy propagation, legal holds, backups, audit evidence |\n\n### Concepts in context\n\n- **OLTP:** short operational reads/writes, often transactional; **OLAP:** large analytical scans and aggregations.\n- **CDC:** propagate committed database changes through a log rather than trying to write to two systems in one request.\n- **Materialized view:** precomputed read model, with declared staleness and rebuild strategy.\n- **Event time vs. processing time:** late/out-of-order events can affect aggregates; watermarks and correction policy matter.\n- **Data lineage:** know which source, transformation and policy produced a result.\n\n## 8. Module 6 — Scalability, Cloud and Reliability\n\n| # | Design problem | Main architectural choice |\n|---:|---|---|\n| 48 | Multi-region read service | Replicas, latency routing, stale-read tolerance |\n| 49 | Active-passive failover | Regional recovery, replicated state, cutover procedure |\n| 50 | Active-active transactions | Write coordination, conflict resolution, partition tolerance |\n| 51 | Distributed cache tier | Cache-aside, TTL, consistency, stampede prevention |\n| 52 | Flash-sale traffic | Admission control, virtual queues, shed load safely |\n| 53 | Backup and disaster recovery | RPO, RTO, tested restore, data integrity |\n| 54 | Circuit breaker and fallback | Timeouts, retry budgets, bulkheads, failure isolation |\n| 55 | Multi-tenant platform | Isolation, noisy neighbors, cost/accounting boundaries |\n| 56 | Safe deployment pipeline | Canary/blue-green, compatibility, feature flags, rollback |\n\n### Must understand\n\n- **RPO:** maximum acceptable data loss measured in time. **RTO:** maximum acceptable recovery time.\n- **Availability vs. correctness:** degraded reads may be acceptable; incorrect balances or duplicate postings may not be.\n- **Backpressure:** reduce accepted work to what downstream systems can process, rather than filling unlimited queues.\n- **Retry amplification:** nested automatic retries can turn a partial outage into a total one; use bounded budgets and jitter.\n- **Operational readiness:** dashboards, alerts, runbooks, DR tests, ownership and on-call dependencies.\n\n## 9. Module 7 — Security and Enterprise Architecture\n\n| # | Design problem | Main architectural choice |\n|---:|---|---|\n| 57 | Enterprise single sign-on | OIDC/SAML, trust federation, session and token lifetimes |\n| 58 | Multi-factor authentication | Step-up verification, recovery, device trust, risk signals |\n| 59 | Authorization platform | RBAC vs. ABAC, policy evaluation, revocation |\n| 60 | Secrets and key management | KMS/HSM, key lifecycle, rotation, least privilege |\n| 61 | B2B partner API | Contract versioning, mTLS/OAuth, quotas, failure isolation |\n| 62 | Mainframe modernization | Strangler migration, anti-corruption layer, dual-run validation |\n| 63 | Hybrid-cloud integration | Connectivity, trust boundary, egress, latency and ownership |\n| 64 | Cardholder-data boundary | Tokenization, segmentation, audit and PCI scope |\n| 65 | Consent and privacy service | Consent versioning, policy checks, deletion/retention |\n\n### Architecture review lens\n\nFor each major design, answer within the explanation:\n\n- **Business alignment:** Which capability, customer journey or regulatory need is served?\n- **Integration:** Which systems already exist? What are their contracts and failure modes?\n- **Security:** Who is trusted, where does sensitive data move, and who can access it?\n- **Ownership:** Which team supports each service, schema, shared component and incident?\n- **Delivery:** How can it migrate safely with rollback and backward-compatible interfaces?\n- **Cost:** What grows with traffic, storage, redundancy, vendor calls and operational effort?\n- **Governance:** How are decisions documented, reviewed and revised as constraints change?\n\n## 10. Module 8 — Advanced Architecture Breadth\n\n| # | Design problem | Main architectural choice |\n|---:|---|---|\n| 66 | Online ML inference | Feature store freshness, serving latency, safe fallback |\n| 67 | Recommendation system | Candidate retrieval vs. ranking, online/offline features |\n| 68 | Enterprise RAG assistant | Retrieval permissions, data leakage prevention, grounding |\n| 69 | Nearby location search | Spatial indices, cell systems, precision vs. cost |\n| 70 | Collaborative editing | OT vs. CRDT, ordering, offline merge |\n| 71 | Real-time ad auction | Tight latency budget, scoring, budget enforcement |\n| 72 | IoT telemetry platform | Device identity, ingestion bursts, ordering, retention |\n| 73 | Media transcoding | Asynchronous job graph, retries, storage lifecycle |\n\n**Treatment:** Pattern-focused unless a case introduces a genuinely new architecture choice. These extend breadth; they do not replace the financial and enterprise core.\n\n## 11. Sixteen Full-Depth Anchor Designs\n\nThese receive the complete 11-step treatment from the Method section; other cases reuse their patterns and focus on what differs.\n\n| Order | Anchor design | Deep concepts it teaches | Related cases made easier |\n|---:|---|---|---|\n| 1 | Card authorization | Low-latency state machines, idempotency, unknown outcomes | Gateway, refunds, limits |\n| 2 | Double-entry ledger | Atomicity, immutable postings, invariants | Wallet, transfer, rewards |\n| 3 | Settlement + reconciliation | Async phases, files/events, mismatches, reprocessing | Billing, disputes, accounting |\n| 4 | Fraud decisioning | Feature freshness, stream processing, inference fallback | Velocity limits, real-time analytics |\n| 5 | Payment gateway | Partner contracts, retries, resilience, security boundary | B2B API, webhooks |\n| 6 | Distributed rate limiter | Atomic counters, windows, hot keys | Quotas, coupons, risk limits |\n| 7 | E-commerce checkout | Saga and outbox, compensation | Order fulfillment, inventory |\n| 8 | Ticket booking | High contention, locks, transactions | Reservations, coupon limits |\n| 9 | Notification service | Queue semantics, worker pools, deduplication | Webhooks, scheduled jobs |\n| 10 | Chat | WebSockets, ordering, online/offline state | Collaborative editing, live tracking |\n| 11 | News feed | Fan-out patterns, read/write scaling | Recommendations, activity feeds |\n| 12 | Search/indexing service | Materialized index, eventual consistency, rebuilds | Autocomplete, customer search |\n| 13 | Streaming analytics pipeline | Partitions, replay, windows, CDC | Fraud features, metrics |\n| 14 | Multi-region architecture | Failover, replica lag, RPO/RTO | Active-passive, active-active |\n| 15 | Enterprise IAM | Identity federation, policies, revocation | B2B access, tenant isolation |\n| 16 | Legacy modernization | Incremental migration, parallel runs, integration | Hybrid cloud, API modernization |\n\n### Depth rule\n\n**Do not force the same depth on all 73 problems.** Spend conceptual effort where one design introduces a new pattern or a non-obvious failure mode. For variations, explain the changed requirement, changed architecture, and changed trade-off without re-teaching shared basics.\n\n## 12. Architecture Decision Reference\n\n| Decision | Usually choose A when... | Usually choose B when... | Hidden trap to discuss |\n|---|---|---|---|\n| Relational DB vs. NoSQL | Cross-row integrity, relational queries, durable transactions | Data/access patterns justify alternate model or scaling | A NoSQL name alone does not solve scaling |\n| Monolith vs. microservices | Tight coupling, small ownership boundary, deployment simplicity | Independent teams/capabilities need separate deployment | Distributed operations cost |\n| REST vs. gRPC | External/public contracts, broad interoperability | Internal typed RPC and efficiency matter | Versioning and observability |\n| Request/response vs. events | Caller needs an immediate answer | Work can complete independently or be replayed | False assumption of immediate consistency |\n| Work queue vs. event log | Tasks should be processed by workers | Multiple consumers need durable event history | Ordering/replay semantics differ |\n| Strong vs. eventual consistency | Correctness needs latest state now | Staleness has explicit safe bounds | User-visible invariants |\n| ACID transaction vs. Saga | All updates share transaction boundary | Multiple independently committed systems | Compensation is not full rollback |\n| Optimistic vs. pessimistic lock | Conflicts are infrequent | Contention is high, blocking acceptable | Deadlocks and retries |\n| Cache-aside vs. write-through | App controls missing/read behavior | Fresh cache writes are worth write coupling | Invalidation and drift |\n| Replication vs. sharding | Availability/read scaling is goal | Write/storage capacity exceeds one shard | Hot keys and cross-shard queries |\n| Normalized vs. denormalized | Write integrity and canonical data | Read pattern warrants derived projections | Update lag and recomputation |\n| CQRS vs. unified model | Read/write workloads diverge sharply | Simpler model meets requirements | Projection rebuild and drift |\n| Polling vs. WebSocket | Updates are infrequent and latency loose | Frequent low-latency bidirectional updates | Connection load and reconnection |\n| Single-region vs. multi-region | Simpler consistency and sufficient DR | Availability/latency/data policy justify regions | Cross-region data correctness |\n| Active-passive vs. active-active | Simpler failover with accepted RTO | Continuous regional serving is essential | Write conflicts and split brain |\n| Orchestration vs. choreography | Central visibility and business process control | Loosely coupled independent event reactions | Hidden workflow dependencies |\n| Fail-open vs. fail-closed | Degradation is safe and policy permits | Denying unsafe operations is required | Risk must be explicitly owned |\n| Managed vs. self-hosted | Reduced operational burden is valuable | Specific control/constraints justify ownership | Exit, cost, and support model |\n| Batch vs. streaming | Freshness is not urgent, throughput matters | Low-latency updates create business value | Event time and late data |\n| Build vs. buy | Differentiation, control or integration justify build | Mature capability can be procured safely | Vendor SLA, portability, lock-in |\n\n**Decision explanation pattern:** State the constraint -\u003e identify at least two credible options -\u003e choose one -\u003e name the cost or failure mode it introduces -\u003e define when to revisit it.\n\n## 13. Learning Order — Dependency-Driven, Not Timed\n\nThe study sequence follows concept dependencies. No clocks, exercises or assessments are included.\n\n### Pass A — Establish the minimum vocabulary\n\nCover Module 1 while immediately illustrating each concept with payment authorization, URL shortener, ticket booking, notifications and a ledger. Do not defer practice designs until after a large theory chapter.\n\n### Pass B — Financial correctness core\n\nWalk through **card authorization -\u003e ledger -\u003e settlement/reconciliation -\u003e fraud decisioning -\u003e payment gateway**. These are related but have different latency, consistency, failure and data-retention constraints.\n\n### Pass C — General distributed patterns\n\nUse **rate limiter -\u003e notification service -\u003e checkout/Saga -\u003e ticket booking -\u003e chat -\u003e feed -\u003e search**. This covers atomic counters, work queues, workflows, concurrency, persistent connections, fan-out and indexes.\n\n### Pass D — Data, scale and reliability\n\nUse **streaming analytics -\u003e CDC -\u003e multi-region and disaster recovery -\u003e caching/failover**. Contrast correctness-preserving write paths with eventually consistent projections.\n\n### Pass E — Solution Architect lens\n\nUse **IAM -\u003e partner integrations -\u003e legacy modernization -\u003e hybrid cloud**. Cover architecture governance, cloud/on-prem boundaries, incremental migration, operating model, security and cost.\n\n### Pass F — Complete breadth\n\nProcess the remaining case catalog as targeted variations. Prioritize new patterns, not repetition of technologies already understood.\n\n### Material deliberately excluded\n\n- Timed schedules and calendar allocations.\n- Quizzes, mock interviews, assessments or scorecards.\n- Product-name memorization without underlying trade-off reasoning.\n- Unsupported claims about American Express's internal interview questions or private architecture.\n\n## 14. Reusable Case-Study Template\n\nCopy this structure when we begin any problem:\n\n1. **Problem statement:** User journey, actors and business purpose.\n2. **Functional requirements:** Essential operations; explicitly excluded scope.\n3. **Quality requirements:** Priority-order correctness, security, latency, reliability, throughput, cost.\n4. **Assumptions and rough capacity:** Numbers only when grounded or explicitly illustrative.\n5. **Interfaces:** Endpoints, events, auth, idempotency and error semantics.\n6. **Data and invariants:** Schemas, unique constraints, source of truth, lifecycle.\n7. **Baseline ASCII diagram:** Minimal architecture and request flow.\n8. **Decision-by-decision derivation:** Requirement -\u003e options -\u003e choice -\u003e why -\u003e trade-off.\n9. **Critical sequences:** Success, duplicate, timeout, partial failure, recovery.\n10. **Scale, resilience and security:** Bottlenecks, monitoring, rollback, operational playbooks.\n11. **Final architecture:** Consolidated ASCII diagram and remaining risks.\n12. **What changes if constraints change:** A small set of meaningful variations, with no assessment questions.\n\n### Explanation style\n\n- Define **CQRS**, **Saga**, **CDC**, **outbox**, **sharding**, **replication**, **tokenization**, **HSM**, **RTO/RPO**, etc. in one or two sentences **where first needed**.\n- Prefer **ASCII diagrams** over graphics.\n- Highlight **the invariant or requirement** before naming technology.\n- Make uncertain assumptions explicit; never present illustrative capacity estimates as company facts.\n- Include operational and enterprise implications, not just API and database choices.\n\n## 15. References and Boundaries\n\nThe preparation roadmap is a practical synthesis of generally applicable architecture patterns, not a representation of American Express internal systems or a verified interview question bank.\n\nOfficial references to consult when a specific concept is taught:\n\n- **AWS Well-Architected Framework:** https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html — architecture quality, security, reliability, performance, cost and operations.\n- **NIST SP 800-207, Zero Trust Architecture:** https://csrc.nist.gov/pubs/sp/800/207/final — trust boundaries and access principles.\n- **PCI Security Standards Council Document Library:** https://www.pcisecuritystandards.org/document_library/ — current PCI DSS materials; verify applicable standard/version before asserting requirements.\n- **American Express Careers:** https://www.americanexpress.com/en-us/careers/ — public role context, not a predictor of a specific interview.\n\n**PDF/export note:** The accompanying offline converter generates the same tabbed HTML reader from this Markdown. Its **Export PDF** action opens the browser print dialog; select **Save as PDF**. No cloud service or external libraries are required. Browsers control the final PDF filename and print settings.\n";
+
+    function toViewer(md) {
+        const safeJson = JSON.stringify(String(md)).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
+        return VIEW_TEMPLATE.replace('__CSS__', VIEW_CSS).replace('__JS__', VIEW_JS).replace('__DATA__', safeJson);
+    }
+
+    const file = document.getElementById('file'),
+        drop = document.getElementById('drop'),
+        editor = document.getElementById('editor'),
+        preview = document.getElementById('preview'),
+        status = document.getElementById('status');
+    let filename = 'document';
+
+    function announce(s) {
+        status.textContent = s;
+    }
+
+    function slug(s) {
+        return String(s || 'document').replace(/\.m(?:arkdown|d)$/i, '').replace(/[^a-z0-9_-]+/gi, '_').replace(/^_+|_+$/g, '').slice(0, 80) || 'document';
+    }
+
+    function update() {
+        if (!editor.value.trim()) {
+            announce('Add Markdown text first.');
+            return false;
+        }
+        preview.srcdoc = toViewer(editor.value);
+        announce('Preview updated. All work remains in your browser.');
+        return true;
+    }
+
+    async function ingest(f) {
+        if (!f) return;
+        if (f.size > 5 * 1024 * 1024) {
+            announce('File is larger than 5 MB. Please use a smaller Markdown file.');
+            return;
+        }
+        filename = slug(f.name);
+        editor.value = await f.text();
+        update();
+    }
+
+    file.addEventListener('change', () => ingest(file.files?.[0]));
+    for (const eventName of ['dragenter', 'dragover']) drop.addEventListener(eventName, e => {
+        e.preventDefault();
+        drop.classList.add('drag');
+    });
+    for (const eventName of ['dragleave', 'drop']) drop.addEventListener(eventName, e => {
+        e.preventDefault();
+        drop.classList.remove('drag');
+    });
+    drop.addEventListener('drop', e => ingest(e.dataTransfer?.files?.[0]));
+    document.getElementById('previewBtn').addEventListener('click', update);
+    document.getElementById('htmlBtn').addEventListener('click', () => {
+        if (!editor.value.trim()) {
+            announce('Add Markdown text first.');
+            return;
+        }
+        const blob = new Blob([toViewer(editor.value)], {type: 'text/html;charset=utf-8'});
+        const url = URL.createObjectURL(blob), a = document.createElement('a');
+        a.href = url;
+        a.download = filename + '_tabbed.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 3000);
+        announce('Downloaded a standalone HTML file.');
+    });
+    document.getElementById('pdfBtn').addEventListener('click', () => {
+        if (!editor.value.trim()) {
+            announce('Add Markdown text first.');
+            return;
+        }
+        const w = window.open('', '_blank');
+        if (!w) {
+            announce('Your browser blocked the print window. Allow popups for this local page, then retry.');
+            return;
+        }
+        const html = toViewer(editor.value).replace('</body>', '<script>window.addEventListener("load",()=>setTimeout(()=>window.print(),600));<\\/script></body>');
+        w.document.open();
+        w.document.write(html);
+        w.document.close();
+        announce('Print-ready view opened. Choose “Save as PDF” in your browser print dialog.');
+    });
+    editor.value = MARKDOWN_DEFAULT;
+    update();
+</script>
+</body>
+</html>

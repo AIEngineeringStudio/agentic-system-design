@@ -1,0 +1,422 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>Architecture Decision Field Guide | Field Notes</title><style>/* Architect's Field Notes — original study-guide design recreation.
+   Standalone builder embeds this file into its generated HTML. */
+:root {
+  --navy: #112c3a;
+  --header: #193a4b;
+  --ink: #273944;
+  --heading: #17313e;
+  --muted: #75838d;
+  --line: #d9e2e7;
+  --zebra: #f6f8f9;
+  --accent: #64c8e6;
+  --accent-soft: #eaf8fc;
+}
+@page {
+  size: A4;
+  margin: 19mm 19mm 19mm;
+  @top-left {
+    content: "INTERVIEW / FIELD GUIDE";
+    color: #75838d;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    font-size: 7pt;
+    letter-spacing: .05em;
+    vertical-align: middle;
+  }
+  @top-right {
+    content: string(running-topic);
+    color: #75838d;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    font-size: 7pt;
+    letter-spacing: .02em;
+    vertical-align: middle;
+  }
+  @bottom-left {
+    content: "SENIOR / PRINCIPAL SOLUTION ARCHITECT";
+    color: #9aa5ae;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    font-size: 6.3pt;
+    letter-spacing: .03em;
+    vertical-align: middle;
+  }
+  @bottom-right {
+    content: counter(page, decimal-leading-zero);
+    color: #394b56;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    font-weight: 700;
+    font-size: 7pt;
+    vertical-align: middle;
+  }
+}
+@page cover {
+  size: A4;
+  margin: 0;
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Inter", "DejaVu Sans", sans-serif;
+  font-size: 9.4pt;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink);
+  background: #fff;
+  overflow-wrap: break-word;
+}
+.cover {
+  page: cover;
+  break-after: page;
+  height: 297mm;
+  width: 210mm;
+  overflow: hidden;
+  position: relative;
+  background: var(--navy);
+  color: #fff;
+  padding: 29.6mm 26mm;
+}
+.cover::before, .cover::after {
+  content: "";
+  position: absolute;
+  border: .55pt solid rgba(255,255,255,.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.cover::before { width: 158mm; height: 158mm; right: -84mm; top: -61mm; }
+.cover::after { width: 108mm; height: 108mm; right: -28mm; bottom: -75mm; }
+.cover-brand {
+  font-size: 9.5pt;
+  font-weight: 800;
+  letter-spacing: .31em;
+  text-transform: uppercase;
+  color: #dceaf0;
+}
+.cover-series {
+  font-size: 8pt;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #98b3c1;
+  margin-top: 7mm;
+}
+.cover-accent-bar {
+  position: absolute;
+  left: 26mm; top: 80mm;
+  height: 3.5mm; width: 21mm;
+  background: var(--accent);
+}
+.cover-title {
+  position: absolute;
+  left: 25.5mm; right: 25mm; top: 97mm;
+  font-family: "Inter Display", "Inter", "DejaVu Sans", sans-serif;
+  font-size: 42pt;
+  font-weight: 800;
+  letter-spacing: -.043em;
+  line-height: 1.08;
+  color: #fff;
+}
+.cover-title .second { display: block; color: var(--accent); }
+.cover-title.long { font-size: 37pt; }
+.cover-sub {
+  position: absolute;
+  left: 26mm; right: 31mm; top: 173.5mm;
+  color: #bdcdd5;
+  font-size: 11.5pt;
+  line-height: 1.7;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.cover-note {
+  color: #91aab7;
+  text-transform: none;
+  font-size: 9pt;
+  letter-spacing: .01em;
+  margin-top: 7mm;
+  line-height: 1.6;
+}
+.cover-bottom {
+  position: absolute;
+  bottom: 31mm; left: 26mm;
+  font-size: 7.8pt;
+  line-height: 1.9;
+  letter-spacing: .065em;
+  color: #cfdae0;
+}
+.cover-rule {
+  position: absolute;
+  bottom: 62mm; height: .35pt;
+  left: 26mm; right: 26mm;
+  background: rgba(255,255,255,.15);
+}
+.cover-number {
+  position: absolute;
+  bottom: 29mm; right: 26mm;
+  color: var(--accent);
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 39pt;
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
+/* Introduction + automatically generated navigable contents. */
+.preface { break-after: page; }
+.preface-label, .toc-overline {
+  color: var(--accent);
+  font-size: 7.6pt;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+.preface h1 { display: none; }
+.preface h2 {
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 14pt;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  color: var(--heading);
+  margin: 5mm 0 5mm;
+  border-bottom: .5pt solid var(--line);
+  padding-bottom: 2.5mm;
+}
+.preface p { font-size: 9.5pt; line-height: 1.6; }
+.toc { border-top: .5pt solid var(--line); margin-top: 8mm; padding-top: 6.5mm; }
+.toc h2 {
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 21pt;
+  letter-spacing: -.03em;
+  margin: 2mm 0 5mm;
+  border: 0;
+  padding: 0;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li {
+  display: flex;
+  align-items: baseline;
+  gap: 5mm;
+  font-size: 9.1pt;
+  padding: 2.7mm 1mm;
+  border-top: .5pt solid #e7ecef;
+  break-inside: avoid;
+}
+.toc li:last-child { border-bottom: .5pt solid #e7ecef; }
+.toc .toc-num { width: 8mm; flex: 0 0 8mm; font-size: 7.5pt; font-weight: 800; color: var(--accent); }
+.toc a { color: var(--ink); text-decoration: none; }
+/* Continuous editorial body: sections can flow across pages. */
+.content { padding: 0; }
+.content h2 {
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 17.2pt;
+  font-weight: 700;
+  color: var(--heading);
+  line-height: 1.28;
+  letter-spacing: -.024em;
+  margin: 11mm 0 5mm;
+  padding-top: 5.5mm;
+  border-top: .6pt solid var(--line);
+  break-after: avoid;
+}
+.content h2::before {
+  content: "CHAPTER";
+  display: block;
+  color: var(--accent);
+  font-size: 7pt;
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .19em;
+  margin-bottom: 2.2mm;
+}
+.content h2:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+.content h3 {
+  font-family: "Inter Display", "Inter", sans-serif;
+  font-size: 11.6pt;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -.012em;
+  color: var(--heading);
+  margin: 7mm 0 2.5mm;
+  break-after: avoid;
+}
+.content h4, .preface h3 { font-size: 10pt; color: var(--heading); margin: 5mm 0 2mm; break-after: avoid; }
+p { margin: 0 0 3.15mm; orphans: 2; widows: 2; }
+strong, b { font-weight: 700; color: #1a3341; }
+a { color: #23778e; text-decoration: none; }
+hr { height: 0; border: none; border-top: .55pt solid #d9e2e7; margin: 7mm 0; }
+ul, ol { margin: 2.5mm 0 4mm; padding-left: 6mm; }
+li { padding-left: .5mm; margin: 1.5mm 0; }
+li::marker { color: var(--accent); }
+li p { margin: 0; }
+blockquote {
+  background: var(--accent-soft);
+  border-left: 2.5pt solid var(--accent);
+  margin: 4mm 0 6mm;
+  padding: 4mm 5.2mm;
+  color: #2b4654;
+  font-size: 9.4pt;
+  line-height: 1.56;
+}
+blockquote p { margin-bottom: 2.3mm; }
+blockquote p:last-child { margin-bottom: 0; }
+blockquote strong { color: #143743; }
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  font-size: 8pt;
+  line-height: 1.42;
+  color: var(--ink);
+  margin: 3.6mm 0 4.8mm;
+  overflow-wrap: anywhere;
+}
+thead { display: table-header-group; }
+thead th {
+  background: var(--header);
+  color: #fff;
+  text-align: left;
+  font-weight: 700;
+  padding: 2.2mm 2.4mm;
+  vertical-align: top;
+  border-right: 1pt solid rgba(255,255,255,.04);
+}
+thead th strong { color: #fff; }
+tbody td { border-bottom: .35pt solid #e3e9ed; padding: 2.3mm 2.4mm; vertical-align: top; }
+tbody tr:nth-child(even) { background: var(--zebra); }
+tr { break-inside: avoid; }
+table.wide { font-size: 7.15pt; }
+table.wide th, table.wide td { padding: 1.8mm; }
+code {
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: .91em;
+  color: #22445a;
+}
+pre {
+  color: #dce9f0;
+  background: #173746;
+  padding: 4mm 5mm;
+  font-size: 8.3pt;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 4mm 0;
+}
+pre code { color: inherit; }
+.task-list-item { list-style: none; margin-left: -5mm; }
+.task-box {
+  display: inline-block;
+  border: .85pt solid #7b8b93;
+  width: 2.6mm; height: 2.6mm;
+  margin-right: 3mm;
+  vertical-align: baseline;
+}
+.task-box.checked { background: var(--accent); border-color: var(--accent); }
+img { max-width: 100%; height: auto; }
+.caption { color: var(--muted); font-size: 7.8pt; }
+@media screen { body { max-width: 210mm; margin: 0 auto; box-shadow: 0 0 25px #ddd; } }
+
+@page { @top-right { content: "ARCHITECTURE DECISION FIELD GUIDE"; } @bottom-left { content: "SENIOR / PRINCIPAL SOLUTION ARCHITECT"; } }
+</style></head><body>
+<section class="cover">
+<div class="cover-brand">THE ARCHITECT&#x27;S FIELD NOTES</div>
+<div class="cover-series">SOLUTION ARCHITECTURE PRACTICE GUIDE &nbsp;/&nbsp; 06 OF 06</div>
+<div class="cover-accent-bar"></div><div class='cover-title'>Architecture<span class=second>Decision Field Guide</span></div>
+<div class="cover-sub">FRAME THE CHOICE. TEST THE RISKS. RECORD THE REASONING.<div class="cover-note">A practical reference for clear, evidence-based design decisions.</div></div>
+<div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR SENIOR SOLUTION ARCHITECTS<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div>
+<div class="cover-number">06</div></section>
+<section class="preface"><div class="preface-label">YOUR STUDY COMPANION</div>
+<h2 id="decision-quality-at-senior-level">Decision quality at senior level</h2>
+<p><strong>Purpose:</strong> Turn a complicated technical choice into a transparent decision that can withstand business and engineering review.</p>
+<blockquote>
+<p><strong>Note:</strong> The examples below are illustrative. Replace them with verified details from your own work.</p>
+</blockquote>
+<nav class="toc"><div class="toc-overline">NAVIGATION</div>
+<h2>Inside this guide</h2><ol><li><span class="toc-num">01</span><a href="#1-frame-the-problem">1. Frame the problem</a></li>
+<li><span class="toc-num">02</span><a href="#2-evaluate-trade-offs">2. Evaluate trade-offs</a></li>
+<li><span class="toc-num">03</span><a href="#3-practice-worksheet">3. Practice worksheet</a></li></ol></nav></section>
+<main class="content"><h2 id="1-frame-the-problem">1. Frame the problem</h2>
+<p>A strong design decision starts with an <strong>observable business need</strong>, not a preferred technology. Name what must be true after the change.</p>
+<h3 id="questions-to-answer">Questions to answer</h3>
+<ul>
+<li>Which user journey is affected?</li>
+<li>What would happen if no action were taken?</li>
+<li>Who is accountable for risk acceptance?</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Useful evidence</th>
+<th>Warning sign</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Problem</td>
+<td>Customer impact and time constraint</td>
+<td>Solution described before problem</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>Failure mode, severity, reversibility</td>
+<td>No rollback owner</td>
+</tr>
+<tr>
+<td>Ownership</td>
+<td>Named decision maker and reviewers</td>
+<td>Everyone “agreed” but nobody decided</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-evaluate-trade-offs">2. Evaluate trade-offs</h2>
+<p>Compare feasible choices consistently. Include the cost of <strong>doing nothing</strong> when that is a realistic option.</p>
+<blockquote>
+<p><strong>Example:</strong> A team compares a full rewrite with an incremental migration. A bounded pilot may reduce uncertainty before committing the organization to a larger operating model.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Keep current</th>
+<th>Incremental</th>
+<th>Full rewrite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cost</td>
+<td>Low upfront</td>
+<td>Moderate</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Delivery risk</td>
+<td>Existing limits</td>
+<td>Managed change</td>
+<td>Broad change</td>
+</tr>
+<tr>
+<td>Reversibility</td>
+<td>High</td>
+<td>Often higher</td>
+<td>Often lower</td>
+</tr>
+</tbody>
+</table>
+<h3 id="a-simple-decision-sequence">A simple decision sequence</h3>
+<pre><code class="language-text">Define problem -&gt; Compare options -&gt; Test risks -&gt; Decide -&gt; Review results
+</code></pre>
+<h2 id="3-practice-worksheet">3. Practice worksheet</h2>
+<p>Complete this before a review meeting.</p>
+<ul>
+<li class="task-list-item"><span class="task-box"></span>Business objective and required outcome are clear.</li>
+<li class="task-list-item"><span class="task-box"></span>At least two realistic options have been compared.</li>
+<li class="task-list-item"><span class="task-box"></span>Security, reliability, and cost constraints are explicit.</li>
+<li class="task-list-item"><span class="task-box"></span>Rollout and rollback responsibilities are assigned.</li>
+<li class="task-list-item"><span class="task-box"></span>Success measures and review dates are recorded.</li>
+</ul>
+<p><strong>Decision:</strong> _____________________________________</p>
+<p><strong>Why alternatives lost:</strong> __________________________</p>
+<p><strong>Evidence that would change my recommendation:</strong> __________________________</p>
+</main></body></html>
