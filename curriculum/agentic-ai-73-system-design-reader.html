@@ -1,0 +1,1760 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Agentic AI — 73 System Design Problems</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #17283b;
+            --muted: #566b7d;
+            --border: #d8e2e8;
+            --blue: #235e91;
+            --pale: #f4f7f9;
+            --green: #1f7355
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: #fff;
+            color: var(--ink);
+            font: 15px/1.58 system-ui, -apple-system, Segoe UI, Arial, sans-serif
+        }
+
+        .wrap {
+            max-width: 1120px;
+            margin: auto;
+            padding: 24px 28px 72px
+        }
+
+        header {
+            border-bottom: 2px solid #cbd9e3;
+            padding: 26px 0 24px
+        }
+
+        h1 {
+            font-size: 32px;
+            line-height: 1.17;
+            margin: 0 0 8px;
+            letter-spacing: -.025em
+        }
+
+        h2 {
+            font-size: 22px;
+            margin: 28px 0 12px
+        }
+
+        h3 {
+            font-size: 17px;
+            margin: 22px 0 9px
+        }
+
+        h4 {
+            font-size: 15px;
+            margin: 18px 0 6px
+        }
+
+        p {
+            margin: 8px 0 12px
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: 15px;
+            max-width: 870px
+        }
+
+        .eyebrow {
+            font-size: 12px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--blue);
+            font-weight: 750
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 17px
+        }
+
+        .stat {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 13px;
+            background: var(--pale)
+        }
+
+        .stat strong {
+            font-size: 16px;
+            margin-right: 4px
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: #ffffffef;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 0;
+            z-index: 9
+        }
+
+        button, .toolbar input, .toolbar select {
+            font: inherit;
+            padding: 9px 12px;
+            border: 1px solid #bdcbd6;
+            background: white;
+            color: var(--ink);
+            border-radius: 7px
+        }
+
+        .toolbar input {
+            flex: 1 1 240px;
+            min-width: 100px
+        }
+
+        .toolbar select {
+            max-width: 280px
+        }
+
+        .tab {
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        .tab[aria-current="page"] {
+            background: #e8f1f9;
+            border-color: var(--blue);
+            color: #164f7b
+        }
+
+        .btn {
+            cursor: pointer
+        }
+
+        .screen {
+            display: none
+        }
+
+        .screen.active {
+            display: block
+        }
+
+        .coursegrid {
+            display: grid;
+            grid-template-columns:repeat(auto-fit, minmax(265px, 1fr));
+            gap: 12px;
+            margin: 17px 0
+        }
+
+        .module-card {
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 15px;
+            background: #fff
+        }
+
+        .module-card strong {
+            display: block
+        }
+
+        .module-card small {
+            color: var(--muted)
+        }
+
+        .module-card button {
+            margin-top: 10px;
+            color: var(--blue);
+            cursor: pointer
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .case {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin: 12px 0;
+            break-inside: avoid
+        }
+
+        .casehead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px
+        }
+
+        .case h3 {
+            font-size: 18px;
+            margin: 0
+        }
+
+        .case p {
+            margin: 8px 0
+        }
+
+        .case label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .case input[type=checkbox] {
+            accent-color: var(--green);
+            width: 16px;
+            height: 16px
+        }
+
+        .pill {
+            display: inline-block;
+            border: 1px solid #c0d1df;
+            border-radius: 99px;
+            padding: 1px 8px;
+            color: #245b85;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 7px
+        }
+
+        .anchor {
+            border-color: #a1bbcf;
+            background: linear-gradient(90deg, #f8fbfe, white 38%)
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center
+        }
+
+        .casebox {
+            display: grid;
+            grid-template-columns:minmax(100px, 145px) 1fr;
+            gap: 7px;
+            margin: 8px 0;
+            font-size: 14px
+        }
+
+        .casebox b {
+            color: #315169
+        }
+
+        main ul {
+            padding-left: 21px
+        }
+
+        pre {
+            white-space: pre;
+            overflow-x: auto;
+            background: #f3f6f9;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font: 12px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #19334c
+        }
+
+        code {
+            font: 12px ui-monospace, SFMono-Regular, Consolas, monospace;
+            background: #eef3f6;
+            padding: 2px 4px;
+            border-radius: 3px
+        }
+
+        pre code {
+            background: none;
+            padding: 0
+        }
+
+        a {
+            color: #1d638e
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px
+        }
+
+        td, th {
+            border: 1px solid var(--border);
+            padding: 8px;
+            vertical-align: top;
+            text-align: left
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafb
+        }
+
+        .callout {
+            border-left: 3px solid #6690af;
+            background: #f3f8fc;
+            padding: 13px 17px;
+            margin: 15px 0
+        }
+
+        .foot {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 28px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px
+        }
+
+        .anchorlist {
+            display: grid;
+            grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+            gap: 8px
+        }
+
+        .anchorlist button {
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            background: #fff
+        }
+
+        .count {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        @media (max-width: 600px) {
+            .wrap {
+                padding: 16px
+            }
+
+            .casebox {
+                display: block
+            }
+
+            .casebox b {
+                display: block
+            }
+
+            .toolbar {
+                position: static
+            }
+
+            h1 {
+                font-size: 26px
+            }
+        }
+
+        @media print {
+            body {
+                font: 10pt/1.35 Arial, sans-serif
+            }
+
+            .wrap {
+                max-width: none;
+                padding: 0 8mm
+            }
+
+            .toolbar, .noprint, .case label {
+                display: none !important
+            }
+
+            .screen {
+                display: block !important;
+                page-break-before: always
+            }
+
+            .screen:first-of-type {
+                page-break-before: auto
+            }
+
+            .case {
+                margin: 5mm 0;
+                padding: 3mm 4mm
+            }
+
+            .casehead h3 {
+                font-size: 12pt
+            }
+
+            .casebox {
+                font-size: 9pt;
+                display: block
+            }
+
+            .casebox b {
+                margin-right: 6px
+            }
+
+            .stats {
+                gap: 4px
+            }
+
+            .stat {
+                padding: 4px 6px
+            }
+
+            pre {
+                font-size: 8pt;
+                white-space: pre-wrap;
+                overflow-wrap: anywhere
+            }
+
+            a {
+                text-decoration: none;
+                color: #174d73
+            }
+
+            h2 {
+                break-after: avoid
+            }
+
+            .module-card {
+                break-inside: avoid
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <div class="eyebrow">Case-first · practical · production-minded</div>
+        <h1>73 Agentic AI System Design Problems</h1>
+        <div class="sub">A broad solution-architecture learning catalog. Explore
+            a real system, learn concepts at the moment they matter, build a
+            small lab, then design for production. No quizzes or rigid weekly
+            schedule.
+        </div>
+        <div class="stats">
+            <div class="stat"><strong>73</strong> design briefs</div>
+            <div class="stat"><strong>9</strong> modules</div>
+            <div class="stat"><strong>16</strong> deep-dive anchors</div>
+            <div class="stat"><strong id="progress">0</strong> marked studied
+            </div>
+        </div>
+    </header>
+    <div class="toolbar noprint" role="navigation"
+         aria-label="Reader navigation">
+        <button class="tab" data-tab="overview" aria-current="page">Overview
+        </button>
+        <button class="tab" data-tab="cases">73 cases</button>
+        <button class="tab" data-tab="sample">Worked sample</button>
+        <button class="tab" data-tab="references">References</button>
+        <input id="q" type="search"
+               placeholder="Search cases: MCP, A2A, UI, security…"
+               aria-label="Search case studies"><select id="module"
+                                                        aria-label="Filter by module">
+        <option value="0">All modules</option>
+    </select><label><input type="checkbox" id="anchors"> 16 anchors only</label>
+        <button class="btn" id="print">Print / Save PDF</button>
+    </div>
+    <main>
+        <section id="overview" class="screen active"><h2>How to use this
+            catalog</h2>
+            <p>Each case starts with a practical requirement and teaches the
+                concepts needed to meet it. You then build a small mock and
+                evolve it into a production design. Work the 16 anchors fully;
+                use other cases to learn changed constraints, not to memorize 73
+                diagrams.</p>
+            <div class="callout"><b>Learning sequence:</b> user journey → basic
+                concepts → minimal ASCII architecture → hands-on lab →
+                security/failure/scale → trade-offs → reusable pattern. Never
+                introduce complexity without a requirement.
+            </div>
+            <h3>Module map</h3>
+            <div id="modules" class="coursegrid"></div>
+            <h3>Recommended anchor path</h3>
+            <p>Begin with #1, #3, #9, #18 and #26; then #14, #21, #28, #50; then
+                #34, #36, #38; then #42, #43; finish with #58 and #73.</p>
+            <div id="anchorlist" class="anchorlist"></div>
+            <h3>Architecture map</h3>
+            <pre> User / operator
+       |
+       v
+ Web UI / chat / AI host ------- MCP App sandboxed view
+       |                          (optional host extension)
+       +--- AG-UI events (app ↔ agent)
+       +--- A2UI components (host renders trusted UI)
+       |
+       v
+ Agent + deterministic orchestration
+       |                           |
+       +--- MCP clients/servers    +--- A2A remote agents
+       |                           |
+   APIs, records, tools         tasks, artifacts
+
+ Authorization · safety · evaluation · tracing · cost</pre>
+            <p class="muted">Not every application requires every layer. AG-UI,
+                A2UI and MCP Apps solve different problems.</p></section>
+        <section id="cases" class="screen"><h2>System-design catalog</h2>
+            <p class="count" id="shown"></p>
+            <div id="cards"></div>
+        </section>
+        <section id="sample" class="screen"><h2>Worked example: #36
+            Expense-analysis MCP App</h2>
+            <div id="samplebody"><p>This is a compact <strong>worked-design
+                example</strong>, not a claim of an already executed code
+                project. It demonstrates how the remaining anchors should be
+                taught.</p>
+                <h3>7.1 Define the problem before the technology</h3>
+                <p><strong>User story:</strong> An expense analyst asks an AI
+                    assistant: “Show spending by category for Q3; let me adjust
+                    the threshold and inspect anomalies.” A prose answer is
+                    inadequate because the analyst needs an interactive chart
+                    within the conversation.</p>
+                <p><strong>Functional requirements:</strong> Retrieve mock
+                    expense data, show summary/charts, adjust a filter locally,
+                    optionally request a new tool query, and fall back to text
+                    if the host does not support embedded UI. The example uses
+                    <em>fake</em> data; it does not initiate payments.</p>
+                <p><strong>Quality priorities:</strong> Correct tenant access
+                    &gt; trusted actions &gt; readable UI &gt; interactive
+                    latency &gt; deployment simplicity. Example dataset size is
+                    small; no large-scale infrastructure is needed yet.</p>
+                <h3>7.2 Introduce exactly the concepts the requirement
+                    creates</h3>
+                <ul>
+                    <li><strong>Tool:</strong> A typed callable capability, such
+                        as <code>get_expense_summary(period, department)</code>.
+                        The model/host requests it, but the server performs
+                        authorization and queries the actual source of truth.
+                    </li>
+                    <li><strong>MCP:</strong> The shared contract that lets a
+                        compatible host access the tool without rewriting the
+                        same tool integration for each client.
+                    </li>
+                    <li><strong>MCP App:</strong> An <em>optional</em> MCP
+                        extension where a tool points to a <code>ui://</code>
+                        HTML resource. A compatible host displays it in a
+                        sandboxed iframe and mediates messages through its
+                        bridge.
+                    </li>
+                    <li><strong>UI state:</strong> The selected chart filter
+                        should live in the view; authoritative permissions and
+                        any persisted business change must remain server-side.
+                    </li>
+                    <li><strong>Host fallback:</strong> An ordinary MCP tool
+                        result must remain useful if the target host cannot
+                        render MCP Apps.
+                    </li>
+                </ul>
+                <h3>7.3 Minimum viable architecture</h3>
+                <pre><code>Analyst
+   |
+   v
+AI host / chat UI (supports MCP Apps)
+   |    (MCP client)
+   v
+MCP expense server
+   |-- tool: get_expense_summary(period, department)
+   |-- resource: ui://expense-dashboard  [HTML view]
+   +-- mock expense database
+
+AI host reads UI resource --&gt; sandboxed HTML view
+                                 | 
+                                 +-- chart filter (local only)
+                                 +-- host bridge for allowed tool calls</code></pre>
+                <p><strong>Happy path:</strong> User asks → host chooses tool →
+                    server validates request and returns data → host fetches the
+                    linked UI resource → host displays the HTML view → user
+                    adjusts a filter → view updates locally or asks the host to
+                    call an app-permitted tool.</p>
+                <h3>7.4 Data and interface contracts</h3>
+                <p>Example <strong>logical</strong> tool request (not
+                    SDK-specific wire syntax):</p>
+                <pre><code>{&quot;tool&quot;: &quot;get_expense_summary&quot;, &quot;arguments&quot;: {&quot;period&quot;: &quot;2026-Q3&quot;, &quot;department&quot;: &quot;sales&quot;}}</code></pre>
+                <p>Example tool response shape:</p>
+                <pre><code>{
+  &quot;period&quot;: &quot;2026-Q3&quot;,
+  &quot;currency&quot;: &quot;USD&quot;,
+  &quot;categories&quot;: [
+    {&quot;name&quot;: &quot;Travel&quot;, &quot;amount&quot;: 1800},
+    {&quot;name&quot;: &quot;Software&quot;, &quot;amount&quot;: 650}
+  ],
+  &quot;as_of&quot;: &quot;2026-10-01T00:00:00Z&quot;
+}</code></pre>
+                <p>An implementation should link the tool to a
+                    <code>ui://</code> resource using the MCP Apps specification
+                    for the actual SDK version. The payload above is
+                    intentionally <strong>application-level JSON</strong>, not
+                    an invented MCP envelope. For practice, implement one tool
+                    with summary data and one linked HTML view; test it in a
+                    host that explicitly supports MCP Apps.</p>
+                <h3>7.5 Evolve the architecture because of named
+                    requirements</h3>
+                <p>1. <strong>Requirement — no cross-tenant access.</strong> The
+                    server derives tenant/user from verified credentials; do not
+                    accept tenant choice from the model or iframe as authority.
+                </p>
+                <p>2. <strong>Requirement — unsafe instructions in expense
+                    memos.</strong> Treat tool/data content as untrusted, not as
+                    policy or instructions.</p>
+                <p>3. <strong>Requirement — expensive date-range
+                    queries.</strong> Use bounded query windows,
+                    paging/aggregation and a cache with a visible freshness
+                    timestamp.</p>
+                <p>4. <strong>Requirement — host incompatibility.</strong>
+                    Return human-readable text/structured data; do not assume
+                    all MCP clients support MCP Apps.</p>
+                <p>5. <strong>Requirement — operational diagnosis.</strong>
+                    Trace host request, MCP tool, database query and UI error
+                    separately; keep sensitive query values out of logs.</p>
+                <p>6. <strong>Requirement — reproducibility.</strong> Version
+                    tool input/output schema, UI bundle and SDK/runtime
+                    versions.</p>
+                <h3>7.6 Production architecture and failure flow</h3>
+                <pre><code>                   Signed-in analyst
+                          |
+                          v
+             MCP Apps-capable AI host
+           (auth, capability negotiation)
+                          |
+                 MCP client / bridge
+                          |
+                          v
+           HTTPS MCP expense service
+             |     |        |
+           AuthZ  Tool    UI resource
+             |     |        |
+             |     v        +--&gt; Sandboxed HTML iframe
+             |  Query layer              |
+             |     |                     +-- local filters
+             |     +--&gt; mock DB          +-- host-mediated calls
+             |     +--&gt; cache
+             |
+             +--&gt; audit + traces + quotas
+
+     No host UI support --&gt; useful text/structured fallback
+     Revoked permission --&gt; deny tool call; do not show old data
+     Tool timeout       --&gt; error UI + bounded retry, no fake totals</code></pre>
+                <p><strong>Failure sequence:</strong> User&#x27;s permission is
+                    revoked after viewing the dashboard. When they request
+                    refreshed values, server authorization must reject the call
+                    even if the iframe still contains stale local data. The UI
+                    should show the failed refresh; it must not invent a
+                    successful result.</p>
+                <h3>7.7 The choice that matters</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>Option</td>
+                        <td>When it fits</td>
+                        <td>Trade-off</td>
+                    </tr>
+                    <tr>
+                        <td>Plain MCP tool result</td>
+                        <td>User only needs text or structured data</td>
+                        <td>No rich in-chat control surface</td>
+                    </tr>
+                    <tr>
+                        <td>MCP Apps</td>
+                        <td>A compatible conversational host should render an
+                            inline tool-owned HTML view
+                        </td>
+                        <td>Optional host support; iframe and bridge security
+                            requirements
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>AG-UI + first-party web app</td>
+                        <td>You own the application&#x27;s frontend and need
+                            live agent progress/state
+                        </td>
+                        <td>You build and operate the web app; a separate
+                            concern from MCP tool UI
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>A2UI</td>
+                        <td>A host should render agent-declared components from
+                            its own approved catalog
+                        </td>
+                        <td>Requires compatible renderer and approved component
+                            set
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p><strong>Production acceptance criteria:</strong> (1)
+                    authorized user sees only their own department&#x27;s sample
+                    data, (2) a disallowed tool action is rejected by the
+                    server, (3) incompatible host receives usable fallback text,
+                    (4) interrupted queries show explicit error, (5)
+                    request/trace IDs correlate across the server, (6) UI works
+                    without external JavaScript dependencies if building the
+                    standalone lab.</p></div>
+        </section>
+        <section id="references" class="screen"><h2>Primary sources and design
+            references</h2>
+            <p>Current as checked November 6, 2026. Verify protocol version and
+                actual host/SDK capabilities before implementation.</p>
+            <ul>
+                <li>
+                    <a href="https://blog.modelcontextprotocol.io/posts/2026-07-28/"
+                       target="_blank" rel="noopener">MCP current specification
+                        / release notes</a> — Check the specific negotiated spec
+                    and SDK version. July 2026 release added stateless core and
+                    extensions.
+                </li>
+                <li>
+                    <a href="https://modelcontextprotocol.io/specification/2026-07-28"
+                       target="_blank" rel="noopener">MCP main specification</a>
+                    — Core protocol; verify implementation-specific
+                    capabilities.
+                </li>
+                <li><a href="https://github.com/modelcontextprotocol/ext-apps"
+                       target="_blank" rel="noopener">MCP Apps official spec /
+                    SDK</a> — Optional host extension: UI resources, iframe
+                    sandbox and host bridge.
+                </li>
+                <li><a href="https://github.com/ag-ui-protocol/ag-ui"
+                       target="_blank" rel="noopener">AG-UI official docs and
+                    events</a> — Event stream between agent runtime and
+                    first-party user-facing frontend.
+                </li>
+                <li><a href="https://a2a-protocol.org/v1.0.0/specification"
+                       target="_blank" rel="noopener">A2A 1.0 specification</a>
+                    — Interoperability across independently deployed agent
+                    systems.
+                </li>
+                <li><a href="https://a2ui.org/" target="_blank" rel="noopener">A2UI
+                    official project</a> — Declarative UI representation
+                    rendered by a host-owned component library.
+                </li>
+                <li><a href="https://agentskills.io/specification"
+                       target="_blank" rel="noopener">Agent Skills
+                    specification</a> — SKILL.md package format and optional
+                    scripts/references.
+                </li>
+                <li><a href="https://openai.github.io/openai-agents-python/"
+                       target="_blank" rel="noopener">OpenAI Agents SDK</a> —
+                    Agents, tools, handoffs, guardrails and tracing.
+                </li>
+                <li>
+                    <a href="https://docs.langchain.com/oss/python/langgraph/persistence"
+                       target="_blank" rel="noopener">LangGraph persistence</a>
+                    — Checkpoints and durable state in explicit workflows.
+                </li>
+                <li>
+                    <a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/"
+                       target="_blank" rel="noopener">OWASP Agentic Top 10
+                        2026</a> — Agent-specific security risks and
+                    mitigations.
+                </li>
+                <li>
+                    <a href="https://github.com/open-telemetry/semantic-conventions-genai"
+                       target="_blank" rel="noopener">OpenTelemetry GenAI
+                        semantic conventions</a> — Open instrumentation
+                    vocabulary, subject to change.
+                </li>
+                <li>
+                    <a href="https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/"
+                       target="_blank" rel="noopener">AWS Agentic AI
+                        Well-Architected Lens</a> — Production architecture and
+                    operations review.
+                </li>
+            </ul>
+            <h3>Scope note</h3>
+            <p>This is a proposed curriculum, not a certified industry question
+                bank. The catalog has 73 guided briefs and one compact fully
+                worked example, not 73 complete software implementations. You
+                can study cases one by one in depth.</p>
+            <h3>Hands-on checklist for every case</h3>
+            <ol>
+                <li>Draw minimal ASCII component diagram.</li>
+                <li>Describe the data, trust and state boundaries.</li>
+                <li>Implement one working path with mock data.</li>
+                <li>Test failure, duplicate, timeout and unauthorized flows.
+                </li>
+                <li>Draw production diagram and explain trade-offs.</li>
+            </ol>
+        </section>
+    </main>
+    <footer class="foot">Offline, self-contained HTML. No external libraries,
+        scripts or network calls. Search and filters work locally. Study
+        checkboxes may be saved in this browser using localStorage if permitted.
+        Print mode includes all cases and reference material.
+    </footer>
+</div>
+<script>
+    const CASES = [{
+        "n": 1,
+        "module": 1,
+        "module_name": "Agentic AI fundamentals and application patterns",
+        "title": "FAQ support assistant",
+        "scenario": "Customers ask policy questions in plain English; responses should stay inside approved information.",
+        "basics": "Model request/response, system instructions, grounding, structured answers; an agent is not required for every AI task.",
+        "build": "Build a chat endpoint against a small curated FAQ and return answer plus source IDs.",
+        "production": "Add refusal for missing evidence, content filtering, token budgets, trace IDs, and quality checks.",
+        "decision": "Retrieval-grounded answer vs free-form generation; simplest useful architecture.",
+        "anchor": true
+    }, {
+        "n": 2,
+        "module": 1,
+        "module_name": "Agentic AI fundamentals and application patterns",
+        "title": "Support-ticket triage and routing",
+        "scenario": "Classify a new ticket and route it to the correct queue without taking arbitrary actions.",
+        "basics": "Prompt vs classifier, schema-constrained output, confidence, deterministic routing, fallback.",
+        "build": "Accept a ticket, emit category/priority JSON, and route to a mock queue.",
+        "production": "Validate schema, reject unknown queues, add human review for ambiguous cases, monitor misroutes.",
+        "decision": "Classification with rules vs a model; fail-safe fallbacks.",
+        "anchor": false
+    }, {
+        "n": 3,
+        "module": 1,
+        "module_name": "Agentic AI fundamentals and application patterns",
+        "title": "Order-status tool agent",
+        "scenario": "A user asks where an order is; data must come from the order system, not model memory.",
+        "basics": "Tool/function calling, typed inputs, model vs service responsibility, external data as untrusted input.",
+        "build": "Implement `get_order_status(order_id)` and a single-agent tool loop.",
+        "production": "Bind order IDs to the authenticated user, limit tool scope, retry boundedly and audit access.",
+        "decision": "Direct API integration vs exposing an agent-callable tool.",
+        "anchor": true
+    }, {
+        "n": 4,
+        "module": 1,
+        "module_name": "Agentic AI fundamentals and application patterns",
+        "title": "Document intake and extraction",
+        "scenario": "Convert uploaded invoices into validated structured records.",
+        "basics": "Multimodal input, extraction, JSON schema, validation, deterministic post-processing.",
+        "build": "Extract supplier/date/total from sample PDFs or images into a local database.",
+        "production": "Duplicate detection, malware screening, PII retention controls, manual correction and batch retries.",
+        "decision": "One LLM call vs extract-validate-correct pipeline.",
+        "anchor": false
+    }, {
+        "n": 5,
+        "module": 1,
+        "module_name": "Agentic AI fundamentals and application patterns",
+        "title": "Read-only analytics copilot",
+        "scenario": "Business users ask natural language questions about a governed dataset.",
+        "basics": "Text-to-SQL, semantic layer, read-only access, query plans, execution limits.",
+        "build": "Generate SQL against a small analytics DB and chart the result.",
+        "production": "Restrict tables/columns, enforce tenant filters server-side, set time/row limits, log SQL.",
+        "decision": "LLM-generated SQL vs fixed metrics API.",
+        "anchor": false
+    }, {
+        "n": 6,
+        "module": 1,
+        "module_name": "Agentic AI fundamentals and application patterns",
+        "title": "Research report generator",
+        "scenario": "An analyst wants a short brief grounded in multiple external or supplied documents.",
+        "basics": "Retrieval, citations, source ranking, synthesis, uncertainty.",
+        "build": "Search a local document set, collect passages, and produce a cited report.",
+        "production": "Enforce source provenance, freshness checks, source isolation and reproducibility.",
+        "decision": "Single-shot summarization vs evidence-first pipeline.",
+        "anchor": false
+    }, {
+        "n": 7,
+        "module": 1,
+        "module_name": "Agentic AI fundamentals and application patterns",
+        "title": "Email draft-and-send assistant",
+        "scenario": "An assistant drafts a customer reply and sends only after explicit user approval.",
+        "basics": "Action vs suggestion, side effects, confirmation gates, idempotency.",
+        "build": "Build draft, preview, approve and a simulated `send_email` action.",
+        "production": "Persist approval subject/body hash, protect recipient scope, deduplicate sends, audit.",
+        "decision": "Fully autonomous execution vs approval-gated action.",
+        "anchor": false
+    }, {
+        "n": 8,
+        "module": 1,
+        "module_name": "Agentic AI fundamentals and application patterns",
+        "title": "Goal-to-task planning assistant",
+        "scenario": "Turn a goal into steps, execute safe parts, and request permission for risky steps.",
+        "basics": "Planner/executor, bounded iterations, tool budgets, agent loop termination.",
+        "build": "Plan a 3-step workflow and run with mock calendar/task tools.",
+        "production": "Detect infinite loops, enforce budgets, log decisions and escalate stalled runs.",
+        "decision": "Static workflow vs dynamic planning; when autonomy adds value.",
+        "anchor": false
+    }, {
+        "n": 9,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "Local ticket-lookup MCP server",
+        "scenario": "An AI host needs reusable access to ticket records from a local service.",
+        "basics": "MCP host/client/server roles, tools, schemas, JSON-RPC and local connectivity.",
+        "build": "Implement a local MCP server with `list_tickets` and `get_ticket` tools; connect a client.",
+        "production": "Validate tool arguments, narrow data returned, add contract tests and host compatibility checks.",
+        "decision": "MCP server vs one application's private function tools.",
+        "anchor": true
+    }, {
+        "n": 10,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "Remote CRM MCP server",
+        "scenario": "Multiple assistant clients need access to a remote mock CRM.",
+        "basics": "Remote MCP communication, authentication, tool discovery, error semantics, version compatibility.",
+        "build": "Deploy a mock CRM MCP endpoint using the current official SDK.",
+        "production": "HTTPS, OAuth authorization, credential isolation, timeouts, quotas and rollout strategy.",
+        "decision": "Local vs remote MCP; session/state expectations by protocol version.",
+        "anchor": false
+    }, {
+        "n": 11,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "MCP tool gateway",
+        "scenario": "An enterprise has several MCP servers, duplicate tool names and different security policies.",
+        "basics": "Gateway, tool catalog, naming, policy enforcement, discovery and routing.",
+        "build": "Aggregate three mock MCP services behind a gateway adapter.",
+        "production": "Avoid confused-deputy access, centrally authorize per tool, log provenance, handle server outages.",
+        "decision": "Direct client-to-server access vs governed gateway.",
+        "anchor": false
+    }, {
+        "n": 12,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "Internal knowledge exposed as MCP resources",
+        "scenario": "An assistant needs documents without treating every read as an action.",
+        "basics": "MCP tools vs resources vs prompts, resource addressing, context selection and access control.",
+        "build": "Expose a versioned policy document as an MCP resource and fetch it in a host.",
+        "production": "Per-document ACL enforcement, cache invalidation, data classification and audit.",
+        "decision": "Resource vs tool vs retrieval API; least-context principle.",
+        "anchor": false
+    }, {
+        "n": 13,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "Reusable MCP prompt catalog",
+        "scenario": "Teams want repeatable workflow prompts distributed to compatible clients.",
+        "basics": "MCP prompt primitives, prompt parameterization, versioning and injection boundaries.",
+        "build": "Publish two parameterized prompts for support and incident review.",
+        "production": "Curate ownership, tests, documentation, safe defaults and deprecation policy.",
+        "decision": "Protocol prompt vs application-owned prompt template.",
+        "anchor": false
+    }, {
+        "n": 14,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "Enterprise MCP authorization broker",
+        "scenario": "A user-approved agent must call SaaS APIs without obtaining broad administrator rights.",
+        "basics": "OAuth concepts, scopes, audience, delegated identity, consent and token exchange.",
+        "build": "Protect a mock CRM MCP tool with scoped access and per-user grants.",
+        "production": "Block token passthrough, tenant leakage, scope escalation and confused-deputy abuse; record grants.",
+        "decision": "Service credentials vs user delegation vs brokered access.",
+        "anchor": true
+    }, {
+        "n": 15,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "Multi-tenant MCP service",
+        "scenario": "One tool endpoint serves multiple companies with strict data separation.",
+        "basics": "Tenant identity, authorization context, row-level controls and isolated storage.",
+        "build": "Add tenant-scoped ticket data to an MCP server and negative cross-tenant tests.",
+        "production": "Separate tenant budgets, secrets, metrics, retention and admin operations.",
+        "decision": "Shared MCP endpoint vs per-tenant deployment.",
+        "anchor": false
+    }, {
+        "n": 16,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "Scalable MCP catalog and lookup",
+        "scenario": "Hundreds of tools are available; clients cannot discover and send all descriptions every turn.",
+        "basics": "Tool discovery, schema design, tool catalog caching, filtering and latency budgeting.",
+        "build": "Build relevance-based tool selection on a catalog of mock tools.",
+        "production": "Define catalog TTL, schema-version pinning, stale-tool fallback and gateway observability.",
+        "decision": "Broad tool exposure vs prefiltered/curated tool sets.",
+        "anchor": false
+    }, {
+        "n": 17,
+        "module": 2,
+        "module_name": "MCP tools, data access and remote integrations",
+        "title": "Long-running report via MCP Tasks",
+        "scenario": "A report tool takes several minutes and must survive client interruption.",
+        "basics": "MCP Tasks extension, long-running operation lifecycle, polling and cancellation; host support varies.",
+        "build": "Prototype an async report job with durable status, result retrieval and cancellation.",
+        "production": "Retry-safe creation, expiry, authorization on follow-up calls, worker recovery and compatibility fallback.",
+        "decision": "Immediate tool response vs task-based async execution.",
+        "anchor": false
+    }, {
+        "n": 18,
+        "module": 3,
+        "module_name": "RAG, context engineering and memory",
+        "title": "Document Q&A with RAG",
+        "scenario": "Answer employee questions using a folder of approved documents.",
+        "basics": "Ingestion, chunking, embeddings, vector search, retrieval and grounding.",
+        "build": "Index 30 sample documents and return an answer with exact source links.",
+        "production": "Measure retrieval failures, enforce access, support document deletion and rebuild indexes.",
+        "decision": "Long-context prompting vs retrieval-augmented generation.",
+        "anchor": true
+    }, {
+        "n": 19,
+        "module": 3,
+        "module_name": "RAG, context engineering and memory",
+        "title": "Permission-aware enterprise search",
+        "scenario": "Two users querying the same document set must see different results.",
+        "basics": "ACL filtering, prefilter vs postfilter, source metadata, security trimming.",
+        "build": "Index a fake HR/engineering corpus and apply user-specific retrieval filters.",
+        "production": "Keep ACL changes synchronized, block cross-tenant snippets and test adversarial queries.",
+        "decision": "Filter before search vs after search; leakage and relevance trade-offs.",
+        "anchor": false
+    }, {
+        "n": 20,
+        "module": 3,
+        "module_name": "RAG, context engineering and memory",
+        "title": "Hybrid search and reranking",
+        "scenario": "A product catalog contains exact identifiers and semantically similar descriptions.",
+        "basics": "BM25/keyword search, vector similarity, rank fusion, rerankers.",
+        "build": "Compare keyword-only, vector-only and hybrid results on sample queries.",
+        "production": "Track ranking quality, freshness, p95 retrieval latency and index cost.",
+        "decision": "Semantic vs lexical vs hybrid retrieval.",
+        "anchor": false
+    }, {
+        "n": 21,
+        "module": 3,
+        "module_name": "RAG, context engineering and memory",
+        "title": "Customer 360 evidence assistant",
+        "scenario": "A support agent needs CRM fields, orders and policy documents in one answer.",
+        "basics": "Structured + unstructured federation, source of truth, joins, evidence and citations.",
+        "build": "Query mock SQL order data and a document index in one agent answer.",
+        "production": "Enforce cross-source permissions, reconcile conflicting timestamps and avoid hallucinated joins.",
+        "decision": "Tool federation vs central ETL/knowledge graph.",
+        "anchor": true
+    }, {
+        "n": 22,
+        "module": 3,
+        "module_name": "RAG, context engineering and memory",
+        "title": "Long-term assistant memory",
+        "scenario": "An assistant remembers durable preferences without storing every chat forever.",
+        "basics": "Conversation window, summaries, episodic/semantic memory, lifecycle and consent.",
+        "build": "Save only explicitly approved preferences; retrieve by relevance across sessions.",
+        "production": "Provide inspect/edit/delete, retention rules, prompt-injection defenses and stale-memory tests.",
+        "decision": "Session state vs long-term store; explicit vs inferred memory.",
+        "anchor": false
+    }, {
+        "n": 23,
+        "module": 3,
+        "module_name": "RAG, context engineering and memory",
+        "title": "Multilingual policy assistant",
+        "scenario": "Employees ask in multiple languages about policies written in different languages.",
+        "basics": "Cross-lingual retrieval, translation boundaries, locale metadata and answer grounding.",
+        "build": "Build a bilingual FAQ with source-language citations.",
+        "production": "Verify semantic equivalence, localize legal caveats and evaluate each language separately.",
+        "decision": "Translate-first vs multilingual embeddings.",
+        "anchor": false
+    }, {
+        "n": 24,
+        "module": 3,
+        "module_name": "RAG, context engineering and memory",
+        "title": "Near-real-time knowledge indexing",
+        "scenario": "A customer updates a record and the AI answer must reflect it quickly.",
+        "basics": "CDC/events, indexing pipeline, tombstones, freshness contracts and eventual consistency.",
+        "build": "Sync a mock source DB to a search index via change events.",
+        "production": "Handle reorder/replay, permission changes, deletion propagation and rebuilds.",
+        "decision": "Scheduled ingestion vs event-driven sync.",
+        "anchor": false
+    }, {
+        "n": 25,
+        "module": 3,
+        "module_name": "RAG, context engineering and memory",
+        "title": "Evidence verification agent",
+        "scenario": "Analysts need reports that distinguish source-backed facts from inferences.",
+        "basics": "Claim extraction, evidence mapping, confidence calibration and abstention.",
+        "build": "Extract claims from a draft and attach passages or flag unsupported claims.",
+        "production": "Evaluate false citations, provenance tampering, source contradictions and model changes.",
+        "decision": "Single-model self-check vs independent evidence retrieval.",
+        "anchor": false
+    }, {
+        "n": 26,
+        "module": 4,
+        "module_name": "Agent orchestration, workflows and durable state",
+        "title": "IT incident investigator",
+        "scenario": "An operator asks an assistant to diagnose an outage using logs and metrics.",
+        "basics": "ReAct-style tool loop, observation/action separation, tool budgets and bounded exploration.",
+        "build": "Integrate mock metrics and log tools; produce an investigation timeline.",
+        "production": "Read-only by default, handle missing tools, rank evidence and constrain expensive queries.",
+        "decision": "Autonomous investigation vs scripted diagnostic tree.",
+        "anchor": true
+    }, {
+        "n": 27,
+        "module": 4,
+        "module_name": "Agent orchestration, workflows and durable state",
+        "title": "Plan-execute research workflow",
+        "scenario": "A research task requires multiple questions, retrieval steps and final synthesis.",
+        "basics": "Task decomposition, explicit state, planner/executor, checkpointed partial results.",
+        "build": "Build a graph of plan → retrieve → synthesize → cite.",
+        "production": "Revise plans after failure, preserve evidence IDs, cap recursion and resume safely.",
+        "decision": "Fixed graph vs dynamic planner.",
+        "anchor": false
+    }, {
+        "n": 28,
+        "module": 4,
+        "module_name": "Agent orchestration, workflows and durable state",
+        "title": "Refund approval agent",
+        "scenario": "Support wants refunds proposed automatically but money must move only with approval.",
+        "basics": "Human-in-the-loop, separation of duties, action contracts and state transitions.",
+        "build": "Implement proposal → approval → mock refund with persisted state.",
+        "production": "Expiring approval, amount caps, idempotency keys, audit and unknown provider status.",
+        "decision": "Model-selected action vs deterministic approval workflow.",
+        "anchor": true
+    }, {
+        "n": 29,
+        "module": 4,
+        "module_name": "Agent orchestration, workflows and durable state",
+        "title": "Supplier onboarding agent",
+        "scenario": "Completing an onboarding request requires days, documents and multiple departments.",
+        "basics": "Durable execution, checkpoints, timers, external callbacks and compensation.",
+        "build": "Orchestrate mock document checks and wait for human review.",
+        "production": "Resume across restarts, keep SLA timers, handle partial completion and operator intervention.",
+        "decision": "Agent loop vs durable workflow engine.",
+        "anchor": false
+    }, {
+        "n": 30,
+        "module": 4,
+        "module_name": "Agent orchestration, workflows and durable state",
+        "title": "Parallel contract comparison",
+        "scenario": "Compare many documents independently, then combine findings.",
+        "basics": "Fan-out/fan-in, concurrent tasks, result aggregation and provenance.",
+        "build": "Analyze six sample contracts concurrently and produce a differences table.",
+        "production": "Bound parallelism, preserve per-document errors and avoid summary contamination.",
+        "decision": "Sequential tool calls vs concurrent workers.",
+        "anchor": false
+    }, {
+        "n": 31,
+        "module": 4,
+        "module_name": "Agent orchestration, workflows and durable state",
+        "title": "Event-triggered operations assistant",
+        "scenario": "A monitoring event should launch a supervised investigation without a user message.",
+        "basics": "Event-driven agent invocation, queue semantics, deduplication and correlation IDs.",
+        "build": "Trigger an agent from a mock alert stream and post a case note.",
+        "production": "Debounce alert storms, restrict authority, retry consumers and prevent duplicate actions.",
+        "decision": "Interactive request/response vs autonomous event processing.",
+        "anchor": false
+    }, {
+        "n": 32,
+        "module": 4,
+        "module_name": "Agent orchestration, workflows and durable state",
+        "title": "Large batch classification agent",
+        "scenario": "Process 100,000 incoming records with mixed complexity.",
+        "basics": "Work queues, batching, model routing, concurrency and backpressure.",
+        "build": "Run a batch of sample tickets through cheap and fallback classifiers.",
+        "production": "Rate limits, dead-letter handling, cost caps and replay-safe writes.",
+        "decision": "Online agent vs offline batch processing.",
+        "anchor": false
+    }, {
+        "n": 33,
+        "module": 4,
+        "module_name": "Agent orchestration, workflows and durable state",
+        "title": "Crash-recoverable agent runtime",
+        "scenario": "An agent stops halfway through an external operation and is restarted.",
+        "basics": "State machines, checkpointing, retries, at-least-once semantics and idempotency.",
+        "build": "Kill a running workflow and resume from durable state.",
+        "production": "Detect in-flight ambiguous outcomes, use action ledger, prevent repeat side effects.",
+        "decision": "Re-run entire agent vs resume from committed steps.",
+        "anchor": false
+    }, {
+        "n": 34,
+        "module": 5,
+        "module_name": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "title": "AI sales dashboard from structured answers",
+        "scenario": "A user asks for revenue comparisons and needs an interactive chart rather than prose.",
+        "basics": "Structured UI data, component catalogs, schema validation, derived state.",
+        "build": "Return validated chart/table data to a self-contained HTML dashboard.",
+        "production": "Prevent arbitrary script injection, support empty states and export/print, log UI schema versions.",
+        "decision": "Server-rendered fixed dashboard vs model-selected approved components.",
+        "anchor": true
+    }, {
+        "n": 35,
+        "module": 5,
+        "module_name": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "title": "Conversational configuration wizard",
+        "scenario": "An assistant collects several settings with forms and updates them after user edits.",
+        "basics": "Form state, two-way interaction, validation, UI state vs agent state.",
+        "build": "Build a plain HTML wizard with model-suggested fields from a fixed registry.",
+        "production": "Validate again on server, handle stale suggestions, accessibility and approval before save.",
+        "decision": "Model-generated HTML vs trusted component rendering.",
+        "anchor": false
+    }, {
+        "n": 36,
+        "module": 5,
+        "module_name": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "title": "Expense-analysis MCP App",
+        "scenario": "A user asks an AI host to analyze expenses and interact with charts inline.",
+        "basics": "MCP Apps `ui://` resources, tool-to-view metadata, host bridge and sandboxed iframe.",
+        "build": "Build a tool returning budget data and a linked HTML MCP App view.",
+        "production": "Require compatible host, isolate credentials, enforce app permissions and text fallback.",
+        "decision": "MCP Apps embedded view vs conventional web app or plain tool response.",
+        "anchor": true
+    }, {
+        "n": 37,
+        "module": 5,
+        "module_name": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "title": "Ticket-approval MCP App",
+        "scenario": "Inside an AI chat, a reviewer approves or rejects a proposed support action.",
+        "basics": "MCP App bidirectional messaging, app-only tool visibility, approval and server authority.",
+        "build": "Display a ticket view and send an approval decision to a mock backend tool.",
+        "production": "Ignore client-trusted claims, validate approver identity, prevent cross-server calls and duplicate approval.",
+        "decision": "App-view action via host vs model-issued action.",
+        "anchor": false
+    }, {
+        "n": 38,
+        "module": 5,
+        "module_name": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "title": "Live incident console with AG-UI",
+        "scenario": "Users need to watch agent steps and change the investigation while it runs.",
+        "basics": "AG-UI run lifecycle, text/tool events, snapshots/deltas and interruptions.",
+        "build": "Stream mock agent events to an HTML timeline with a stop button.",
+        "production": "Reconnect with event cursor, validate state versions, redact tool payloads and show failed runs.",
+        "decision": "AG-UI event protocol vs custom SSE event format.",
+        "anchor": true
+    }, {
+        "n": 39,
+        "module": 5,
+        "module_name": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "title": "Declarative A2UI request form",
+        "scenario": "A remote agent suggests a form that must fit the host's own design system.",
+        "basics": "A2UI component descriptions, client-owned catalog, data binding and actions.",
+        "build": "Render a small allowlisted A2UI form with native HTML components.",
+        "production": "Reject unknown components, enforce action authorization and version the renderer.",
+        "decision": "A2UI declarative native components vs MCP Apps embedded HTML.",
+        "anchor": false
+    }, {
+        "n": 40,
+        "module": 5,
+        "module_name": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "title": "Portable UI comparison lab",
+        "scenario": "A financial data result must appear inside both an MCP host and a first-party web app.",
+        "basics": "Transport vs rendering, MCP Apps vs A2UI vs static GenUI, compatibility.",
+        "build": "Implement the same data workflow using two presentation adapters.",
+        "production": "Test fallback, host capabilities, accessibility and mismatched schema versions.",
+        "decision": "Embedded app portability vs native-style declarative UI.",
+        "anchor": false
+    }, {
+        "n": 41,
+        "module": 5,
+        "module_name": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "title": "Enterprise agent cockpit",
+        "scenario": "Analysts want chat, a shared workspace, tool progress and human overrides.",
+        "basics": "Shared state, AG-UI, generative components, frontend tools and state ownership.",
+        "build": "Combine a chat pane, artifact pane and AG-UI progress timeline in plain HTML.",
+        "production": "Add authorization by action, reconnection, concurrent edits, redaction and event auditing.",
+        "decision": "Single conversational view vs coordinated multi-panel workspace.",
+        "anchor": false
+    }, {
+        "n": 42,
+        "module": 6,
+        "module_name": "Multi-agent systems and A2A interoperability",
+        "title": "Supervisor and specialist investigators",
+        "scenario": "A coordinator delegates incident subtasks to log, metrics and change-history specialists.",
+        "basics": "Supervisor-worker pattern, agents-as-tools, delegation contracts, shared evidence.",
+        "build": "Make three isolated specialists return typed findings to one coordinator.",
+        "production": "Limit recursion, prevent untrusted specialist instructions, consolidate conflicting findings.",
+        "decision": "Multiple tools on one agent vs specialist agents.",
+        "anchor": true
+    }, {
+        "n": 43,
+        "module": 6,
+        "module_name": "Multi-agent systems and A2A interoperability",
+        "title": "Remote fraud specialist via A2A",
+        "scenario": "An investigation agent must ask a separately deployed fraud agent for a risk report.",
+        "basics": "A2A Agent Card, task-oriented interaction, artifacts and remote trust boundaries.",
+        "build": "Publish a mock specialist and call it from an independent A2A client.",
+        "production": "Authenticate both parties, pin capabilities, track task IDs and validate artifacts.",
+        "decision": "In-process handoff vs cross-service A2A.",
+        "anchor": true
+    }, {
+        "n": 44,
+        "module": 6,
+        "module_name": "Multi-agent systems and A2A interoperability",
+        "title": "Multi-vendor agent broker",
+        "scenario": "Different vendors offer specialized agents with different reliability and cost.",
+        "basics": "Agent discovery, capability matching, routing, fallback and contract normalization.",
+        "build": "Route a document query to one of two mock agents by declared capabilities.",
+        "production": "Health checks, vendor isolation, quotas, error normalization and sensitive-data routing.",
+        "decision": "Static integration vs agent registry/broker.",
+        "anchor": false
+    }, {
+        "n": 45,
+        "module": 6,
+        "module_name": "Multi-agent systems and A2A interoperability",
+        "title": "Long-running A2A research task",
+        "scenario": "A remote specialist takes minutes to produce an artifact while the caller continues other work.",
+        "basics": "A2A task lifecycle, status updates, push/poll variants and cancellation.",
+        "build": "Start a remote job, observe status and retrieve result artifact.",
+        "production": "Durable task store, expiry, authorization on status reads, late results and retry rules.",
+        "decision": "Sync request vs long-lived task coordination.",
+        "anchor": false
+    }, {
+        "n": 46,
+        "module": 6,
+        "module_name": "Multi-agent systems and A2A interoperability",
+        "title": "Customer-service handoff network",
+        "scenario": "Triage routes a conversation to billing, returns or technical support specialists.",
+        "basics": "Handoffs, agent-as-tool, conversation ownership and context filtering.",
+        "build": "Implement a triage agent and two specialists with explicit handoff behavior.",
+        "production": "Prevent oversharing chat history, handle unsupported intents and track ownership.",
+        "decision": "Manager retains control vs specialist takes control.",
+        "anchor": false
+    }, {
+        "n": 47,
+        "module": 6,
+        "module_name": "Multi-agent systems and A2A interoperability",
+        "title": "Multi-agent peer review",
+        "scenario": "One agent drafts a risk analysis and another independently challenges missing evidence.",
+        "basics": "Independent review, evidence comparison, disagreement resolution and self-critique limits.",
+        "build": "Produce two independent analyses and a deterministic evidence-based merge.",
+        "production": "Avoid correlated errors, set review budgets and keep human final accountability.",
+        "decision": "One larger model vs structured specialist review.",
+        "anchor": false
+    }, {
+        "n": 48,
+        "module": 6,
+        "module_name": "Multi-agent systems and A2A interoperability",
+        "title": "Cross-organization procurement assistants",
+        "scenario": "Buyer and supplier agents exchange quotes without leaking internal policies.",
+        "basics": "Cross-org delegation, scoped intent, bounded negotiation and independent identity.",
+        "build": "Simulate quote exchange between separately hosted agents.",
+        "production": "Validate prices deterministically, cap authorization and preserve signed/audited agreement state.",
+        "decision": "Free-form agent negotiation vs constrained business protocol.",
+        "anchor": false
+    }, {
+        "n": 49,
+        "module": 6,
+        "module_name": "Multi-agent systems and A2A interoperability",
+        "title": "Enterprise agent directory",
+        "scenario": "A platform team needs an inventory of agent owners, interfaces and allowed capabilities.",
+        "basics": "Capability metadata, agent registry, ownership, versioning and governance.",
+        "build": "Create a searchable registry of mock Agent Cards and approved endpoints.",
+        "production": "Review untrusted cards, revoke capabilities, audit changes and deprecate versions.",
+        "decision": "Discovery convenience vs attack surface and control.",
+        "anchor": false
+    }, {
+        "n": 50,
+        "module": 7,
+        "module_name": "Security, identity and enterprise architecture",
+        "title": "Injection-resistant knowledge assistant",
+        "scenario": "A retrieved document tells the assistant to ignore policy and call a privileged tool.",
+        "basics": "Prompt injection, instruction/data separation, least authority and tool validation.",
+        "build": "Insert hostile text into a mock knowledge base and prove the tool call is rejected.",
+        "production": "Red-team datasets, sandbox tool outputs, enforce policy outside the model and monitor drift.",
+        "decision": "Prompt-based warnings vs enforceable policy controls.",
+        "anchor": true
+    }, {
+        "n": 51,
+        "module": 7,
+        "module_name": "Security, identity and enterprise architecture",
+        "title": "Central policy engine for agent actions",
+        "scenario": "Many agents want to perform the same risky business actions under different conditions.",
+        "basics": "RBAC/ABAC, policy decision/enforcement points, least privilege, audit.",
+        "build": "Put one authorization service before write-capable mock tools.",
+        "production": "Fail closed on policy outage for high-risk actions; review policies and cache safely.",
+        "decision": "Embedded per-agent checks vs shared authorization service.",
+        "anchor": false
+    }, {
+        "n": 52,
+        "module": 7,
+        "module_name": "Security, identity and enterprise architecture",
+        "title": "Delegated identity across MCP",
+        "scenario": "A signed-in user wants an agent to call their own CRM and documents, not everyone else's.",
+        "basics": "OAuth delegated access, token audience, scope, consent and session binding.",
+        "build": "Implement mock per-user tool calls with scoped tokens and revocation.",
+        "production": "Verify scope and audience at each server, avoid token passthrough, test revoked sessions.",
+        "decision": "User delegation vs shared service principal.",
+        "anchor": false
+    }, {
+        "n": 53,
+        "module": 7,
+        "module_name": "Security, identity and enterprise architecture",
+        "title": "Computer-use assistant sandbox",
+        "scenario": "An agent must inspect a web UI and fill a form safely.",
+        "basics": "Computer-use environment, browser isolation, input injection and action confirmation.",
+        "build": "Automate a local fake admin interface with safe read/preview-only steps.",
+        "production": "Ephemeral sandbox, domain allowlist, secret masking, file/download controls and approval.",
+        "decision": "Browser automation vs supported business API.",
+        "anchor": false
+    }, {
+        "n": 54,
+        "module": 7,
+        "module_name": "Security, identity and enterprise architecture",
+        "title": "Sensitive-document AI workspace",
+        "scenario": "Employees query internal contracts containing personal and confidential data.",
+        "basics": "Data classification, retention, redaction, DLP and audit trails.",
+        "build": "Classify mock documents and restrict retrieval/answers by sensitivity.",
+        "production": "Encrypt storage, minimize prompt payloads, handle legal retention and deletion proofs.",
+        "decision": "Central indexing vs isolated datasets.",
+        "anchor": false
+    }, {
+        "n": 55,
+        "module": 7,
+        "module_name": "Security, identity and enterprise architecture",
+        "title": "Multi-tenant agent platform",
+        "scenario": "Enterprise customers share infrastructure but need separate state, tools and billing.",
+        "basics": "Control plane/data plane, tenant isolation, per-tenant keys and quotas.",
+        "build": "Run two simulated tenants with isolated thread state and tool credentials.",
+        "production": "Prevent cross-tenant cache hits, enforce fair use and produce tenant-level audit/cost.",
+        "decision": "Shared runtime vs isolated tenant workloads.",
+        "anchor": false
+    }, {
+        "n": 56,
+        "module": 7,
+        "module_name": "Security, identity and enterprise architecture",
+        "title": "Auditable payment-operations copilot",
+        "scenario": "An agent investigates failed payments but must not move money without separate controls.",
+        "basics": "Financial invariants, immutable audit, approval, idempotency and reconciliation.",
+        "build": "Use mock payment records to draft a reversible remediation recommendation.",
+        "production": "Strict separation of duties, transaction confirmation, unknown outcomes and audit evidence.",
+        "decision": "AI recommendation vs deterministic financial execution.",
+        "anchor": false
+    }, {
+        "n": 57,
+        "module": 7,
+        "module_name": "Security, identity and enterprise architecture",
+        "title": "Agent supply-chain security",
+        "scenario": "An agent pulls tools, skills and model configurations from external repositories.",
+        "basics": "Software supply chain, manifests, signatures, provenance, dependency review.",
+        "build": "Validate a small approved registry of tool manifests and SKILL.md packages.",
+        "production": "Pin versions, audit permissions, quarantine untrusted packages and monitor changes.",
+        "decision": "Dynamic discovery vs curated trusted catalog.",
+        "anchor": false
+    }, {
+        "n": 58,
+        "module": 8,
+        "module_name": "Evaluation, observability, reliability and operations",
+        "title": "Agent tracing and evaluation dashboard",
+        "scenario": "Engineers need to know why a tool-using agent failed and what it cost.",
+        "basics": "Traces/spans, OpenTelemetry GenAI conventions, events, token/cost metrics.",
+        "build": "Instrument model and tool spans and visualize run outcomes in a local dashboard.",
+        "production": "Redact sensitive data, correlate across MCP/A2A, define retention and sampling.",
+        "decision": "Vendor-specific telemetry vs portable instrumentation.",
+        "anchor": true
+    }, {
+        "n": 59,
+        "module": 8,
+        "module_name": "Evaluation, observability, reliability and operations",
+        "title": "Grounded-answer regression suite",
+        "scenario": "A release improves one prompt but may break citation accuracy elsewhere.",
+        "basics": "Golden datasets, offline evals, grading rubrics, retrieval vs generation metrics.",
+        "build": "Build a 30-case dataset and compare two assistant versions.",
+        "production": "Stratify edge cases, human adjudication, repeat runs and deployment gates.",
+        "decision": "Exact-match tests vs rubric/model-judged evaluation.",
+        "anchor": false
+    }, {
+        "n": 60,
+        "module": 8,
+        "module_name": "Evaluation, observability, reliability and operations",
+        "title": "Model gateway and fallback",
+        "scenario": "Different requests need different quality, latency and cost.",
+        "basics": "Model routing, timeout budgets, fallback, caching and model abstraction.",
+        "build": "Route small tasks to one mock model profile and hard tasks to another.",
+        "production": "Measure quality regression, bound retries, protect data residency and control costs.",
+        "decision": "One model for everything vs task-based routing.",
+        "anchor": false
+    }, {
+        "n": 61,
+        "module": 8,
+        "module_name": "Evaluation, observability, reliability and operations",
+        "title": "High-load agent admission control",
+        "scenario": "A spike in AI requests overwhelms model quotas and downstream tools.",
+        "basics": "Rate limiting, concurrency limits, queues, token budgets and backpressure.",
+        "build": "Simulate overload and prioritize interactive requests over batch jobs.",
+        "production": "Tenant fairness, cancellation, queue expiry, graceful degradation and spend caps.",
+        "decision": "Unlimited queued work vs admission-controlled execution.",
+        "anchor": false
+    }, {
+        "n": 62,
+        "module": 8,
+        "module_name": "Evaluation, observability, reliability and operations",
+        "title": "Replay-safe external actions",
+        "scenario": "A retry occurs after an agent submitted a downstream operation and lost the response.",
+        "basics": "Idempotency ledger, unknown outcomes, event replay and reconciliation.",
+        "build": "Execute a fake refund or email send with crashes and repeated requests.",
+        "production": "Use stable operation IDs, status reconciliation, bounded retries and audit.",
+        "decision": "Blind retry vs deduplicate-and-reconcile.",
+        "anchor": false
+    }, {
+        "n": 63,
+        "module": 8,
+        "module_name": "Evaluation, observability, reliability and operations",
+        "title": "Safe prompt and agent rollout",
+        "scenario": "Teams change prompts, models and tool contracts while users are active.",
+        "basics": "Versioning, canary, shadow runs, rollback and compatibility.",
+        "build": "Compare current and candidate agent on replayed mock requests.",
+        "production": "Define rollback signals, keep stable tool schemas and prevent incompatible checkpoint resumes.",
+        "decision": "Big-bang deployment vs controlled release.",
+        "anchor": false
+    }, {
+        "n": 64,
+        "module": 8,
+        "module_name": "Evaluation, observability, reliability and operations",
+        "title": "Agent service SLO and on-call",
+        "scenario": "A production agent sometimes takes many steps, fails or gives wrong answers.",
+        "basics": "Task success vs availability, latency percentiles, error budgets, incident runbooks.",
+        "build": "Define metrics and a simulated alert dashboard for a mock support assistant.",
+        "production": "Separate model quality from infra health, triage bad actions, manage incident ownership.",
+        "decision": "HTTP uptime alone vs task-level service objectives.",
+        "anchor": false
+    }, {
+        "n": 65,
+        "module": 8,
+        "module_name": "Evaluation, observability, reliability and operations",
+        "title": "Multi-region agent disaster recovery",
+        "scenario": "A regional failure interrupts agent runs and tool calls.",
+        "basics": "RPO/RTO, durable checkpoints, failover, location of data and external effects.",
+        "build": "Recover a mock active run in a second simulated region.",
+        "production": "Restore credentials safely, reconcile external side effects and test recovery drills.",
+        "decision": "Active-passive vs active-active agent processing.",
+        "anchor": false
+    }, {
+        "n": 66,
+        "module": 9,
+        "module_name": "Emerging and advanced agentic systems",
+        "title": "Browser-based travel-admin agent",
+        "scenario": "A user wants help filling travel expense forms in systems without good APIs.",
+        "basics": "Computer use, DOM/visual feedback, action grounding, confirmation and task boundaries.",
+        "build": "Run a safe local travel-form mock that previews but does not purchase or submit.",
+        "production": "Handle changed layouts, credential isolation, stop conditions and intervention.",
+        "decision": "API/MCP integration vs computer use as last resort.",
+        "anchor": false
+    }, {
+        "n": 67,
+        "module": 9,
+        "module_name": "Emerging and advanced agentic systems",
+        "title": "Realtime voice support assistant",
+        "scenario": "A spoken customer conversation needs quick responses and reliable handoff to a human.",
+        "basics": "Audio streaming, VAD/turn-taking, transcripts, real-time tool use and interruption.",
+        "build": "Build a mock voice transcript stream driving a simple support workflow.",
+        "production": "Redaction, consent, audio retention, latency, call transfer and accessibility.",
+        "decision": "Speech pipeline vs integrated real-time multimodal model.",
+        "anchor": false
+    }, {
+        "n": 68,
+        "module": 9,
+        "module_name": "Emerging and advanced agentic systems",
+        "title": "Visual claims-inspection assistant",
+        "scenario": "A user uploads product-damage images and asks for a claim recommendation.",
+        "basics": "Vision input, OCR where needed, multimodal grounding, uncertainty and evidence storage.",
+        "build": "Return a structured damage report with referenced image regions and human review.",
+        "production": "Never treat model assessment as proof, retain originals, protect privacy and test visual edge cases.",
+        "decision": "Vision model vs deterministic CV + rules + human review.",
+        "anchor": false
+    }, {
+        "n": 69,
+        "module": 9,
+        "module_name": "Emerging and advanced agentic systems",
+        "title": "Code-editing agent in sandbox",
+        "scenario": "An agent fixes a failing test in a small repository and proposes a patch.",
+        "basics": "Agent harness, filesystem tools, isolated execution, feedback loops and diffs.",
+        "build": "Run a local repo agent on a toy failing test and produce a reviewed patch.",
+        "production": "Restrict network/secrets, cap resource use, require tests, review and rollback.",
+        "decision": "LLM-generated patch vs bounded edit/test harness.",
+        "anchor": false
+    }, {
+        "n": 70,
+        "module": 9,
+        "module_name": "Emerging and advanced agentic systems",
+        "title": "Agent Skills registry and discovery",
+        "scenario": "Teams package repeatable workflows that agents may selectively load.",
+        "basics": "Agent Skills `SKILL.md`, metadata, progressive context loading and versioning.",
+        "build": "Create three local skills with references and scripts; load by task.",
+        "production": "Vet code, pin skill versions, approve allowed tools, audit updates and use sandboxing.",
+        "decision": "Skills as reusable instructions vs tools as executable capabilities.",
+        "anchor": false
+    }, {
+        "n": 71,
+        "module": 9,
+        "module_name": "Emerging and advanced agentic systems",
+        "title": "AI workflow builder with visual steps",
+        "scenario": "A non-developer describes a business process and receives an editable workflow diagram.",
+        "basics": "Declarative workflow schema, UI component grammar, static validation and human edits.",
+        "build": "Generate a JSON workflow and render it with a self-contained HTML editor.",
+        "production": "Validate cycles, permissions, deployments and rollback before activating the workflow.",
+        "decision": "Free-form code generation vs constrained visual DSL.",
+        "anchor": false
+    }, {
+        "n": 72,
+        "module": 9,
+        "module_name": "Emerging and advanced agentic systems",
+        "title": "Code-and-data analysis workspace",
+        "scenario": "An analyst asks a model to explore data and generate reproducible charts.",
+        "basics": "Code execution, sandbox, artifacts, notebook lineage and provenance.",
+        "build": "Run generated analysis only on mock data in an isolated process.",
+        "production": "Restrict file/network access, capture dependencies, test results and retain audit artifacts.",
+        "decision": "Direct reasoning vs controlled computation.",
+        "anchor": false
+    }, {
+        "n": 73,
+        "module": 9,
+        "module_name": "Emerging and advanced agentic systems",
+        "title": "Unified enterprise agentic platform",
+        "scenario": "A company needs governed assistants, MCP integrations, UI, multi-agent tasks and operations.",
+        "basics": "Control/data planes, identity, registries, MCP, A2A, AG-UI, MCP Apps, evaluation and cost.",
+        "build": "Integrate one small end-to-end assistant with a UI, two tools and one remote specialist.",
+        "production": "Design policy enforcement, tenancy, DR, observability, deployment and upgrade governance.",
+        "decision": "Platform reuse vs per-team autonomy; which abstractions should remain optional.",
+        "anchor": true
+    }];
+    const MODULES = [{
+        "num": 1,
+        "title": "Agentic AI fundamentals and application patterns",
+        "description": "Understand when a model, tool-using agent, or deterministic workflow is the right system boundary.",
+        "count": 8
+    }, {
+        "num": 2,
+        "title": "MCP tools, data access and remote integrations",
+        "description": "Treat MCP as a protocol boundary; distinguish tools, resources, prompts, clients, hosts and extensions.",
+        "count": 9
+    }, {
+        "num": 3,
+        "title": "RAG, context engineering and memory",
+        "description": "Design information flow, source provenance and the boundary between conversation context and durable data.",
+        "count": 8
+    }, {
+        "num": 4,
+        "title": "Agent orchestration, workflows and durable state",
+        "description": "Progress from single-agent execution to explicit workflows, state machines and failure recovery.",
+        "count": 8
+    }, {
+        "num": 5,
+        "title": "Generative UI, MCP Apps, AG-UI and A2UI",
+        "description": "Separate three concerns: what UI to render, how embedded views execute, and how frontends exchange agent events.",
+        "count": 8
+    }, {
+        "num": 6,
+        "title": "Multi-agent systems and A2A interoperability",
+        "description": "Use collaboration only where independent capabilities, ownership or task decomposition justify it.",
+        "count": 8
+    }, {
+        "num": 7,
+        "title": "Security, identity and enterprise architecture",
+        "description": "Put trust boundaries and permission checks around data, tools, UI and external agents.",
+        "count": 8
+    }, {
+        "num": 8,
+        "title": "Evaluation, observability, reliability and operations",
+        "description": "Make nondeterministic systems measurable, recoverable and supportable.",
+        "count": 8
+    }, {
+        "num": 9,
+        "title": "Emerging and advanced agentic systems",
+        "description": "Extend the standard architecture with multimodal, computer-use, skills, code execution and a platform capstone.",
+        "count": 8
+    }];
+    const ANCHORS = [1, 3, 9, 14, 18, 21, 26, 28, 34, 36, 38, 42, 43, 50, 58, 73];
+    const q = document.getElementById('q'),
+        mod = document.getElementById('module'),
+        only = document.getElementById('anchors');
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[c]));
+    let done = new Set();
+    try {
+        done = new Set(JSON.parse(localStorage.getItem('agentic73-studied-v1') || '[]'));
+    } catch (e) {
+    }
+
+    function setDone(n, on) {
+        on ? done.add(n) : done.delete(n);
+        try {
+            localStorage.setItem('agentic73-studied-v1', JSON.stringify([...done]));
+        } catch (e) {
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        document.getElementById('progress').textContent = done.size;
+    }
+
+    for (const m of MODULES) {
+        let op = document.createElement('option');
+        op.value = m.num;
+        op.textContent = `${m.num}. ${m.title}`;
+        mod.appendChild(op);
+    }
+
+    function caseCard(c) {
+        return `<article class="case ${c.anchor ? 'anchor' : ''}" id="case-${c.n}"><div class="casehead"><h3><span class="pill">${String(c.n).padStart(2, '0')}</span>${esc(c.title)} ${c.anchor ? '★' : ''}</h3><label><input type="checkbox" data-study="${c.n}" ${done.has(c.n) ? 'checked' : ''}> Studied</label></div><p><b>Problem:</b> ${esc(c.scenario)}</p><div class="casebox"><b>Basics at point of use</b><span>${esc(c.basics)}</span></div><div class="casebox"><b>Hands-on build</b><span>${esc(c.build)}</span></div><div class="casebox"><b>Production evolution</b><span>${esc(c.production)}</span></div><div class="casebox"><b>Decision</b><span>${esc(c.decision)}</span></div></article>`
+    }
+
+    function draw() {
+        let text = q.value.toLowerCase().trim(), m = +mod.value,
+            a = only.checked;
+        let matches = CASES.filter(c => (!m || m === c.module) && (!a || c.anchor) && (!text || [c.title, c.scenario, c.basics, c.build, c.production, c.decision, c.module_name].join(' ').toLowerCase().includes(text)));
+        document.getElementById('shown').textContent = `Showing ${matches.length} / 73 problems`;
+        let group = '';
+        let last = 0;
+        for (const c of matches) {
+            if (c.module !== last) {
+                last = c.module;
+                group += `<h2>Module ${String(last).padStart(2, '0')} — ${esc(c.module_name)}</h2>`
+            }
+            group += caseCard(c)
+        }
+        document.getElementById('cards').innerHTML = group || '<p>No matching cases. Clear the search or filters.</p>';
+        for (const el of document.querySelectorAll('[data-study]')) el.addEventListener('change', () => setDone(+el.dataset.study, el.checked));
+    }
+
+    for (const m of MODULES) {
+        let box = document.createElement('div');
+        box.className = 'module-card';
+        box.innerHTML = `<strong>${String(m.num).padStart(2, '0')} · ${esc(m.title)}</strong><small>${esc(m.description)}</small><p class="count">${m.count} problems</p><button type="button" data-viewmod="${m.num}">Browse module</button>`;
+        document.getElementById('modules').appendChild(box);
+    }
+    for (const n of ANCHORS) {
+        const c = CASES[n - 1];
+        let b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'btn';
+        b.textContent = `#${n} · ${c.title}`;
+        b.onclick = () => {
+            q.value = '';
+            mod.value = '0';
+            only.checked = false;
+            show('cases');
+            draw();
+            document.getElementById('case-' + n).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            })
+        };
+        document.getElementById('anchorlist').appendChild(b)
+    }
+
+    function show(id) {
+        for (const el of document.querySelectorAll('.screen')) el.classList.toggle('active', el.id === id);
+        for (const b of document.querySelectorAll('[data-tab]')) b.setAttribute('aria-current', b.dataset.tab === id ? 'page' : 'false');
+    }
+
+    document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => show(b.dataset.tab)));
+    document.querySelectorAll('[data-viewmod]').forEach(b => b.addEventListener('click', () => {
+        q.value = '';
+        mod.value = b.dataset.viewmod;
+        only.checked = false;
+        show('cases');
+        draw();
+        window.scrollTo(0, 0)
+    }));
+    [q, mod, only].forEach(el => el.addEventListener('input', () => {
+        show('cases');
+        draw()
+    }));
+    document.getElementById('print').addEventListener('click', () => {
+        q.value = '';
+        mod.value = '0';
+        only.checked = false;
+        draw();
+        window.print()
+    });
+    draw();
+    updateProgress();
+</script>
+</body>
+</html>

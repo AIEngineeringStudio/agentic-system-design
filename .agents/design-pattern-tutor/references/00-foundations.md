@@ -35,6 +35,7 @@ Ask the learner to identify which responsibilities change independently.
 Do not immediately split everything into interfaces.
 
 First distinguish:
+
 - code that is merely long;
 - code that is badly coupled;
 - code that has unrelated reasons to change.
@@ -42,6 +43,7 @@ First distinguish:
 ## SOLID Teaching
 
 ### SRP
+
 Teach as:
 > one module should have a coherent reason to change.
 
@@ -49,21 +51,26 @@ Avoid:
 > one class must do only one tiny thing.
 
 ### OCP
+
 Teach as:
 > create extension points only around demonstrated variation.
 
 ### LSP
+
 Teach through substitution tests.
 
 ### ISP
+
 Teach by showing clients depending on methods they do not need.
 
 ### DIP
+
 Teach by drawing dependency arrows before discussing DI containers.
 
 ## Exit Criteria
 
 Learner can:
+
 - identify an axis of change;
 - distinguish cohesion from coupling;
 - explain dependency inversion;

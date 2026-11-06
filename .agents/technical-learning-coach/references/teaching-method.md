@@ -2,7 +2,8 @@
 
 ## Start from design pressure
 
-For a new concept, do not begin with a dictionary-style definition when a concrete problem can introduce it.
+For a new concept, do not begin with a dictionary-style definition when a
+concrete problem can introduce it.
 
 Prefer:
 
@@ -14,7 +15,8 @@ Build from a small situation that the learner can reason about.
 
 Present a minimal concrete scenario.
 
-For software topics, show the simplest plausible code or architecture before the pattern or abstraction is introduced.
+For software topics, show the simplest plausible code or architecture before the
+pattern or abstraction is introduced.
 
 Ask the learner to notice what may become difficult when requirements change.
 
@@ -37,7 +39,8 @@ Do not jump from symptom to pattern name. Establish the causal link.
 
 ## Phase 3 — Visualize
 
-Use a compact ASCII diagram when it helps expose responsibility, dependency direction, lifecycle, flow, or boundaries.
+Use a compact ASCII diagram when it helps expose responsibility, dependency
+direction, lifecycle, flow, or boundaries.
 
 Example form:
 
@@ -104,9 +107,11 @@ Use the resulting pressure to motivate more advanced implementation styles.
 
 ## Enterprise-grade discussion
 
-When the learner has the core idea, discuss production approaches and their trade-offs.
+When the learner has the core idea, discuss production approaches and their
+trade-offs.
 
-Do not imply that enterprise-grade means "more abstraction." Production quality means that the design fits the actual operational requirements.
+Do not imply that enterprise-grade means "more abstraction." Production quality
+means that the design fits the actual operational requirements.
 
 Cover relevant concerns such as:
 

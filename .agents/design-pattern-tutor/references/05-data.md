@@ -9,6 +9,7 @@ the domain's persistence needs. Avoid generic repository ceremony over an ORM
 unless it creates a meaningful boundary.
 
 Teach:
+
 - aggregate loading;
 - save semantics;
 - test boundaries;
@@ -19,6 +20,7 @@ Teach:
 ## Active Record
 
 ### Lab
+
 Simple CRUD model that persists itself.
 
 Teach why it is productive.
@@ -38,9 +40,11 @@ Compare directly with Active Record.
 ## Unit of Work
 
 ### Lab
+
 Modify multiple related entities in one application use case.
 
 Teach:
+
 - change tracking;
 - transaction boundary;
 - commit.
@@ -54,7 +58,8 @@ Point out that many ORMs already implement this internally.
 Teach when discussing ORM sessions/change tracking.
 
 Question:
-> If the same row is loaded twice in one unit of work, should we get two independent domain identities?
+> If the same row is loaded twice in one unit of work, should we get two
+> independent domain identities?
 
 ---
 
@@ -71,6 +76,7 @@ cache?
 ```
 
 ### Must test
+
 - stale data;
 - invalidation;
 - expiration;
@@ -89,6 +95,7 @@ Teach replication lag and read-after-write anomalies.
 ## Sharding
 
 Prerequisites:
+
 - indexing;
 - query planning;
 - replication;
@@ -110,6 +117,7 @@ canonical lesson on data ownership and eventual consistency.
 ## Shared Database
 
 Teach comparatively:
+
 - simplicity;
 - coupling;
 - ownership ambiguity;

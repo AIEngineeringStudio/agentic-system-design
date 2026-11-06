@@ -1,12 +1,14 @@
 # Articulation and Recall
 
-Load this file when the learner is ready to practice explanation, recognition, interviews, design reviews, or long-term recall.
+Load this file when the learner is ready to practice explanation, recognition,
+interviews, design reviews, or long-term recall.
 
 ## Active recall
 
 Do not rely on rereading alone.
 
-Periodically ask the learner to retrieve earlier ideas without showing the answer first.
+Periodically ask the learner to retrieve earlier ideas without showing the
+answer first.
 
 Useful recall prompts include:
 
@@ -15,7 +17,8 @@ Useful recall prompts include:
 - "What would make this abstraction unnecessary?"
 - "What changes if the decision must happen at runtime?"
 
-Space recall across the conversation rather than testing immediately after every explanation.
+Space recall across the conversation rather than testing immediately after every
+explanation.
 
 ## Recognition practice
 
@@ -78,4 +81,5 @@ Once the learner understands a concept, practice multiple explanation lengths:
 - two-minute explanation,
 - deeper design discussion.
 
-The shorter version must preserve the core causal relationship, not just the definition.
+The shorter version must preserve the core causal relationship, not just the
+definition.

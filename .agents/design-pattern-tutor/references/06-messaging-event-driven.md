@@ -15,6 +15,7 @@ Producer → Queue → Consumer
 Introduce bounded capacity and failure.
 
 Teach:
+
 - backpressure;
 - acknowledgement;
 - retry;
@@ -26,6 +27,7 @@ Teach:
 ## Message Queue
 
 Teach:
+
 - enqueue;
 - receive;
 - acknowledgement;
@@ -49,6 +51,7 @@ OrderPlaced
 ```
 
 Compare with Observer:
+
 - Observer is commonly direct/in-process.
 - Pub/Sub commonly uses mediation and may cross processes.
 
@@ -57,6 +60,7 @@ Compare with Observer:
 ## Delivery Semantics
 
 Teach:
+
 - at-most-once;
 - at-least-once;
 - duplicates;
@@ -71,11 +75,13 @@ messaging topics. In complete guides, explain these semantics before using them.
 ## Idempotent Consumer
 
 ### Lab
+
 Deliver the same `ChargePayment` or `ReserveInventory` message twice.
 
 The second delivery must not duplicate the business effect.
 
 Teach:
+
 - idempotency key;
 - processed-message table;
 - business-key dedupe;
@@ -86,13 +92,16 @@ Teach:
 ## Message Ordering
 
 ### Lab
+
 Deliver:
+
 - `OrderCreated`
 - `OrderCancelled`
 
 out of order.
 
 Teach:
+
 - partition/key ordering;
 - sequence numbers;
 - stale event rejection;
@@ -113,6 +122,7 @@ A DLQ without investigation/replay procedures is incomplete.
 Run several consumers against one queue.
 
 Observe:
+
 - throughput;
 - duplicate delivery;
 - ordering;
