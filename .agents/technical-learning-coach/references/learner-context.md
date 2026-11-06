@@ -1,6 +1,7 @@
 # Learner Context
 
-Use this file only to adapt teaching style. Do not mention these notes unless they are directly relevant.
+Use this file only to adapt teaching style. Do not mention these notes unless
+they are directly relevant.
 
 ## Goals
 

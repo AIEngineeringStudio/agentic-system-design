@@ -1,20 +1,29 @@
 # Tutor Module 2 — Payments and Financial Systems
 
-**Routing identity:** `sdt-module-02-payments.md` (match filename even when directory paths are unavailable).
+**Routing identity:** `sdt-module-02-payments.md` (match filename even when
+directory paths are unavailable).
 
-**Load policy:** Use this module only for its own cases or when a specific shared pattern is necessary. Use `sdt-catalog.md` to identify a design; load one anchor file only for an anchor case. For a non-anchor case, derive the worked example using the case's documented architectural choice and `sdt-method-template.md`. Do not imply that the source plan provides complete designs for all 73 cases.
+**Load policy:** Use this module only for its own cases or when a specific
+shared pattern is necessary. Use `sdt-catalog.md` to identify a design; load one
+anchor file only for an anchor case. For a non-anchor case, derive the worked
+example using the case's documented architectural choice and
+`sdt-method-template.md`. Do not imply that the source plan provides complete
+designs for all 73 cases.
 
 ## Anchor files associated with this module
 
 - **Case 1 — Card authorization:** `sdt-anchor-01-card-authorization.md`
 - **Case 5 — Double-entry ledger:** `sdt-anchor-02-double-entry-ledger.md`
-- **Case 3 — Settlement and reconciliation:** `sdt-anchor-03-settlement-reconciliation.md`
+- **Case 3 — Settlement and reconciliation:**
+  `sdt-anchor-03-settlement-reconciliation.md`
 - **Case 10 — Fraud decisioning:** `sdt-anchor-04-fraud-decisioning.md`
 - **Case 2 — Payment gateway:** `sdt-anchor-05-payment-gateway.md`
 
 ## Source-derived domain reference
 
-The following section preserves the input roadmap's domain case selection, architectural choices and teaching notes. This is educational reference material, not a claim about any employer's actual systems or interview content.
+The following section preserves the input roadmap's domain case selection,
+architectural choices and teaching notes. This is educational reference
+material, not a claim about any employer's actual systems or interview content.
 
 ## 4. Module 2 — Payments and Financial Systems
 
@@ -60,9 +69,16 @@ database write.
 
 ## Applying this module to a requested case
 
-1. Begin from the exact case's choice/trade-off in the table above; determine what business invariant and user journey make it relevant.
-2. Start with one minimal system and an ASCII flow; do not assume microservices, cross-region writes or complex event infrastructure without a constraint.
-3. Show at least one credible alternative and its downside; label all invented traffic and latency numbers illustrative.
-4. Trace a success path plus the failure path implied by the case's central risk. Recover explicitly from duplicate/reordered/timeout events where they apply.
-5. Add security, costs, ownership, DR and migration when they change the architectural decision.
-6. Prefer the separate anchor reference for deep cases, or use `sdt-method-template.md` for non-anchor cases. No quizzes or assessments.
+1. Begin from the exact case's choice/trade-off in the table above; determine
+   what business invariant and user journey make it relevant.
+2. Start with one minimal system and an ASCII flow; do not assume microservices,
+   cross-region writes or complex event infrastructure without a constraint.
+3. Show at least one credible alternative and its downside; label all invented
+   traffic and latency numbers illustrative.
+4. Trace a success path plus the failure path implied by the case's central
+   risk. Recover explicitly from duplicate/reordered/timeout events where they
+   apply.
+5. Add security, costs, ownership, DR and migration when they change the
+   architectural decision.
+6. Prefer the separate anchor reference for deep cases, or use
+   `sdt-method-template.md` for non-anchor cases. No quizzes or assessments.

@@ -11,6 +11,7 @@ Happy-path-only examples are insufficient.
 ## Timeout
 
 Every remote call may:
+
 - succeed;
 - fail;
 - become unacceptably slow.
@@ -24,6 +25,7 @@ Teach time budgets and cancellation where available.
 Prerequisite: Timeout.
 
 Teach:
+
 - transient vs permanent failure;
 - max attempts;
 - exponential backoff;
@@ -39,6 +41,7 @@ simulate many clients retrying at once and discuss retry storms.
 ## Circuit Breaker
 
 Prerequisites:
+
 - remote call failures;
 - Timeout;
 - Retry.
@@ -56,6 +59,7 @@ Teach protection of both caller and dependency.
 ## Bulkhead
 
 Partition resources:
+
 - thread/worker pools;
 - connection pools;
 - concurrency slots.
@@ -68,6 +72,7 @@ one dependency/workload cannot exhaust everything.
 ## Rate Limiting / Throttling
 
 Teach:
+
 - fixed window;
 - sliding window;
 - token bucket.
@@ -99,6 +104,7 @@ DB transaction:
 Separate publisher sends outbox rows.
 
 Teach:
+
 - duplicate publication;
 - consumer idempotency;
 - ordering;
@@ -122,6 +128,7 @@ Inject payment failure.
 Derive compensating actions.
 
 Teach:
+
 - choreography;
 - orchestration;
 - compensation limitations;
@@ -141,6 +148,7 @@ Queries  → read state
 ```
 
 Do not require:
+
 - microservices;
 - Event Sourcing;
 - multiple databases.
@@ -155,6 +163,7 @@ uses asynchronous projections or distributed consumers, first cover delivery,
 idempotency, ordering, and eventual consistency.
 
 Teach:
+
 - event log as source of truth;
 - projections;
 - replay;
@@ -170,6 +179,7 @@ Do not present it as a default persistence strategy.
 ## API Gateway
 
 Teach edge concerns:
+
 - routing;
 - auth;
 - throttling;
@@ -184,6 +194,7 @@ Discuss bottleneck/god-gateway risk.
 Use when clients have materially different API needs.
 
 Lab:
+
 - web;
 - mobile;
 - partner API.
@@ -208,6 +219,7 @@ Teach incremental legacy replacement through routing/migration boundaries.
 ## Database per Service
 
 Teach:
+
 - ownership;
 - autonomy;
 - cross-service queries;

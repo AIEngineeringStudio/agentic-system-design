@@ -3,6 +3,7 @@
 ## Layered Architecture
 
 ### Lab
+
 Small order API:
 
 ```text
@@ -24,6 +25,7 @@ Teach responsibility and dependency flow.
 ## Service Layer
 
 Model use cases such as:
+
 - PlaceOrder
 - CancelOrder
 - RefundOrder
@@ -35,9 +37,11 @@ Avoid a giant "Services" dumping ground.
 ## Dependency Injection
 
 ### First
+
 Build object graph manually in `main()` / composition root.
 
 ### Then
+
 Optionally show a DI container.
 
 Core lesson:
@@ -47,6 +51,7 @@ Dependency Injection != DI framework
 ```
 
 Teach:
+
 - constructor injection;
 - lifetime;
 - composition root;
@@ -67,7 +72,8 @@ only its relationship to the application boundary when needed.
 
 Teach through a small UI/web flow.
 
-Explain framework variations rather than pretending one MVC interpretation is universal.
+Explain framework variations rather than pretending one MVC interpretation is
+universal.
 
 ---
 
@@ -80,6 +86,7 @@ Teach by comparison when relevant to a UI framework/codebase.
 ## MVVM
 
 Teach:
+
 - view model;
 - binding;
 - observable state;
@@ -92,6 +99,7 @@ Teach:
 Treat these as one architectural family.
 
 ### Lab
+
 Version A:
 domain imports SQL, queue, vendor HTTP SDK.
 

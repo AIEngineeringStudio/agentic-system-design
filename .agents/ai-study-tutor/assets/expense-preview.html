@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Expense Analysis — UI Prototype</title>
+    <style>
+        :root {
+            color-scheme: light
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font: 15px/1.5 system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+            background: white;
+            color: #1f3141;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 22px
+        }
+
+        h1 {
+            font-size: 26px;
+            margin: 0 0 8px
+        }
+
+        p {
+            color: #506477
+        }
+
+        .pill {
+            border: 1px solid #b4c9d9;
+            border-radius: 15px;
+            padding: 4px 10px;
+            display: inline-block;
+            font-size: 12px;
+            color: #2b638c
+        }
+
+        .row {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 20px 0
+        }
+
+        input {
+            font: inherit;
+            padding: 10px 12px;
+            border: 1px solid #bacad5;
+            border-radius: 6px;
+            width: 160px
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%
+        }
+
+        td, th {
+            border-bottom: 1px solid #d8e2e8;
+            padding: 14px;
+            text-align: left
+        }
+
+        th {
+            background: #f3f7fa
+        }
+
+        .bar {
+            height: 13px;
+            border-radius: 3px;
+            background: #2e6b96;
+            min-width: 3px
+        }
+
+        .chart {
+            margin-top: 22px
+        }
+
+        .chartrow {
+            display: grid;
+            grid-template-columns:115px 1fr 85px;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px
+        }
+
+        .notice {
+            border: 1px solid #cfdce4;
+            background: #f5f8fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 24px
+        }
+
+        @media print {
+            input {
+                border: none
+            }
+
+            .notice {
+                border-color: #aaa
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="pill">UI-only working mock · fake data</div>
+<h1>Expense analysis</h1>
+<p>2026 Q3 · Sales department · synthetic demo data</p>
+<div class="row"><label for="threshold">Show categories over ($):</label><input
+        id="threshold" type="number" min="0" step="50" value="0">
+    <output id="status" aria-live="polite"></output>
+</div>
+<div class="chart" id="chart" aria-label="Expense category chart"></div>
+<table>
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Amount</th>
+    </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+</table>
+<div class="notice"><b>Scope:</b> This is a standalone UI preview, not a real
+    MCP App, agent or authenticated expense service. It contains fake records
+    and uses no network or external libraries.
+</div>
+<script>
+    const records = [{name: 'Travel', amount: 1800}, {
+        name: 'Software',
+        amount: 650
+    }, {name: 'Supplies', amount: 350}, {name: 'Training', amount: 1200}];
+    const input = document.getElementById('threshold'),
+        status = document.getElementById('status'),
+        rows = document.getElementById('rows'),
+        chart = document.getElementById('chart');
+    const money = n => new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+    }).format(n);
+
+    function render() {
+        const t = Math.max(0, Number(input.value) || 0),
+            filtered = records.filter(r => r.amount > t),
+            max = Math.max(...records.map(r => r.amount));
+        rows.replaceChildren();
+        chart.replaceChildren();
+        filtered.forEach(r => {
+            const tr = document.createElement('tr'),
+                name = document.createElement('td'),
+                amount = document.createElement('td');
+            name.textContent = r.name;
+            amount.textContent = money(r.amount);
+            tr.append(name, amount);
+            rows.append(tr);
+            const el = document.createElement('div');
+            el.className = 'chartrow';
+            const a = document.createElement('span'),
+                b = document.createElement('div'),
+                c = document.createElement('span');
+            a.textContent = r.name;
+            b.className = 'bar';
+            b.style.width = `${Math.round(100 * r.amount / max)}%`;
+            c.textContent = money(r.amount);
+            el.append(a, b, c);
+            chart.append(el)
+        });
+        status.textContent = filtered.length + ' categories · ' + money(filtered.reduce((sum, r) => sum + r.amount, 0));
+        if (!filtered.length) {
+            const tr = document.createElement('tr'),
+                td = document.createElement('td');
+            td.colSpan = 2;
+            td.textContent = 'No categories above this threshold.';
+            tr.append(td);
+            rows.append(tr)
+        }
+    }
+
+    input.addEventListener('input', render);
+    render();
+</script>
+</body>
+</html>

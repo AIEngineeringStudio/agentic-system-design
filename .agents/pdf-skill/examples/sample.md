@@ -15,9 +15,11 @@ footer_right: "ARCHITECTURE DECISION FIELD GUIDE"
 
 ## Decision quality at senior level
 
-**Purpose:** Turn a complicated technical choice into a transparent decision that can withstand business and engineering review.
+**Purpose:** Turn a complicated technical choice into a transparent decision
+that can withstand business and engineering review.
 
-> **Note:** The examples below are illustrative. Replace them with verified details from your own work.
+> **Note:** The examples below are illustrative. Replace them with verified
+> details from your own work.
 
 ## Contents
 
@@ -27,7 +29,8 @@ footer_right: "ARCHITECTURE DECISION FIELD GUIDE"
 
 ## 1. Frame the problem
 
-A strong design decision starts with an **observable business need**, not a preferred technology. Name what must be true after the change.
+A strong design decision starts with an **observable business need**, not a
+preferred technology. Name what must be true after the change.
 
 ### Questions to answer
 
@@ -35,23 +38,26 @@ A strong design decision starts with an **observable business need**, not a pref
 - What would happen if no action were taken?
 - Who is accountable for risk acceptance?
 
-| Dimension | Useful evidence | Warning sign |
-|---|---|---|
-| Problem | Customer impact and time constraint | Solution described before problem |
-| Risk | Failure mode, severity, reversibility | No rollback owner |
-| Ownership | Named decision maker and reviewers | Everyone “agreed” but nobody decided |
+| Dimension | Useful evidence                       | Warning sign                         |
+|-----------|---------------------------------------|--------------------------------------|
+| Problem   | Customer impact and time constraint   | Solution described before problem    |
+| Risk      | Failure mode, severity, reversibility | No rollback owner                    |
+| Ownership | Named decision maker and reviewers    | Everyone “agreed” but nobody decided |
 
 ## 2. Evaluate trade-offs
 
-Compare feasible choices consistently. Include the cost of **doing nothing** when that is a realistic option.
+Compare feasible choices consistently. Include the cost of **doing nothing**
+when that is a realistic option.
 
-> **Example:** A team compares a full rewrite with an incremental migration. A bounded pilot may reduce uncertainty before committing the organization to a larger operating model.
+> **Example:** A team compares a full rewrite with an incremental migration. A
+> bounded pilot may reduce uncertainty before committing the organization to a
+> larger operating model.
 
-| Criterion | Keep current | Incremental | Full rewrite |
-|---|---|---|---|
-| Cost | Low upfront | Moderate | High |
+| Criterion     | Keep current    | Incremental    | Full rewrite |
+|---------------|-----------------|----------------|--------------|
+| Cost          | Low upfront     | Moderate       | High         |
 | Delivery risk | Existing limits | Managed change | Broad change |
-| Reversibility | High | Often higher | Often lower |
+| Reversibility | High            | Often higher   | Often lower  |
 
 ### A simple decision sequence
 

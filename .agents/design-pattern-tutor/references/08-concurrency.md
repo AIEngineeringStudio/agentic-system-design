@@ -7,7 +7,8 @@ those guarantees.
 
 ## Rule
 
-Concurrency should be taught by first creating a race, resource bottleneck, or scheduling problem.
+Concurrency should be taught by first creating a race, resource bottleneck, or
+scheduling problem.
 
 Do not start from synchronization APIs.
 
@@ -16,6 +17,7 @@ Do not start from synchronization APIs.
 ## Future / Promise
 
 Teach:
+
 - deferred result;
 - success/failure;
 - composition;
@@ -33,6 +35,7 @@ Producer → bounded queue → workers
 ```
 
 Teach:
+
 - capacity;
 - backpressure;
 - worker count;
@@ -56,6 +59,7 @@ First create a race on shared mutable state.
 Then add a critical section.
 
 Teach:
+
 - race conditions;
 - deadlock;
 - lock scope;
@@ -74,7 +78,8 @@ at most 10 calls to a fragile external API.
 
 ## Read-Write Lock
 
-Teach only with a workload where read/write ratios make the trade-off meaningful.
+Teach only with a workload where read/write ratios make the trade-off
+meaningful.
 
 Warn that it is not automatically faster than a normal mutex.
 
@@ -83,6 +88,7 @@ Warn that it is not automatically faster than a normal mutex.
 ## Reactor
 
 Teach when discussing:
+
 - event loops;
 - non-blocking I/O;
 - network servers.
@@ -94,6 +100,7 @@ Focus on readiness events and callbacks/continuations.
 ## Actor Model
 
 Teach:
+
 - isolated mutable state;
 - mailbox;
 - message passing;
@@ -104,6 +111,7 @@ Teach:
 ## Leader Election
 
 Use for:
+
 - singleton scheduled jobs;
 - clustered coordinators;
 - distributed schedulers.

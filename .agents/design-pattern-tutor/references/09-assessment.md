@@ -15,7 +15,8 @@ self-study exercises but cannot establish the reader's mastery.
 - **Comparison:** use the relevant neighboring pair: Strategy/State,
   Adapter/Facade, Decorator/Proxy, Factory Method/Abstract Factory,
   Observer/Pub-Sub, Active Record/Data Mapper, Layered/Hexagonal,
-  Retry/Circuit Breaker, Saga/distributed ACID transaction, or CQRS/Event Sourcing.
+  Retry/Circuit Breaker, Saga/distributed ACID transaction, or CQRS/Event
+  Sourcing.
 - **Simplification:** show an interface per stable implementation, hidden global
   Singleton, repository with no boundary benefit, unsafe payment retry, or
   unnecessary microservices. Ask for a simpler design and its trade-off.
