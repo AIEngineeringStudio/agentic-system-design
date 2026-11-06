@@ -1,0 +1,320 @@
+########################################
+# RULES
+
+# Trailing / matches DIRECTORY ONLY
+# Leading / matches only at the .gitignore file level
+
+# 1. /build/
+#     - Matches DIRECTORY ONLY named build
+#     - Matches ONLY at .gitignore file level
+#     - Does not MATCH a regular FILE named build
+
+# 2. /build
+#     - Matches BOTH FILES AND DIRECTORIES named build
+#     - Matches ONLY at any the .gitignore file level
+
+# 3. build/
+#     - Matches DIRECTORY ONLY named build
+#     - Matches at any depth below the .gitignore file:
+#           - build/
+#           - app/build/
+#           - src/module/build/
+#     - Does not MATCH a regular FILE named build
+
+# 4. build or **/build
+#     - Matches BOTH FILES AND DIRECTORIES named build
+#     - Matches at any depth below the .gitignore file:
+#           - build (file)
+#           - app/build (file named build under app named directory)
+#           - src/module/build (file named build under src/module)
+#           - build/
+#           - app/build/
+#           - src/module/build/
+
+# 5. *.log
+#     - Matches all .log files
+#     - Matches at any depth below the .gitignore file:
+########################################
+
+########################################
+# OS / ENVIRONMENT
+########################################
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+########################################
+# SECRETS / ENV FILES
+########################################
+secrets/
+secrets.*
+*.key
+*.pem
+*.crt
+*.pfx
+*.keystore
+keys/
+
+########################################
+# LOGS / TEMP FILES
+########################################
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.old
+*.orig
+*.retry
+*.pid
+.tmp/
+traces/
+
+########################################
+# PYTHON
+########################################
+# Python virtual environments (any depth)
+.venv
+.venv/
+venv/
+venv.bak/
+.env
+.env.*
+.env/
+env
+env.bak/
+
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.pkl
+*.pickle
+*.whl
+*.egg
+*.egg-info/
+pip-wheel-metadata/
+.pytest_cache/
+htmlcov/
+.mypy_cache/
+.pyre/
+.ruff_cache/
+.tox/
+.nox/
+.ipynb_checkpoints/
+# .python-version
+
+########################################
+# Google ADK
+########################################
+*.adk/
+
+
+########################################
+# JAVA / JVM
+########################################
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+target/
+build/
+out/
+.gradle/
+hs_err_pid*
+replay_pid*
+
+########################################
+# NODE / JAVASCRIPT / TYPESCRIPT
+########################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+.parcel-cache
+.turbo/
+.next/
+.nuxt/
+.vite/
+.cache/
+
+
+########################################
+# IDEs — INTELLIJ / JETBRAINS
+########################################
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+
+########################################
+# IDEs — VS CODE
+########################################
+.vscode/
+
+########################################
+# IDEs — ECLIPSE / STS
+########################################
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+
+########################################
+# IDEs — NETBEANS
+########################################
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+########################################
+# DATABASES / LOCAL STATE
+########################################
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+data/
+local_data/
+
+########################################
+# DOCKER / CONTAINERS
+########################################
+.docker/
+docker-compose.override.yml
+
+########################################
+# KUBERNETES / HELM
+########################################
+charts/**/charts/
+charts/**/tmp/
+*.tgz
+
+########################################
+# TERRAFORM / INFRA
+########################################
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+terraform.tfvars.json
+.crash.log
+
+########################################
+# LaTeX
+########################################
+# LaTeX / TeXstudio
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.vrb
+
+# Glossaries
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.glsdefs
+*.ist
+
+# Nomenclature
+*.nlg
+*.nlo
+*.nls
+
+# Index
+*.idx
+*.ilg
+*.ind
+
+# Minted (code highlighting)
+_minted*/
+
+# Todonotes
+*.tdo
+
+# TeXstudio specific
+*.bak[0-9]
+*.layout
+
+# Output (keep or ignore based on preference)
+# *.pdf
+
+########################################
+# CI / BUILD SYSTEMS
+########################################
+coverage/
+.coverage.*
+reports/
+test-results/
+allure-results/
+junit.xml
+
+########################################
+# ARCHIVES / BACKUPS
+########################################
+*.7z
+*.tar
+*.tar.gz
+*.rar
+# *.zip
+
+########################################
+# MISC / TOOLS
+########################################
+*.ctxt        # BlueJ
+.mtj.tmp/     # J2ME
+deploy_*
+
+########################################
+# ALLOWLIST
+########################################
+!.gitignore
+!.env.example
+
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+#!*.sqlite
+#!*.sql
+#!*.zip
+
