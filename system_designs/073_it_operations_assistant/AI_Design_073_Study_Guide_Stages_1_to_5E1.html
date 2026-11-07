@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>AI Design #73 | IT Operations Assistant | Study Guide, Stages 1–5A</title>
+<style>
+:root{--ink:#1c2936;--muted:#566776;--line:#d7e1e8;--paper:#fff;--bg:#f4f7f9;--accent:#205a7c;--accent-dark:#143e58;--wash:#eaf2f7;--soft:#fafbfc;--amber:#79551e;--amber-wash:#fff8e8;--good:#205d49;--good-wash:#eff8f3}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;margin:0}
+a{color:var(--accent);text-underline-offset:2px}
+a:hover{text-decoration-thickness:2px}
+button{font:inherit;cursor:pointer}
+.layout{display:grid;grid-template-columns:230px minmax(0,960px);gap:28px;max-width:1280px;margin:auto;padding:26px}
+.side{align-self:start;position:sticky;top:20px;padding:22px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 15px #1935490a}
+.side h2{font-size:13px;letter-spacing:.09em;color:var(--accent-dark);text-transform:uppercase;margin:0 8px 12px}
+.side a{display:block;text-decoration:none;padding:8px 10px;margin:2px 0;border-radius:6px;color:var(--ink);font-size:13px;line-height:1.45}
+.side a:hover,.side a:focus-visible{background:var(--wash);outline:0}
+.side .mini{margin:14px 8px 0;border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--muted)}
+.content{min-width:0}
+.hero{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:13px;padding:30px 36px 27px;margin-bottom:19px}
+.eyebrow{font-size:12px;color:var(--accent-dark);font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+h1{font-size:clamp(30px,4vw,45px);line-height:1.1;letter-spacing:-.035em;margin:12px 0 6px}
+.subtitle{font-size:19px;color:var(--muted);margin:0 0 21px}
+.lede{max-width:78ch;margin:0 0 19px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tag{padding:5px 11px;border-radius:20px;background:var(--wash);font-size:12px;font-weight:700;color:var(--accent-dark);border:1px solid #cadde9}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.btn{background:var(--accent);border:1px solid var(--accent);color:white;border-radius:7px;padding:9px 13px;font-size:13px;font-weight:700}
+.btn.ghost{background:white;color:var(--accent)}
+.btn:hover{filter:brightness(.95)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:22px}
+.stat{border:1px solid var(--line);border-radius:9px;padding:12px;background:var(--soft)}
+.stat b{font-size:20px;color:var(--accent-dark);display:block;line-height:1.2}
+.stat small{display:block;font-size:11px;color:var(--muted);margin-top:5px}
+section.chapter{background:#fff;border:1px solid var(--line);border-radius:13px;padding:28px 35px;margin:18px 0;scroll-margin-top:20px}
+.section-head{display:flex;gap:12px;align-items:center;padding-bottom:11px;border-bottom:2px solid #e1eaf0;margin-bottom:18px}
+.stage{font-size:12px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--accent);padding:7px 9px;border-radius:6px;white-space:nowrap}
+h2{font-size:25px;line-height:1.23;margin:0;letter-spacing:-.02em}
+h3{font-size:17px;margin:24px 0 8px;color:var(--accent-dark)}
+h4{font-size:14px;margin:18px 0 8px}
+p{margin:10px 0}
+ul,ol{padding-left:22px;margin:9px 0 14px}
+li{padding-left:3px;margin-bottom:5px}
+strong{font-weight:720}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.panel{border:1px solid var(--line);padding:13px 16px;border-radius:8px;background:var(--soft)}
+.panel h3,.panel h4{margin-top:0}
+.panel p:last-child{margin-bottom:0}
+.note{border-left:4px solid var(--accent);padding:12px 15px;background:var(--wash);border-radius:0 7px 7px 0;margin:15px 0}
+.caution{border-left-color:#b68226;background:var(--amber-wash)}
+.good{border-left-color:#3e9370;background:var(--good-wash)}
+.note strong{display:block;margin-bottom:3px}
+.numbered{display:grid;grid-template-columns:26px 1fr;gap:8px 12px;margin:15px 0}
+.numbered .num{background:var(--wash);border:1px solid #d5e4ed;color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;width:26px;height:26px;border-radius:50%}
+.tablewrap{overflow-x:auto;margin:13px 0 19px;border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:540px}
+th{text-align:left;color:var(--accent-dark);background:#eff4f7;font-size:12px;line-height:1.35}
+th,td{padding:10px 12px;vertical-align:top;border-bottom:1px solid #e3eaf0}
+tr:last-child td{border-bottom:none}
+.priority{font-weight:800;white-space:nowrap}
+pre{background:#f8fafc;border:1px solid #d9e4eb;border-radius:8px;padding:16px 15px;overflow-x:auto;white-space:pre;line-height:1.4;font-size:12.5px;color:#17334b;margin:12px 0 16px;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92em;background:#eef3f6;border-radius:3px;padding:1px 4px}
+pre code{background:transparent;padding:0;font-size:inherit}
+.caption{font-size:12px;color:var(--muted);margin:-8px 0 15px}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:18px 0}
+.milestone{border-top:4px solid var(--accent);padding:10px 9px 8px;background:#f1f6fa;border-radius:0 0 7px 7px}
+.milestone b{font-size:12px;display:block;line-height:1.4}
+.milestone small{display:block;color:var(--muted);font-size:11px;margin-top:5px}
+.milestone.active{border-top-color:#ad791e;background:#fff7e8}
+details{border:1px solid var(--line);border-radius:9px;margin:12px 0;overflow:hidden;background:#fff}
+details summary{cursor:pointer;background:#f8fafc;padding:12px 14px;font-weight:720;color:var(--accent-dark);list-style-position:inside}
+details[open] summary{border-bottom:1px solid var(--line)}
+details .detail-body{padding:3px 16px 15px}
+.glossary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 15px}
+.term{border-bottom:1px solid #e3eaf0;padding:8px 0}
+.term b{display:block;color:var(--accent-dark)}
+.term span{display:block;color:var(--muted);font-size:13px}
+footer{font-size:12px;color:var(--muted);padding:15px 8px 30px}
+.noprint{}
+@media(max-width:960px){.layout{grid-template-columns:1fr;padding:12px}.side{position:static;display:flex;flex-wrap:wrap;gap:3px 8px;padding:12px}.side h2{width:100%;margin:4px 6px 2px}.side a{padding:5px 8px}.side .mini{display:none}.hero,section.chapter{padding:22px}.stat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.grid-2,.glossary{grid-template-columns:1fr}.timeline{grid-template-columns:1fr}.milestone{border-top:0;border-left:4px solid var(--accent);border-radius:0 7px 7px 0}.milestone.active{border-left-color:#ad791e}.section-head{flex-wrap:wrap}.hero,section.chapter{padding:18px 16px}pre{font-size:11px}.stat-grid{gap:6px}}
+@page{size:A4;margin:14mm 12mm}
+@media print{
+ :root{--ink:#111;--muted:#454b51;--accent:#205a7c;--wash:#f0f4f6;--line:#c8d0d6}
+ html{scroll-behavior:auto}body{font-size:10.2pt;line-height:1.42;background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .layout{display:block;max-width:none;margin:0;padding:0}.side,.noprint{display:none!important}.hero{padding:10px 0 18px;border:0;border-bottom:2px solid #205a7c;border-radius:0;margin:0 0 12px}.hero h1{font-size:26pt}.subtitle{font-size:14pt}.lede{max-width:none}
+ section.chapter{padding:12px 0;border:0;border-bottom:1px solid #ccd4d8;border-radius:0;margin:0;break-before:page;page-break-before:always}
+ section.chapter#overview{break-before:auto;page-break-before:auto}
+ h2{font-size:18pt}h3{font-size:12pt}h4{font-size:10pt}
+ .section-head{break-after:avoid}.panel,.note,.stat,.milestone{break-inside:avoid}
+ table{font-size:9pt;min-width:0}thead{display:table-header-group}tr{break-inside:avoid}th,td{padding:6px 7px}
+ pre{font-size:8.5pt;white-space:pre-wrap;overflow-wrap:anywhere;padding:9px;border:1px solid #d6dde2;break-inside:avoid}
+ details{border:0;overflow:visible;break-inside:auto}details summary{font-size:11pt;padding:4px 0;background:none}details .detail-body{display:block!important;padding:0 0 8px}
+ .timeline{grid-template-columns:repeat(5,1fr)}.milestone{border-top:3px solid var(--accent);border-left:0}.stat-grid{grid-template-columns:repeat(4,1fr)}.grid-2,.glossary{grid-template-columns:repeat(2,1fr)}
+ a{color:#17445f;text-decoration:none}a[href^="https"]::after{content:""}
+ footer{font-size:8pt}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="side noprint" aria-label="Guide navigation">
+  <h2>Study guide</h2>
+  <a href="#overview">Overview & roadmap</a>
+  <a href="#stage1">01 · Problem definition</a>
+  <a href="#stage2">02 · Essential concepts</a>
+  <a href="#stage3">03 · Minimal architecture</a>
+  <a href="#stage4">04 · Local mock</a>
+  <a href="#stage5">05A · Bounded tool calling</a>
+  <a href="#decisions">Design decisions</a>
+  <a href="#glossary">Glossary & sources</a>
+  <p class="mini">Offline HTML · No external libraries · Light mode · Print-friendly. Covers learning through Stage 5 Evolution 1 only.</p>
+</nav>
+<div class="content">
+<header class="hero" id="top">
+  <div class="eyebrow">AI Solution Architecture · Capstone #073</div>
+  <h1>Enterprise IT Operations Assistant</h1>
+  <p class="subtitle">Unified Enterprise Agentic Platform — Study Guide</p>
+  <p class="lede">A consolidated reference for <strong>Stage 1 through Stage 5, Evolution 1</strong>. Follow the fictional slow Checkout API incident from requirements to a tested local workflow, then to bounded model-driven tool selection.</p>
+  <div class="meta"><span class="tag">Scenario: INC-42</span><span class="tag">Synthetic data only</span><span class="tag">No full source code</span><span class="tag">Current checkpoint: Stage 5A</span></div>
+  <div class="stat-grid" aria-label="Incident snapshot">
+   <div class="stat"><b>240 ms</b><small>Normal p95 latency</small></div>
+   <div class="stat"><b>1,800 ms</b><small>Incident p95 latency</small></div>
+   <div class="stat"><b>3.1%</b><small>Incident error rate</small></div>
+   <div class="stat"><b>v2.7.4</b><small>Recent deployment</small></div>
+  </div>
+  <div class="actions noprint"><button class="btn" id="printBtn" type="button">Print / Save as PDF</button><button class="btn ghost" type="button" id="expandBtn">Expand all notes</button><button class="btn ghost" type="button" id="collapseBtn">Collapse notes</button></div>
+</header>
+
+<section class="chapter" id="overview">
+ <div class="section-head"><span class="stage">ROUTE</span><h2>What we have built so far</h2></div>
+ <p>We are <strong>not designing the entire enterprise platform in one step</strong>. Each stage adds only the capabilities justified by INC-42. The platform-wide concerns remain future work.</p>
+ <div class="timeline" aria-label="Study stages covered">
+  <div class="milestone"><b>Stage 1</b><small>Problem, actors, priorities and trust boundaries</small></div>
+  <div class="milestone"><b>Stage 2</b><small>LLMs, workflows, tool calling and grounding</small></div>
+  <div class="milestone"><b>Stage 3</b><small>Two-tool read-only system and typed contracts</small></div>
+  <div class="milestone"><b>Stage 4</b><small>Runnable synthetic Python workflow and tests</small></div>
+  <div class="milestone active"><b>Stage 5A</b><small>Bounded model tool selection and enforcement</small></div>
+ </div>
+ <div class="note good"><strong>Central lesson</strong>The LLM may explain evidence and propose what to inspect next. <strong>Application code and business systems</strong> decide what data can be read and what actions can run. No production write action exists in our current design.</div>
+ <div class="grid-2">
+  <div class="panel"><h3>Business outcome</h3><p>Reduce investigation effort and help authorized engineers reach safer decisions using verifiable evidence.</p></div>
+  <div class="panel"><h3>Current architectural limit</h3><p>One bounded incident investigator, two read-only tools, synthetic records, an optional model adapter, and no enterprise-scale platform services.</p></div>
+ </div>
+</section>
+
+<section class="chapter" id="stage1">
+ <div class="section-head"><span class="stage">STAGE 1</span><h2>Problem definition and requirements</h2></div>
+ <h3>1.1 The incident</h3>
+ <p>Customers experience slow checkouts. Monitoring reports a p95 latency rise from <strong>240 ms to 1,800 ms</strong>, while error rate rises from <strong>0.4% to 3.1%</strong>. Deployment <code>v2.7.4</code> occurred at 09:55, shortly before the degradation. All values and identifiers are fictional.</p>
+ <div class="note caution"><strong>Do not confuse correlation with cause</strong>A deployment near the incident is a lead for investigation, not proof that the deployment caused the slowdown.</div>
+ <h3>1.2 Actors and authority</h3>
+ <div class="tablewrap"><table><thead><tr><th>Actor</th><th>Job</th><th>Authority boundary</th></tr></thead><tbody>
+  <tr><td>On-call engineer</td><td>Investigate INC-42 and review results.</td><td>May read only permitted service records.</td></tr>
+  <tr><td>Incident commander</td><td>Coordinate incident response.</td><td>Controls incident process within assigned rights.</td></tr>
+  <tr><td>Service owner / SRE</td><td>Interpret technical state and evaluate changes.</td><td>Can operate only owned/authorized services.</td></tr>
+  <tr><td>Change approver</td><td>Review production changes.</td><td>Approval requires business-side policy enforcement.</td></tr>
+  <tr><td>Security / platform teams</td><td>Provide identity, policies and shared standards.</td><td>Govern controls; do not replace source-system ownership.</td></tr>
+ </tbody></table></div>
+ <h3>1.3 Representative user journey</h3>
+ <div class="numbered">
+  <div class="num">1</div><div>Engineer asks: <strong>“Investigate INC-42. Why is Checkout API slow?”</strong></div>
+  <div class="num">2</div><div>Application authenticates the engineer and checks incident access.</div>
+  <div class="num">3</div><div>Approved tools retrieve metrics and deployment history.</div>
+  <div class="num">4</div><div>Analysis separates observations, hypotheses and unknowns.</div>
+  <div class="num">5</div><div>Engineer reviews the recommendation. No remediation is executed.</div>
+ </div>
+ <h3>1.4 Prioritized functional requirements</h3>
+ <div class="tablewrap"><table><thead><tr><th>Priority</th><th>Requirements</th><th>Architectural significance</th></tr></thead><tbody>
+  <tr><td class="priority">P0</td><td>Identify incident; read approved metrics and changes; produce cited findings; recommend without acting; enforce user-specific access.</td><td>Needs secure input handling, tool interfaces, source provenance and a strict read-only boundary.</td></tr>
+  <tr><td class="priority">P1</td><td>Handle incomplete/contradictory evidence; show useful timeline/report.</td><td>Needs explicit failure states, uncertainty and inspectable events.</td></tr>
+  <tr><td class="priority">P2</td><td>Reuse capabilities across products; add human-approved remediation later.</td><td>May justify MCP, shared governance, durable workflow and action policy in future increments.</td></tr>
+ </tbody></table></div>
+ <h3>1.5 Ranked non-functional constraints</h3>
+ <div class="tablewrap"><table><thead><tr><th>Rank</th><th>Constraint</th><th>Why first?</th></tr></thead><tbody>
+  <tr><td>1</td><td>Identity and authorization</td><td>Operational evidence can be sensitive or tenant-scoped.</td></tr>
+  <tr><td>2</td><td>Safe behavior: zero initial writes</td><td>Unsafe remediation can worsen the incident.</td></tr>
+  <tr><td>3</td><td>Evidence correctness</td><td>A plausible answer without valid evidence is not reliable.</td></tr>
+  <tr><td>4</td><td>Reliability and responsiveness</td><td>Tool failures must not create invented answers.</td></tr>
+  <tr><td>5</td><td>Auditability and bounded cost</td><td>Operators need traceable, predictable execution.</td></tr>
+ </tbody></table></div>
+ <p><strong>Illustrative future target:</strong> a usable initial summary within 30 seconds for 95% of requests. This was a proposed learning target, not a measured or agreed enterprise SLO.</p>
+ <h3>1.6 Source of truth and system boundary</h3>
+ <div class="tablewrap"><table><thead><tr><th>Data or decision</th><th>Source of truth / owner</th><th>Assistant role</th></tr></thead><tbody>
+  <tr><td>Latency / errors</td><td>Monitoring service</td><td>Read and explain authorized records.</td></tr>
+  <tr><td>Deployments</td><td>Change/deployment service</td><td>Read recent changes; do not infer causality automatically.</td></tr>
+  <tr><td>Incident status</td><td>Incident-management system</td><td>Read state; never silently rewrite it.</td></tr>
+  <tr><td>User access</td><td>Verified identity and business policy</td><td>Use decisions; do not invent grants.</td></tr>
+  <tr><td>Remediation execution</td><td>Authorized operations service and human process</td><td>Recommend only in the initial scope.</td></tr>
+ </tbody></table></div>
+ <div class="grid-2">
+  <div class="panel"><h4>Included initially</h4><ul><li>One incident and one primary engineer</li><li>Metrics + deployment reads</li><li>Evidence-based recommendations</li><li>Synthetic fixtures and a local mock</li></ul></div>
+  <div class="panel"><h4>Explicitly excluded</h4><ul><li>Automatic rollback/restart</li><li>Live credentials and production systems</li><li>Mandatory MCP, RAG or A2A</li><li>Multi-region scale and shared platform rollout</li></ul></div>
+ </div>
+</section>
+
+<section class="chapter" id="stage2">
+ <div class="section-head"><span class="stage">STAGE 2</span><h2>Essential AI architecture concepts</h2></div>
+ <p>Introduce a concept only when it helps solve INC-42. A more advanced technology is not automatically a better design.</p>
+ <div class="tablewrap"><table><thead><tr><th>Concept</th><th>Simple definition</th><th>Applied to INC-42</th></tr></thead><tbody>
+  <tr><td><strong>LLM</strong></td><td>Generates explanations or structured text from its input.</td><td>Summarizes why latency may have increased; does not know live metrics without supplied evidence.</td></tr>
+  <tr><td><strong>Fixed workflow</strong></td><td>Application code determines the order of steps.</td><td>Always read metrics and deployments, then analyze results.</td></tr>
+  <tr><td><strong>Bounded agent</strong></td><td>Model helps choose from permitted tools under execution limits.</td><td>Can propose which diagnostic read to make; cannot invent permissions.</td></tr>
+  <tr><td><strong>Tool calling</strong></td><td>Model proposes a typed operation; application validates and runs it.</td><td><code>get_metrics</code> and <code>get_deployments</code> are approved reads.</td></tr>
+  <tr><td><strong>Context engineering</strong></td><td>Select information and instructions relevant to the current model call.</td><td>Give incident ID, approved evidence, source IDs, and uncertainty rules.</td></tr>
+  <tr><td><strong>Grounding</strong></td><td>Base material claims on retrieved records.</td><td>“Latency is 1,800 ms” cites <code>METRIC-07</code>.</td></tr>
+  <tr><td><strong>RAG</strong></td><td>Retrieve relevant knowledge passages before generation.</td><td>Useful later for large runbook or historical incident collections; unnecessary for two direct structured reads.</td></tr>
+  <tr><td><strong>Control plane</strong></td><td>Governance/configuration of capabilities.</td><td>Approved tools, tool versions, identity policy and budgets.</td></tr>
+  <tr><td><strong>Runtime/data plane</strong></td><td>Actual work performed on requests.</td><td>Incident workflow, authorized tool reads, and report generation.</td></tr>
+  <tr><td><strong>Observability</strong></td><td>Explains what executed, where, and with what latency/errors.</td><td>Shows tool timeline, failures and run correlation.</td></tr>
+  <tr><td><strong>Evaluation</strong></td><td>Tests whether the output is correct and useful.</td><td>Checks claims, citations, uncertainty and recommendation safety.</td></tr>
+ </tbody></table></div>
+ <h3>2.1 Which execution pattern fits?</h3>
+ <div class="grid-2">
+  <div class="panel"><h4>Fixed workflow — Stage 3/4</h4><p>Use when required sources and steps are known. Lower complexity and easier testing.</p><pre>Request
+  |
+  v
+Read metrics
+  |
+  v
+Read deployments
+  |
+  v
+Analyze evidence</pre></div>
+  <div class="panel"><h4>Bounded tool selection — Stage 5A</h4><p>Use when next reads may vary. The model proposes tools, but the controller enforces limits.</p><pre>Request
+  |
+  v
+Model proposes reads
+  |
+  v
+Validate + authorize
+  |
+  v
+Execute approved reads
+  |
+  v
+Analyze + validate</pre></div>
+ </div>
+ <h3>2.2 Facts, hypotheses and missing information</h3>
+ <div class="tablewrap"><table><thead><tr><th>Type</th><th>Example</th><th>Evidence rule</th></tr></thead><tbody>
+  <tr><td>Observed fact</td><td>p95 latency is 1,800 ms.</td><td>Cite <code>METRIC-07</code>.</td></tr>
+  <tr><td>Observed fact</td><td><code>v2.7.4</code> deployed at 09:55.</td><td>Cite <code>CHANGE-03</code>.</td></tr>
+  <tr><td>Hypothesis</td><td>The deployment might contribute to degradation.</td><td>Use both observations; say unverified.</td></tr>
+  <tr><td>Unknown</td><td>Whether database saturation caused slow requests.</td><td>Do not manufacture database metrics.</td></tr>
+ </tbody></table></div>
+ <div class="note"><strong>Key distinction</strong>Observability answers “What happened during the run?” Evaluation answers “Was the investigation answer actually correct?” A successful API response can still contain a wrong analysis.</div>
+ <details><summary>Why MCP, A2A and GenUI are not required yet</summary><div class="detail-body">
+ <p><strong>MCP</strong> becomes valuable when tools/resources need a reusable host-to-server interface. <strong>A2A</strong> is useful for delegating work between independently deployed agents. <strong>AG-UI</strong> streams agent state to owned frontends; <strong>A2UI</strong> specifies trusted components declaratively; <strong>MCP Apps</strong> embeds UI in a compatible host. These are separate boundaries, not substitutes for one another.</p>
+ <p>Our current scope has one application and two simple read functions. Ordinary Python functions and a basic report are sufficient.</p>
+ </div></details>
+</section>
+
+<section class="chapter" id="stage3">
+ <div class="section-head"><span class="stage">STAGE 3</span><h2>Minimal working architecture</h2></div>
+ <p>We selected one logical service boundary with a fixed read-only investigation workflow. Components can run inside one Python application; they are not mandatory microservices.</p>
+ <pre aria-label="Stage 3 component diagram">+----------------------------------+
+| On-call Engineer / UI            |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Investigation API                |
+| Identity + incident access       |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Bounded workflow                 |
+| Metrics read + deployment read   |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Approved read-only tools         |
+| Source-system authorization      |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Synthetic operational records    |
+| Monitoring / deployment          |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Analysis + citation validation   |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Human-review investigation report|
++----------------------------------+</pre>
+ <p class="caption">Logical direction of work; read results return to the workflow for model context and validation.</p>
+ <h3>3.1 Why each component exists</h3>
+ <div class="tablewrap"><table><thead><tr><th>Component</th><th>Why it exists</th><th>Boundary</th></tr></thead><tbody>
+  <tr><td>Investigation API</td><td>Validate the request and verified caller.</td><td>External user → trusted application.</td></tr>
+  <tr><td>Workflow/controller</td><td>Bound allowed reads and prepare evidence context.</td><td>Model suggestions → application decisions.</td></tr>
+  <tr><td>Read-only tools</td><td>Integrate with operational systems under narrow contracts.</td><td>Application → business source systems.</td></tr>
+  <tr><td>Analysis</td><td>Explain evidence and uncertainty.</td><td>Source records → untrusted model output.</td></tr>
+  <tr><td>Report validator</td><td>Check response shape and that referenced IDs were returned.</td><td>Untrusted result → user-visible report.</td></tr>
+ </tbody></table></div>
+ <h3>3.2 Minimal typed contracts (examples only)</h3>
+ <p>No full implementation code is included. These small JSON examples show the contracts.</p>
+ <div class="grid-2">
+  <div><h4>Investigation request</h4><pre>{
+  "incident_id": "INC-42",
+  "service": "checkout-api",
+  "question": "Why is it slow?"
+}</pre></div>
+  <div><h4>Metrics tool result</h4><pre>{
+  "evidence_id": "METRIC-07",
+  "p95_latency_ms": 1800,
+  "baseline_p95_ms": 240,
+  "error_rate_percent": 3.1
+}</pre></div>
+  <div><h4>Deployment tool result</h4><pre>{
+  "evidence_id": "CHANGE-03",
+  "version": "v2.7.4",
+  "deployed_at": "09:55"
+}</pre></div>
+  <div><h4>Investigation outcome</h4><pre>{
+  "status": "needs_review",
+  "evidence_ids": [
+    "METRIC-07", "CHANGE-03"
+  ],
+  "action_executed": false
+}</pre></div>
+ </div>
+ <div class="note caution"><strong>Trust the server, not request fields</strong>The backend derives principal, tenant and allowed incident scope from verified context. The user’s request and the model do not provide authoritative identity or permissions.</div>
+ <h3>3.3 Happy-path sequence</h3>
+ <ol><li>Validate incident ID and verify engineer access.</li><li>Call monitoring tool with trusted principal and service scope.</li><li>Call deployment tool under the same source-specific authorization checks.</li><li>Build context with retrieved evidence and provenance.</li><li>Analyze observations and possible causes.</li><li>Validate response shape and referenced evidence IDs.</li><li>Return <code>needs_review</code>; no production action.</li></ol>
+ <h3>3.4 Important failure path: metrics timeout</h3>
+ <pre>+---------------------------+
+| get_metrics: TIMEOUT      |
++---------------------------+
+             |
+             v
++---------------------------+
+| get_deployments: SUCCESS  |
+| CHANGE-03 available       |
++---------------------------+
+             |
+             v
++---------------------------+
+| Insufficient evidence     |
+| No causal conclusion      |
++---------------------------+</pre>
+ <p>Expected status: <code>insufficient_evidence</code>, with <code>missing_evidence: ["metrics"]</code> and no supported root-cause claim. An authorization failure is different: stop before exposing protected evidence.</p>
+</section>
+
+<section class="chapter" id="stage4">
+ <div class="section-head"><span class="stage">STAGE 4</span><h2>Local synthetic mock and verification</h2></div>
+ <p>We then implemented the Stage 3 design in Python using standard-library components and synthetic JSON records. The workflow ran locally without cloud credentials. This stage tested architecture behavior, not real LLM intelligence.</p>
+ <h3>4.1 Main components of the mock</h3>
+ <div class="tablewrap"><table><thead><tr><th>File / role</th><th>What it does</th></tr></thead><tbody>
+  <tr><td><code>auth.py</code></td><td>Simulated identities, tenant scope and incident registry. <strong>Not real authentication.</strong></td></tr>
+  <tr><td><code>tools.py</code></td><td>Two read-only tools and repeated service/tenant access checks.</td></tr>
+  <tr><td><code>investigator.py</code></td><td>Fixed workflow, deterministic analysis, evidence-ID validation and events.</td></tr>
+  <tr><td><code>app.py</code></td><td>Command-line entry point that prints JSON results.</td></tr>
+  <tr><td><code>data/*.json</code></td><td>Fictional monitoring and deployment records.</td></tr>
+  <tr><td><code>specialist_server.py</code></td><td>Optional separate local HTTP specialist. <strong>Not A2A.</strong></td></tr>
+  <tr><td><code>timeline.html</code></td><td>Offline viewer for recorded scenarios. <strong>Not AG-UI.</strong></td></tr>
+ </tbody></table></div>
+ <h3>4.2 Observed scenario outcomes</h3>
+ <div class="tablewrap"><table><thead><tr><th>Scenario</th><th>Expected/recorded result</th><th>Lesson</th></tr></thead><tbody>
+  <tr><td>Authorized investigation</td><td><code>needs_review</code>; two evidence IDs; <code>action_executed=false</code>.</td><td>Evidence is shown for human review.</td></tr>
+  <tr><td>Metrics tool fails</td><td><code>insufficient_evidence</code>; missing metrics; no hypothesis.</td><td>Missing data must not become a confident answer.</td></tr>
+  <tr><td>Wrong service or tenant</td><td><code>ACCESS_DENIED</code>.</td><td>Data access is controlled independently of the model.</td></tr>
+  <tr><td>Fabricated citation</td><td>Output rejected.</td><td>Claimed IDs must exist in returned evidence.</td></tr>
+  <tr><td>Optional specialist available</td><td>Extra unverified diagnostic suggestion.</td><td>Remote suggestions are not authoritative operational data.</td></tr>
+ </tbody></table></div>
+ <div class="note good"><strong>Verification record from the Stage 4 lesson</strong>Eight automated software tests were reported passing. They checked successful execution, denial, cross-tenant access, tool-level authorization, missing metrics, fake citations, unknown incidents and invalid requests. This study guide summarizes the recorded lesson; it does not rerun that earlier project.</div>
+ <h3>4.3 Demo commands (not source files)</h3>
+ <pre>python app.py
+python app.py --fail-metrics
+python app.py --user operator-9
+python -m unittest discover -s tests -v</pre>
+ <p class="caption">Commands from the Stage 4 project. They require that project’s Python files; this study guide intentionally does not embed them.</p>
+ <h3>4.4 What Stage 4 did not prove</h3>
+ <ul><li><strong>Not a real LLM:</strong> <code>MockAnalyst</code> generated deterministic results.</li><li><strong>Not real login:</strong> the <code>--user</code> flag selected a synthetic fixture.</li><li><strong>Not semantic fact verification:</strong> matching evidence IDs does not prove the claim’s truth.</li><li><strong>Not MCP/A2A:</strong> tools were Python calls; optional specialist was plain HTTP JSON.</li><li><strong>Not enterprise availability:</strong> no persistent audit, traffic management, or disaster recovery.</li></ul>
+</section>
+
+<section class="chapter" id="stage5">
+ <div class="section-head"><span class="stage">STAGE 5A</span><h2>Evolution 1: Bounded model tool calling</h2></div>
+ <p>We evolve the baseline only where a new requirement justifies the change: the next diagnostic read may depend on what the incident needs. The model can propose tools, but never execute arbitrary operations.</p>
+ <h3>5.1 Requirement → baseline gap → change → check → trade-off</h3>
+ <div class="tablewrap"><table><thead><tr><th>Design step</th><th>Evolution 1 decision</th></tr></thead><tbody>
+  <tr><td><strong>New requirement</strong></td><td>Permit model-driven selection of approved diagnostic reads.</td></tr>
+  <tr><td><strong>Baseline gap</strong></td><td>Stage 4 always used the same two tools; analysis was deterministic.</td></tr>
+  <tr><td><strong>Architecture change</strong></td><td>Add a bounded agent controller and optional real-model provider. All tool calls pass an application allowlist and incident-scope authorization.</td></tr>
+  <tr><td><strong>Operational check</strong></td><td>Reject unknown tools, unexpected arguments, duplicate/excessive calls and unsupported evidence IDs.</td></tr>
+  <tr><td><strong>Trade-off</strong></td><td>More flexibility and model cost/uncertainty; less freedom than an unbounded autonomous agent.</td></tr>
+ </tbody></table></div>
+ <h3>5.2 Revised request flow</h3>
+ <pre>+-----------------------------------+
+| Engineer requests INC-42 analysis |
++-----------------------------------+
+                  |
+                  v
++-----------------------------------+
+| Verify incident access            |
++-----------------------------------+
+                  |
+                  v
++-----------------------------------+
+| Model proposes read-only tools    |
++-----------------------------------+
+                  |
+                  v
++-----------------------------------+
+| Controller validates entire batch |
+| Allowlist + schema + call budget  |
++-----------------------------------+
+                  |
+                  v
++-----------------------------------+
+| Tools enforce tenant/service scope|
+| Return metrics / deployments      |
++-----------------------------------+
+                  |
+                  v
++-----------------------------------+
+| Model analyzes actual tool results|
++-----------------------------------+
+                  |
+                  v
++-----------------------------------+
+| Validator checks report references|
++-----------------------------------+
+                  |
+                  v
++-----------------------------------+
+| Engineer reviews; no writes       |
++-----------------------------------+</pre>
+ <p class="caption">A two-phase bounded tool-proposal and analysis flow, not an unrestricted iterative autonomous loop.</p>
+ <h3>5.3 Tool contract: model supplies no scope fields</h3>
+ <div class="grid-2">
+  <div><h4>Permitted proposal</h4><pre>{
+  "name": "get_metrics",
+  "arguments": {}
+}</pre></div>
+  <div><h4>Rejected proposal</h4><pre>{
+  "name": "restart_service",
+  "arguments": {
+    "service": "checkout-api"
+  }
+}</pre></div>
+ </div>
+ <p>The service and tenant are derived from the verified incident registry. The model is not permitted to supply <code>user_id</code>, <code>tenant_id</code> or another target service. The tools themselves repeat authorization checks.</p>
+ <h3>5.4 Hard limits in Evolution 1</h3>
+ <div class="tablewrap"><table><thead><tr><th>Control</th><th>Bounded policy</th><th>Safety effect</th></tr></thead><tbody>
+  <tr><td>Allowlist</td><td><code>get_metrics</code> and <code>get_deployments</code> only</td><td>Unknown or write tools are rejected.</td></tr>
+  <tr><td>Argument schema</td><td>Empty JSON object <code>{}</code></td><td>Model cannot change incident scope.</td></tr>
+  <tr><td>Call budget</td><td>Maximum two distinct tool calls per run</td><td>Limits repeated or unbounded execution.</td></tr>
+  <tr><td>Batch validation</td><td>Validate proposed calls before executing any</td><td>A bad proposal cannot partially execute first.</td></tr>
+  <tr><td>Missing mandatory evidence</td><td><code>insufficient_evidence</code></td><td>Skip or timeout does not become a root-cause claim.</td></tr>
+  <tr><td>Report validation</td><td>Check structure and returned evidence IDs</td><td>Reject fabricated references.</td></tr>
+  <tr><td>Remediation tools</td><td>None</td><td>Cannot restart or roll back through this interface.</td></tr>
+ </tbody></table></div>
+ <h3>5.5 Rejection path: a model requests restart</h3>
+ <pre>+----------------------------+
+| Model proposes restart     |
++----------------------------+
+              |
+              v
++----------------------------+
+| Allowlist check            |
++----------------------------+
+              |
+              v
++----------------------------+
+| REJECT TOOL REQUEST        |
+| No source/write call made  |
++----------------------------+</pre>
+ <div class="note caution"><strong>Model output is not authorization</strong>A system prompt saying “do not restart” is useful guidance, but the actual safety control is the application’s deny-by-default dispatch logic and absence of write tools.</div>
+ <h3>5.6 Optional model adapter and verification status</h3>
+ <p>The Stage 5A study implementation included an optional OpenAI Responses API adapter. It used a model request to propose tool calls, then a structured analysis request supplied with the actual results. Tool results were correlated to proposed calls using their <code>call_id</code>. This was not a fully iterative tool-selection loop.</p>
+ <div class="grid-2">
+  <div class="panel"><h4>Locally exercised</h4><p>Scripted model proposals; two-tool dispatch; access-denial and timeout branches; offline adapter parsing/format tests; citation rejection.</p></div>
+  <div class="panel"><h4>Not exercised</h4><p>Live hosted-model calls, real identity provider, production authorization, semantic factual verification, rate limiting and real incident remediation.</p></div>
+ </div>
+ <div class="note good"><strong>Verification record from the Stage 5A lesson</strong>Twenty-three automated tests were reported passing, including prior Stage 4 regression tests and new controller/adapter cases. The live model integration was <strong>not</strong> executed or model-compatibility-verified in that session.</div>
+ <h3>5.7 Stage 5A design judgment</h3>
+ <p>Keep the deterministic workflow for known, predictable steps. Use bounded model-proposed tool selection when adaptive diagnostics provide real value. Never let the model choose an arbitrary target service, grant itself access, or execute a production write.</p>
+</section>
+
+<section class="chapter" id="decisions">
+ <div class="section-head"><span class="stage">RECAP</span><h2>Architecture decisions and open gaps</h2></div>
+ <h3>Decisions made through Stage 5A</h3>
+ <div class="tablewrap"><table><thead><tr><th>Decision</th><th>Reason</th><th>Current result</th></tr></thead><tbody>
+  <tr><td>One incident before many products</td><td>Keep scope testable.</td><td>INC-42 synthetic case.</td></tr>
+  <tr><td>Read-only tools</td><td>Prevent accidental high-impact actions.</td><td>No production write capability.</td></tr>
+  <tr><td>Source-system ownership</td><td>AI text is not authoritative operational data.</td><td>Metrics and changes owned by fixtures/source adapters.</td></tr>
+  <tr><td>Access checks in application and tools</td><td>Model/request data are not credentials.</td><td>Incident/tenant/service denial tests.</td></tr>
+  <tr><td>Evidence IDs and uncertainty</td><td>A hypothesis needs support and limitations.</td><td>Missing-evidence states and citation checks.</td></tr>
+  <tr><td>Bounded model proposals</td><td>Introduce useful flexibility with safe limits.</td><td>Two approved, no-argument tool names.</td></tr>
+  <tr><td>Defer platform protocols</td><td>No demonstrated reuse/delegation need yet.</td><td>MCP/A2A/GenUI not required in current implementation.</td></tr>
+ </tbody></table></div>
+ <h3>What we have deliberately not built</h3>
+ <div class="tablewrap"><table><thead><tr><th>Future capability</th><th>Introduce when this requirement appears</th></tr></thead><tbody>
+  <tr><td>MCP / tool governance</td><td>Several independent AI clients need interoperable, reusable governed tools.</td></tr>
+  <tr><td>RAG / runbook retrieval</td><td>Large, permissioned and changing document collections become necessary.</td></tr>
+  <tr><td>Durable orchestration / approvals</td><td>Long-running work or production writes must survive interruption and require approved action.</td></tr>
+  <tr><td>AG-UI, A2UI or MCP Apps</td><td>Specific frontend streaming, declarative rendering or embedded-host UI needs emerge.</td></tr>
+  <tr><td>Multi-agent / A2A</td><td>Independent specialist teams or services require delegated tasks with their own lifecycle.</td></tr>
+  <tr><td>Enterprise operations</td><td>Real users, tenants, model changes and traffic justify IAM, tracing, eval gates, quotas and recovery.</td></tr>
+ </tbody></table></div>
+ <div class="note"><strong>Next learning step — not included in this guide</strong>Stage 5 Evolution 2 will examine reusable tool integrations and when MCP is worth its additional boundary. The current guide ends at Stage 5 Evolution 1.</div>
+</section>
+
+<section class="chapter" id="glossary">
+ <div class="section-head"><span class="stage">REFERENCE</span><h2>Glossary and source map</h2></div>
+ <div class="glossary">
+  <div class="term"><b>p95 latency</b><span>95th percentile of request latency; 95% of measured requests are at or below this value.</span></div>
+  <div class="term"><b>Evidence ID</b><span>Stable reference to a record retrieved from an approved source.</span></div>
+  <div class="term"><b>Grounding</b><span>Supporting generated claims with retrieved evidence.</span></div>
+  <div class="term"><b>Authorization (AuthZ)</b><span>Decision that a verified actor may perform a specified operation on a resource.</span></div>
+  <div class="term"><b>Tool allowlist</b><span>Explicit set of permitted executable operations.</span></div>
+  <div class="term"><b>Tool budget</b><span>Limit on number or cost of tool calls during one run.</span></div>
+  <div class="term"><b>Structured output</b><span>Model response shaped according to a defined schema.</span></div>
+  <div class="term"><b>Trust boundary</b><span>Point where input/data crosses into a system with different authority.</span></div>
+  <div class="term"><b>MCP</b><span>Tool/data interoperability boundary between compatible AI host clients and servers.</span></div>
+  <div class="term"><b>A2A</b><span>Agent-to-agent communication across independently operating services.</span></div>
+  <div class="term"><b>AG-UI</b><span>Agent-to-frontend run/event protocol, distinct from MCP tool transport.</span></div>
+  <div class="term"><b>Idempotency</b><span>Property that retrying the same logical action does not create duplicate effects; needed when writes arrive later.</span></div>
+ </div>
+ <h3>Source materials</h3>
+ <p>This guide consolidates the teaching decisions, examples and local test reports from our lessons through Stage 5A, aligned with the following flat Project sources:</p>
+ <ul>
+  <li><code>SKILL.md</code> — progressive teaching contract.</li>
+  <li><code>sdt-catalog.md</code> — design #73 route.</li>
+  <li><code>sdt-module-09-advanced-ai.md</code> — primary capstone module.</li>
+  <li><code>sdt-anchor-73-unified-enterprise-agentic-platform.md</code> — case-specific sequence and trade-offs.</li>
+  <li><code>concept-protocol-boundaries.md</code> — why MCP, A2A and UI protocols solve different needs.</li>
+  <li><code>concept-production-controls.md</code> — authorization, groundedness, observability and failure controls.</li>
+ </ul>
+ <p><strong>Official documentation for future implementation checks:</strong> <a href="https://developers.openai.com/api/docs/guides/function-calling" target="_blank" rel="noopener noreferrer">OpenAI function calling</a> · <a href="https://developers.openai.com/api/docs/guides/structured-outputs" target="_blank" rel="noopener noreferrer">OpenAI structured outputs</a> · <a href="https://modelcontextprotocol.io/specification" target="_blank" rel="noopener noreferrer">MCP specification</a>. Version-dependent SDK behavior should be checked again before production use.</p>
+ <div class="note caution"><strong>Accuracy note</strong>All incident figures are fictional. The Stage 4 (8 tests) and Stage 5A (23 tests) numbers are taken from the earlier lesson reports, not rerun as part of generating this standalone study guide. This HTML includes no credentials, complete Python code or live API calls.</div>
+</section>
+<footer>AI Design #73 · Enterprise IT Operations Assistant · Coverage: Stage 1 through Stage 5 Evolution 1 · Offline educational reference · <a href="#top">Back to top</a></footer>
+</div></div>
+<script>
+(function(){
+ const details=Array.from(document.querySelectorAll('details'));
+ document.getElementById('expandBtn').addEventListener('click',()=>details.forEach(d=>d.open=true));
+ document.getElementById('collapseBtn').addEventListener('click',()=>details.forEach(d=>d.open=false));
+ document.getElementById('printBtn').addEventListener('click',()=>window.print());
+ // Ensure collapsed notes are included in print/PDF without changing reader state afterward.
+ let state=[];
+ window.addEventListener('beforeprint',()=>{state=details.map(d=>d.open);details.forEach(d=>d.open=true)});
+ window.addEventListener('afterprint',()=>details.forEach((d,i)=>d.open=state[i]||false));
+})();
+</script>
+</body>
+</html>
