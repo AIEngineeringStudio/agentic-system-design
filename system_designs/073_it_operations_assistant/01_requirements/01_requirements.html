@@ -1,0 +1,667 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Design #73 — Unified Enterprise Agentic Platform</title><style>
+        /* The original PDF skill style sheet is embedded below. */
+        /* Architect's Field Notes — original study-guide design recreation.
+           Standalone builder embeds this file into its generated HTML. */
+        :root {
+            --navy: #112c3a;
+            --header: #193a4b;
+            --ink: #273944;
+            --heading: #17313e;
+            --muted: #75838d;
+            --line: #d9e2e7;
+            --zebra: #f6f8f9;
+            --accent: #64c8e6;
+            --accent-soft: #eaf8fc;
+        }
+
+        @page {
+            size: A4;
+            margin: 19mm 19mm 19mm;
+            @top-left {
+                content: "INTERVIEW / FIELD GUIDE";
+                color: #75838d;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 7pt;
+                letter-spacing: .05em;
+                vertical-align: middle;
+            }
+            @top-right {
+                content: string(running-topic);
+                color: #75838d;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 7pt;
+                letter-spacing: .02em;
+                vertical-align: middle;
+            }
+            @bottom-left {
+                content: "SENIOR / PRINCIPAL SOLUTION ARCHITECT";
+                color: #9aa5ae;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 6.3pt;
+                letter-spacing: .03em;
+                vertical-align: middle;
+            }
+            @bottom-right {
+                content: counter(page, decimal-leading-zero);
+                color: #394b56;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-weight: 700;
+                font-size: 7pt;
+                vertical-align: middle;
+            }
+        }
+
+        @page cover {
+            size: A4;
+            margin: 0;
+            @top-left {
+                content: none;
+            }
+            @top-right {
+                content: none;
+            }
+            @bottom-left {
+                content: none;
+            }
+            @bottom-right {
+                content: none;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", "DejaVu Sans", sans-serif;
+            font-size: 9.4pt;
+            font-weight: 400;
+            line-height: 1.55;
+            color: var(--ink);
+            background: #fff;
+            overflow-wrap: break-word;
+        }
+
+        .cover {
+            page: cover;
+            break-after: page;
+            height: 297mm;
+            width: 210mm;
+            overflow: hidden;
+            position: relative;
+            background: var(--navy);
+            color: #fff;
+            padding: 29.6mm 26mm;
+        }
+
+        .cover::before, .cover::after {
+            content: "";
+            position: absolute;
+            border: .55pt solid rgba(255, 255, 255, .08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .cover::before {
+            width: 158mm;
+            height: 158mm;
+            right: -84mm;
+            top: -61mm;
+        }
+
+        .cover::after {
+            width: 108mm;
+            height: 108mm;
+            right: -28mm;
+            bottom: -75mm;
+        }
+
+        .cover-brand {
+            font-size: 9.5pt;
+            font-weight: 800;
+            letter-spacing: .31em;
+            text-transform: uppercase;
+            color: #dceaf0;
+        }
+
+        .cover-series {
+            font-size: 8pt;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: #98b3c1;
+            margin-top: 7mm;
+        }
+
+        .cover-accent-bar {
+            position: absolute;
+            left: 26mm;
+            top: 80mm;
+            height: 3.5mm;
+            width: 21mm;
+            background: var(--accent);
+        }
+
+        .cover-title {
+            position: absolute;
+            left: 25.5mm;
+            right: 25mm;
+            top: 97mm;
+            font-family: "Inter Display", "Inter", "DejaVu Sans", sans-serif;
+            font-size: 42pt;
+            font-weight: 800;
+            letter-spacing: -.043em;
+            line-height: 1.08;
+            color: #fff;
+        }
+
+        .cover-title .second {
+            display: block;
+            color: var(--accent);
+        }
+
+        .cover-title.long {
+            font-size: 37pt;
+        }
+
+        .cover-sub {
+            position: absolute;
+            left: 26mm;
+            right: 31mm;
+            top: 173.5mm;
+            color: #bdcdd5;
+            font-size: 11.5pt;
+            line-height: 1.7;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+        }
+
+        .cover-note {
+            color: #91aab7;
+            text-transform: none;
+            font-size: 9pt;
+            letter-spacing: .01em;
+            margin-top: 7mm;
+            line-height: 1.6;
+        }
+
+        .cover-bottom {
+            position: absolute;
+            bottom: 31mm;
+            left: 26mm;
+            font-size: 7.8pt;
+            line-height: 1.9;
+            letter-spacing: .065em;
+            color: #cfdae0;
+        }
+
+        .cover-rule {
+            position: absolute;
+            bottom: 62mm;
+            height: .35pt;
+            left: 26mm;
+            right: 26mm;
+            background: rgba(255, 255, 255, .15);
+        }
+
+        .cover-number {
+            position: absolute;
+            bottom: 29mm;
+            right: 26mm;
+            color: var(--accent);
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 39pt;
+            font-weight: 800;
+            letter-spacing: -.04em;
+        }
+
+        /* Introduction + automatically generated navigable contents. */
+        .preface {
+            break-after: page;
+        }
+
+        .preface-label, .toc-overline {
+            color: var(--accent);
+            font-size: 7.6pt;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+
+        .preface h1 {
+            display: none;
+        }
+
+        .preface h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -.02em;
+            color: var(--heading);
+            margin: 5mm 0 5mm;
+            border-bottom: .5pt solid var(--line);
+            padding-bottom: 2.5mm;
+        }
+
+        .preface p {
+            font-size: 9.5pt;
+            line-height: 1.6;
+        }
+
+        .toc {
+            border-top: .5pt solid var(--line);
+            margin-top: 8mm;
+            padding-top: 6.5mm;
+        }
+
+        .toc h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 21pt;
+            letter-spacing: -.03em;
+            margin: 2mm 0 5mm;
+            border: 0;
+            padding: 0;
+        }
+
+        .toc ol {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc li {
+            display: flex;
+            align-items: baseline;
+            gap: 5mm;
+            font-size: 9.1pt;
+            padding: 2.7mm 1mm;
+            border-top: .5pt solid #e7ecef;
+            break-inside: avoid;
+        }
+
+        .toc li:last-child {
+            border-bottom: .5pt solid #e7ecef;
+        }
+
+        .toc .toc-num {
+            width: 8mm;
+            flex: 0 0 8mm;
+            font-size: 7.5pt;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .toc a {
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        /* Continuous editorial body: sections can flow across pages. */
+        .content {
+            padding: 0;
+        }
+
+        .content h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 17.2pt;
+            font-weight: 700;
+            color: var(--heading);
+            line-height: 1.28;
+            letter-spacing: -.024em;
+            margin: 11mm 0 5mm;
+            padding-top: 5.5mm;
+            border-top: .6pt solid var(--line);
+            break-after: avoid;
+        }
+
+        .content h2::before {
+            content: "CHAPTER";
+            display: block;
+            color: var(--accent);
+            font-size: 7pt;
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: .19em;
+            margin-bottom: 2.2mm;
+        }
+
+        .content h2:first-child {
+            margin-top: 0;
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .content h3 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 11.6pt;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -.012em;
+            color: var(--heading);
+            margin: 7mm 0 2.5mm;
+            break-after: avoid;
+        }
+
+        .content h4, .preface h3 {
+            font-size: 10pt;
+            color: var(--heading);
+            margin: 5mm 0 2mm;
+            break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 3.15mm;
+            orphans: 2;
+            widows: 2;
+        }
+
+        strong, b {
+            font-weight: 700;
+            color: #1a3341;
+        }
+
+        a {
+            color: #23778e;
+            text-decoration: none;
+        }
+
+        hr {
+            height: 0;
+            border: none;
+            border-top: .55pt solid #d9e2e7;
+            margin: 7mm 0;
+        }
+
+        ul, ol {
+            margin: 2.5mm 0 4mm;
+            padding-left: 6mm;
+        }
+
+        li {
+            padding-left: .5mm;
+            margin: 1.5mm 0;
+        }
+
+        li::marker {
+            color: var(--accent);
+        }
+
+        li p {
+            margin: 0;
+        }
+
+        blockquote {
+            background: var(--accent-soft);
+            border-left: 2.5pt solid var(--accent);
+            margin: 4mm 0 6mm;
+            padding: 4mm 5.2mm;
+            color: #2b4654;
+            font-size: 9.4pt;
+            line-height: 1.56;
+        }
+
+        blockquote p {
+            margin-bottom: 2.3mm;
+        }
+
+        blockquote p:last-child {
+            margin-bottom: 0;
+        }
+
+        blockquote strong {
+            color: #143743;
+        }
+
+        table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+            font-size: 8pt;
+            line-height: 1.42;
+            color: var(--ink);
+            margin: 3.6mm 0 4.8mm;
+            overflow-wrap: anywhere;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        thead th {
+            background: var(--header);
+            color: #fff;
+            text-align: left;
+            font-weight: 700;
+            padding: 2.2mm 2.4mm;
+            vertical-align: top;
+            border-right: 1pt solid rgba(255, 255, 255, .04);
+        }
+
+        thead th strong {
+            color: #fff;
+        }
+
+        tbody td {
+            border-bottom: .35pt solid #e3e9ed;
+            padding: 2.3mm 2.4mm;
+            vertical-align: top;
+        }
+
+        tbody tr:nth-child(even) {
+            background: var(--zebra);
+        }
+
+        tr {
+            break-inside: avoid;
+        }
+
+        table.wide {
+            font-size: 7.15pt;
+        }
+
+        table.wide th, table.wide td {
+            padding: 1.8mm;
+        }
+
+        code {
+            font-family: "DejaVu Sans Mono", monospace;
+            font-size: .91em;
+            color: #22445a;
+        }
+
+        pre {
+            color: #dce9f0;
+            background: #173746;
+            padding: 4mm 5mm;
+            font-size: 8.3pt;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin: 4mm 0;
+        }
+
+        pre code {
+            color: inherit;
+        }
+
+        .task-list-item {
+            list-style: none;
+            margin-left: -5mm;
+        }
+
+        .task-box {
+            display: inline-block;
+            border: .85pt solid #7b8b93;
+            width: 2.6mm;
+            height: 2.6mm;
+            margin-right: 3mm;
+            vertical-align: baseline;
+        }
+
+        .task-box.checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .caption {
+            color: var(--muted);
+            font-size: 7.8pt;
+        }
+
+        @media screen {
+            body {
+                max-width: 210mm;
+                margin: 0 auto;
+                box-shadow: 0 0 25px #ddd;
+            }
+        }
+
+    
+:root{--accent:#64C8E6;--accent-soft:#EAF8FC;}@page{@top-right{content:"AI DESIGN #73 — UNIFIED ENTERPRISE AGENTIC PLATFORM";}@bottom-left{content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";}}
+@media screen{body{max-width:210mm;margin:0 auto;box-shadow:0 0 20px #dce2e6;}}</style></head><body><section class="cover"><div class="cover-brand">THE ARCHITECT&#39;S FIELD NOTES</div><div class="cover-series">BEHAVIORAL INTERVIEW STUDY GUIDE &nbsp;/&nbsp; 01 OF 01</div><div class="cover-accent-bar"></div><div class="cover-title long">AI Design #73 — Unified<span class="second">Enterprise Agentic Platform</span></div><div class="cover-sub">THINK CLEARLY. DECIDE WITH EVIDENCE. DELIVER WITH CONFIDENCE.<div class="cover-note">Evidence-based STAR answers, senior-level judgment, and focused interview rehearsal.</div></div><div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR SENIOR / PRINCIPAL SOLUTION ARCHITECT INTERVIEWS<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div><div class="cover-number">01</div></section><section class="preface"><div class="preface-label">YOUR STUDY COMPANION</div><h2>Enterprise IT Operations Assistant — Stages 1–4 and Stage 5, Evolution 1</h2>
+<p><strong>Case:</strong> Fictional Checkout API incident <code>INC-42</code></p>
+<p><strong>Learning approach:</strong> Problem → Concepts → Minimal architecture → Local mock → Production evolution</p>
+<p><strong>Coverage:</strong> Stage 1, Stage 2, Stage 3, Stage 4, and <strong>Stage 5 Evolution 1 (bounded model-driven tool calling)</strong>. Stage 5 Evolution 2 and Stage 6 are <strong>not covered</strong>.</p>
+<p><strong>Data:</strong> All incident records, identities, metrics, and deployment records in this guide are <strong>synthetic</strong>.</p>
+<blockquote><p><strong>Safety rule:</strong> AI-generated explanations and tool requests are not authorization. The application and business systems enforce permissions. No part of the implemented baseline can modify production systems.</p></blockquote>
+<h2>What we have built so far</h2>
+<p>We are <strong>not designing the entire enterprise platform in one step</strong>. Each stage adds only the capabilities justified by INC-42. The platform-wide concerns remain future work.</p>
+<ul><li><strong>Stage 1</strong> — Problem, actors, priorities and trust boundaries</li><li><strong>Stage 2</strong> — LLMs, workflows, tool calling and grounding</li><li><strong>Stage 3</strong> — Two-tool read-only system and typed contracts</li><li><strong>Stage 4</strong> — Runnable synthetic Python workflow and tests</li><li><strong>Stage 5A</strong> — Bounded model tool selection and enforcement</li></ul>
+<blockquote><p><strong>Central lesson</strong> The LLM may explain evidence and propose what to inspect next. **Application</p></blockquote>
+<p>code and business systems** decide what data can be read and what actions can</p>
+<blockquote><p>run. No production write action exists in our current design.</p></blockquote>
+<h1>Stage 1 — Problem Definition and Requirements</h1>
+<p>An enterprise runs an e-commerce platform. Customers use its <strong>Checkout API</strong> to complete purchases.</p><nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol><li><span class="toc-num">01</span><a href="#11-business-problem">1.1 Business problem</a></li><li><span class="toc-num">02</span><a href="#12-representative-user-request">1.2 Representative user request</a></li><li><span class="toc-num">03</span><a href="#13-actors">1.3 Actors</a></li><li><span class="toc-num">04</span><a href="#14-functional-requirements">1.4 Functional requirements</a></li><li><span class="toc-num">05</span><a href="#15-ranked-non-functional-requirements">1.5 Ranked non-functional requirements</a></li><li><span class="toc-num">06</span><a href="#16-sources-of-truth">1.6 Sources of truth</a></li><li><span class="toc-num">07</span><a href="#17-trust-boundaries">1.7 Trust boundaries</a></li><li><span class="toc-num">08</span><a href="#18-first-version-scope">1.8 First-version scope</a></li><li><span class="toc-num">09</span><a href="#next-stage-2-essential-concepts">Next — Stage 2: Essential Concepts</a></li></ol></nav></section><main class="content"><h2 id="11-business-problem">1.1 Business problem</h2>
+<p>Customers experience slow checkouts, and the IT Operations team receives a severity-2 alert.</p>
+<p>Monitoring reports a p95 latency rise from <strong>240 ms to 1,800 ms</strong>, while error rate rises from <strong>0.4% to 3.1%</strong>. Deployment <code>v2.7.4</code> occurred at 09:55, shortly before the degradation.</p>
+<h3 id="fictional-incident-inc-42-checkout-api-is-slow-sev-2">Fictional incident: INC-42 Checkout API is slow [SEV-2]</h3>
+<table><thead><tr><th>Signal</th><th>Normal</th><th>During incident</th></tr></thead><tbody><tr><td>p95 latency</td><td>240 ms</td><td>1,800 ms</td></tr><tr><td>Error rate</td><td>0.4%</td><td>3.1%</td></tr><tr><td>Deployment</td><td>—</td><td><code>v2.7.4</code> at 09:55</td></tr></tbody></table>
+<p>Illustrative observations:</p>
+<ul><li>Latency is near normal around 09:45.</li><li>Deployment <code>v2.7.4</code> occurs at 09:55.</li><li>Latency increases sharply afterward, reaching 1,800 ms around 10:10.</li><li><strong>Temporal correlation does not prove the deployment caused the slowdown.</strong></li></ul>
+<blockquote><p><strong>Do not confuse correlation with cause</strong> A deployment near the incident is a lead for investigation, not proof that the deployment caused the slowdown.</p></blockquote>
+<p>The on-call engineer needs to answer:</p>
+<ul><li>What changed?</li><li>What evidence explains the slowdown?</li><li>What is the most likely cause?</li><li>What should we investigate or do next?</li><li>Can we safely recover the service?</li></ul>
+<p>The on-call engineer currently checks monitoring dashboards, logs, deployments, incident records, and runbooks separately.</p>
+<p>The process is slow, repetitive and vulnerable to human error under pressure.</p>
+<h3 id="business-objective">Business objective</h3>
+<p>Help IT Operations engineers <strong>investigate incidents faster</strong>, <strong>understand evidence, and recommend safe next steps</strong>, while retaining human responsibility for remediation.</p>
+<p>Desired outcomes include:</p>
+<ul><li>lower investigation effort,</li><li>potentially shorter mean time to resolution (MTTR),</li><li>fewer unsafe operational decisions.</li></ul>
+<p>These are <strong>goals, not measured improvements</strong>.</p>
+<h3 id="current-architectural-limit">Current architectural limit</h3>
+<p>One bounded incident investigator, two read-only tools, synthetic records, an optional model adapter, and no enterprise-scale platform services.</p>
+<h2 id="12-representative-user-request">1.2 Representative user request</h2>
+<blockquote><p>Investigate incident INC-42. Checkout API latency increased. Find possible causes and recommend the safest next step.</p></blockquote>
+<h3 id="121-representative-user-journey">1.2.1 Representative user journey</h3>
+<p>Our representative request:</p>
+<blockquote><p>"Investigate incident INC-42. Checkout API latency increased. Find possible causes and recommend the safest next step."</p></blockquote>
+<ol start="1"><li><strong>Open the incident</strong>. The engineer selects <code>INC-42</code> and begins the  investigation.</li><li><strong>Verify access</strong>. The application checks the engineer's identity and  permissions before retrieving protected information.</li><li><strong>Collect evidence</strong>. The assistant obtains latency measurements, error  rates and recent deployment information from approved systems.</li><li><strong>Analyze findings</strong>. The assistant compares the incident timeline with  recent changes and identifies possible explanations.</li><li><strong>Present conclusions</strong>. It separates confirmed observations from hypotheses,  identifies evidence sources and reports missing information.</li><li><strong>Attach evidence</strong>. The assistant links relevant data sources to the  findings.</li><li><strong>Recommend next steps</strong>. The assistant does not independently change  production.</li><li><strong>Engineer reviews</strong>. The engineer reads the report and decides whether to  take action.</li></ol>
+<p><strong>Example of the expected response</strong></p>
+<pre><code>**Incident investigation — INC-42**                             [Needs review]
+
+**Observed facts**
+
+- Checkout API p95 latency increased from 240 ms to 1,800 ms.   
+  Evidence: `METRIC-07`.
+
+- Deployment v2.7.4 occurred shortly before degradation.        
+  Evidence: `CHANGE-03`.
+
+**Hypothesis**
+The recent deployment may be contributing to the slowdown.
+Available evidence does not establish the root cause.
+
+**Recommended next step**
+Compare request latency and database connection metrics before and after
+deployment.
+
+If findings support a rollback, ask the authorized operator to review that
+option.
+
+[No production action executed. Synthetic example output.]
+</code></pre>
+<p>Notice that the result contains observations, a hypothesis and a recommendation. These are three different kinds of information.</p>
+<p>A well-designed assistant must not turn a weak hypothesis into a confirmed root cause.</p>
+<h3 id="business-level-sequence">Business-level sequence</h3>
+<pre><code>+-------------------------------+
+|       On-call engineer        |
+|                               |
+| Investigate INC-42:           |
+| "Why is Checkout API slow?"v  |
++-------------------------------+
+               |
+               v
++-------------------------------+
+|   IT Operations Assistant     |
+|                               |
+| Collect and evaluate evidence |
++-------------------------------+               
+               |
+               v
++-------------------------------+
+|   Approved source systems     |
+|                               |
+|  Metrics, changes, logs       |
+|  and operational records      |
++-------------------------------+
+               |
+               v
++-------------------------------+
+|  Evidence-backed report       |
+|                               |
+|  Facts, hypotheses,           |
+|  and recommended next step    |
++-------------------------------+
+               |
+               v
++-------------------------------+
+|  Engineer reviews and decides |
++-------------------------------+
+</code></pre>
+<p>This is a <strong>business flow</strong>, not yet a deployment architecture.</p>
+<h2 id="13-actors">1.3 Actors</h2>
+<table><thead><tr><th>Actor</th><th>Main responsibility</th><th>Authority boundary</th></tr></thead><tbody><tr><td>On-call engineer</td><td>Starts investigations and reviews findings</td><td>May read only permitted operational evidence</td></tr><tr><td>Incident commander</td><td>Coordinates response and incident status</td><td>Manages incident within assigned role</td></tr><tr><td>SRE / service owner</td><td>Checks technical findings and remediation options</td><td>Can operate owned services under policy</td></tr><tr><td>Change approver</td><td>Reviews proposed production changes</td><td>Approves only eligible actions</td></tr><tr><td>Security / compliance team</td><td>Defines identity, policy, and audit rules</td><td>Governs identity, policy and security controls</td></tr><tr><td>Shared platform team</td><td>Owns reusable AI platform capabilities later</td><td>Does not own every service's business semantics</td></tr></tbody></table>
+<p><strong>Primary first-version user:</strong> The on-call engineer.</p>
+<h2 id="14-functional-requirements">1.4 Functional requirements</h2>
+<p>Functional requirements describe what the system must do.</p>
+<p>Priority definitions:</p>
+<ul><li><strong>P0 — Must have:</strong> Necessary for a useful, safe first version.</li><li><strong>P1 — Should have:</strong> Important for a stronger operational experience.</li><li><strong>P2 — Later:</strong> Deferred until requirements justify the complexity.</li></ul>
+<table class="wide"><thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Architectural significance</th><th>Architectural consequence</th></tr></thead><tbody><tr><td>F1</td><td>Accept an incident ID, service, and question</td><td>P0</td><td>Establishes a clear investigation target</td><td>Requires an investigation entry point</td></tr><tr><td>F2</td><td>Retrieve authorized metrics and deployment data</td><td>P0</td><td>Requires reliable access to existing systems</td><td>Requires approved read-only integrations</td></tr><tr><td>F3</td><td>Explain observations and possible causes using evidence</td><td>P0</td><td>Makes source provenance necessary</td><td>Requires provenance and report structure</td></tr><tr><td>F4</td><td>Recommend safe next steps without executing remediation</td><td>P0</td><td>Separates AI recommendations from business actions</td><td>Separates recommendation from action</td></tr><tr><td>F5</td><td>Enforce user-specific data access</td><td>P0</td><td>Requires authorization outside the model</td><td>Requires server-side authorization</td></tr><tr><td>F6</td><td>Handle missing, stale, or conflicting evidence</td><td>P1</td><td>Requires an explicit uncertainty and failure path</td><td>Requires incomplete/uncertain result states</td></tr><tr><td>F7</td><td>Present an incident timeline and readable report</td><td>P1</td><td>Shapes the future user experience</td><td>Requires useful presentation and event data</td></tr><tr><td>F8</td><td>Reuse tools across teams and applications</td><td>P2</td><td>May later justify shared platform interfaces</td><td>May later justify a shared protocol/catalog</td></tr><tr><td>F9</td><td>Support human-approved remediation</td><td>P2</td><td>May later require durable state and action auditing</td><td>May later require durable workflow state</td></tr></tbody></table>
+<p>F9 is intentionally deferred. The first version is read-only.</p>
+<h2 id="15-ranked-non-functional-requirements">1.5 Ranked non-functional requirements</h2>
+<table><thead><tr><th>Rank</th><th>Constraint</th><th>First-version rule</th><th>Why</th></tr></thead><tbody><tr><td>1</td><td>Identity and authorization</td><td>No unauthorized incident access</td><td>Operational evidence can be sensitive or tenant-scoped.</td></tr><tr><td>2</td><td>Action safety</td><td>Zero production writes</td><td>A wrong action can worsen an outage</td></tr><tr><td>3</td><td>Evidence integrity</td><td>Material findings cite available evidence</td><td>A plausible answer without valid evidence is not reliable.</td></tr><tr><td>4</td><td>Reliability and responsiveness</td><td>Explicit tool failures and usable partial results</td><td>Engineers need honest responses during incidents</td></tr><tr><td>5</td><td>Auditability and cost</td><td>Track investigation steps and bound work</td><td>Operators need traceable, predictable execution.</td></tr></tbody></table>
+<p><strong>Illustrative future latency target:</strong> An initial investigation summary within 30 seconds for 95% of requests. This was a proposed design target, <strong>not an agreed or measured SLO</strong>.</p>
+<p>A faster response does not justify skipping authorization or inventing unavailable facts.</p>
+<h2 id="16-sources-of-truth">1.6 Sources of truth</h2>
+<table><thead><tr><th>Information</th><th>Authoritative owner</th><th>Assistant's permitted role</th></tr></thead><tbody><tr><td>Latency and error measurements</td><td>Monitoring system</td><td>Read and explain authorized records</td></tr><tr><td>Application logs</td><td>Logging system</td><td>Read recent changes (permitted records); do not infer causality automatically</td></tr><tr><td>Deployments</td><td>Deployment/change system</td><td>Read versions and timestamps</td></tr><tr><td>Incident metadata</td><td>Incident management system</td><td>Read permitted incident state; never silently rewrite it</td></tr><tr><td>Runbooks</td><td>Approved runbook repository</td><td>Retrieve guidance when later added</td></tr><tr><td>Identity and permissions</td><td>Enterprise identity and business policy systems</td><td>Use independently verified decisions; do not invent grants.</td></tr><tr><td>Remediation execution</td><td>Authorized operations service and human process</td><td>Recommend only in the initial scope.</td></tr></tbody></table>
+<p>The model's answer is <strong>not</strong> a source of operational truth.</p>
+<h2 id="17-trust-boundaries">1.7 Trust boundaries</h2>
+<ol start="1"><li>A chat request does not grant access to all services.</li><li>The API must derive identity and permissions from verified server-side  context.</li><li>Each data source must enforce its own authorization rules.</li><li>Tool responses, logs, documents, and model-generated text are <strong>untrusted  data</strong>, not executable instructions.</li><li>A suggested rollback or an approval button is <strong>not</strong> authorization to  perform a rollback.</li></ol>
+<h2 id="18-first-version-scope">1.8 First-version scope</h2>
+<p><strong>Included:</strong></p>
+<ul><li>One fictional enterprise and IT Operations team.</li><li>One incident: <code>INC-42</code>, Checkout API.</li><li>One authorized on-call engineer.</li><li>Two read-only capabilities: retrieve metrics and deployment history.</li><li>Evidence-backed findings, uncertainty, and recommendations.</li><li>Synthetic source data only.</li></ul>
+<p><strong>Excluded initially:</strong></p>
+<ul><li>Automatic restart, rollback, or infrastructure writes.</li><li>Real credentials or production integrations.</li><li>Multi-agent delegation, MCP, A2A, RAG, and advanced UI protocols.</li><li>Global multi-region platform infrastructure.</li></ul>
+<h3 id="explicit-assumptions">Explicit assumptions</h3>
+<p><strong>Working assumptions:</strong> The incident has a known tenant and service; the authorized operator may read its records; two sources are enough for the first demonstration; the application has no write permission.</p>
+<table><thead><tr><th>Assumption</th><th>Reason</th></tr></thead><tbody><tr><td>All incident data is synthetic</td><td>Safe, reproducible learning</td></tr><tr><td>One authorized engineer can access the selected evidence</td><td>Keeps the first authorization boundary small</td></tr><tr><td>Metrics and deployment history are available through read-only interfaces</td><td>Supports the first investigation workflow</td></tr><tr><td>The assistant has no production write permission</td><td>Prevents unintended side effects</td></tr><tr><td>Deployment timing alone cannot confirm root cause</td><td>Forces evidence-based reasoning</td></tr></tbody></table>
+<h3 id="stage-1-result">Stage 1 result</h3>
+<p>We defined an <strong>investigation copilot</strong>, not an autonomous operations controller. Safety, provenance, and ownership take priority over sophistication.</p>
+<hr>
+<h2 id="next-stage-2-essential-concepts">Next — Stage 2: Essential Concepts</h2>
+<p>Stage 2 will explain the minimum concepts needed to turn our requirements into a working assistant:</p>
+<ul><li>What an LLM, an AI agent and tool calling mean in this incident.</li><li>How the assistant uses evidence from real source systems.</li><li>Why deterministic workflows may be simpler than autonomous agent behavior.</li><li>How to separate model decisions from authorized operations.</li></ul>
+<p>We will use the same INC-42 incident throughout, without jumping to the full production architecture.</p>
+<p>Continue to Stage 2</p></main></body></html>
