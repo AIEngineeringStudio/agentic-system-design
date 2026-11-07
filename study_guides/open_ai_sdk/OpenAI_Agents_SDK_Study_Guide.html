@@ -1,0 +1,1781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>OpenAI Agents SDK — Architecture Study Handbook</title>
+<style>
+:root {color-scheme:light;--ink:#1a2534;--muted:#576679;--line:#dbe3ed;--tint:#eff5fb;--accent:#1462a4;--paper:#fff;--soft:#f6f9fc}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:15px;line-height:1.67}
+button,input{font:inherit} a{color:var(--accent);text-underline-offset:2px} a:hover{text-decoration:underline}
+.wrap{display:grid;grid-template-columns:284px minmax(0,1fr);min-height:100vh}
+aside{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);background:#f9fbfd;padding:25px 20px}
+.brand{display:flex;gap:11px;align-items:center;padding-bottom:15px;border-bottom:1px solid var(--line);margin-bottom:15px}
+.logo{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:#e4effb;color:#205684;font-weight:800}
+.brand b{font-size:14px;line-height:1.35}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+#toc-search{width:100%;background:#fff;border:1px solid #cbd6e4;padding:10px;border-radius:8px;margin:6px 0 12px;color:var(--ink)}
+.nav-caption{font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#66788b;margin:9px 0}
+.toc-link{display:block;text-decoration:none;border-radius:6px;padding:5px 7px;margin:1px 0;color:#415267;font-size:12px;line-height:1.5}
+.toc-link:hover{background:#eaf2fc;text-decoration:none}
+.toc-link.level1{color:#1d435f;font-weight:750;margin-top:9px}
+.toc-link.level2{font-weight:600;margin-left:5px}
+.toc-link.level3{margin-left:18px;font-size:11px;color:#6a7787}
+main{min-width:0;padding:38px min(5vw,76px) 70px}
+article{max-width:960px;margin:0 auto}
+.toolbar{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:1px solid var(--line);margin-bottom:26px;padding-bottom:15px;flex-wrap:wrap}
+.toolbar .meta{color:var(--muted);font-size:12px}
+.print-btn{border:1px solid #aac1d7;border-radius:8px;background:#f1f7fc;color:#1d5487;padding:9px 13px;font-weight:650;cursor:pointer}
+.print-btn:hover{background:#e5f0fa}
+h1,h2,h3,h4{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.22;letter-spacing:-.022em;scroll-margin-top:20px}
+h1{font-size:38px;color:#142f49;margin:24px 0 20px}
+h2{font-size:24px;color:#173d62;border-bottom:1px solid #d4e0eb;padding-bottom:9px;margin-top:50px;margin-bottom:16px}
+h3{font-size:18px;color:#204d73;margin-top:30px}
+h4{font-size:16px;color:#275b80;margin-top:26px}
+p{margin:12px 0 15px}
+ul,ol{padding-left:26px} li{margin:5px 0}
+blockquote{background:#f0f6fd;border-left:4px solid #4f92c6;color:#26435c;padding:8px 19px;margin:21px 0;border-radius:0 7px 7px 0}
+blockquote p{margin:10px 0}
+pre{background:#f4f7fa;color:#1e3041;padding:16px 18px;border:1px solid #dbe4ed;border-radius:10px;overflow-x:auto;white-space:pre;line-height:1.48;font-size:12.7px;tab-size:4;margin:20px 0}
+pre code{background:transparent;border:0;padding:0;white-space:pre}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:#f0f4f8;border-radius:4px;font-size:.88em;padding:1px 4px}
+table{width:100%;border-collapse:collapse;margin:19px 0 22px;font-size:13.5px}
+th{background:#eaf2f9;color:#234967;text-align:left}th,td{vertical-align:top;padding:10px 11px;border:1px solid #d7e2ed}
+tbody tr:nth-child(even){background:#fafcfe}
+hr{border:0;border-top:1px solid var(--line);margin:40px 0}
+strong{color:#1d344a}
+footer{padding:38px 0 20px;margin-top:45px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+@media(max-width:960px){.wrap{display:block}aside{position:relative;height:auto;max-height:280px;border-right:0;border-bottom:1px solid var(--line);padding:14px 20px}.brand{padding-bottom:9px;margin-bottom:7px}main{padding:22px 6vw}h1{font-size:30px}}
+@media print {
+  @page{size:A4;margin:14mm 14mm 16mm 14mm}
+  html{scroll-behavior:auto}body{font-size:10pt;line-height:1.45;color:#1b2837}
+  .wrap{display:block}aside,.toolbar{display:none!important}main{padding:0}article{max-width:none}
+  h1{font-size:25pt;margin-top:0}h2{font-size:17pt;margin-top:23pt;break-after:avoid}h3{font-size:13pt;break-after:avoid}
+  blockquote{background:#f7f7f7!important;padding:6pt 10pt}pre{font-size:8.1pt;padding:8pt;white-space:pre-wrap;overflow-wrap:anywhere;page-break-inside:avoid}
+  code{background:#fafafa}table{font-size:8.5pt}thead{display:table-header-group}tr{break-inside:avoid}p,li{orphans:3;widows:3}
+  a{color:inherit;text-decoration:underline}
+  h1,h2,h3,h4{color:#193e60}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<aside aria-label="Table of contents">
+  <div class="brand"><span class="logo">AI</span><div><b>Agents SDK Handbook</b><small>Python · Basics to advanced</small></div></div>
+  <label class="nav-caption" for="toc-search">Find a chapter</label>
+  <input type="search" id="toc-search" placeholder="Search contents" aria-label="Search chapter titles">
+  <nav id="toc" aria-label="Chapters"><a class="toc-link level2" href="#how-to-use-this-guide" data-text="how to use this guide">How to use this guide</a>
+<a class="toc-link level3" href="#learning-path-at-a-glance" data-text="learning path at a glance">Learning path at a glance</a>
+<a class="toc-link level1" href="#part-i-problem-system-boundary-and-fundamentals" data-text="part i — problem, system boundary, and fundamentals">Part I — Problem, system boundary, and fundamentals</a>
+<a class="toc-link level2" href="#1-begin-with-a-real-problem-ticket-status-assistant" data-text="1. begin with a real problem: ticket-status assistant">1. Begin with a real problem: ticket-status assistant</a>
+<a class="toc-link level3" href="#1-1-minimal-architecture" data-text="1.1 minimal architecture">1.1 Minimal architecture</a>
+<a class="toc-link level2" href="#2-what-exactly-is-the-openai-agents-sdk" data-text="2. what exactly is the openai agents sdk?">2. What exactly is the OpenAI Agents SDK?</a>
+<a class="toc-link level3" href="#2-1-core-vocabulary" data-text="2.1 core vocabulary">2.1 Core vocabulary</a>
+<a class="toc-link level3" href="#2-2-what-the-sdk-does-not-give-you-automatically" data-text="2.2 what the sdk does not give you automatically">2.2 What the SDK does not give you automatically</a>
+<a class="toc-link level3" href="#2-3-when-not-to-use-agents-sdk" data-text="2.3 when not to use agents sdk">2.3 When not to use Agents SDK</a>
+<a class="toc-link level2" href="#3-anatomy-of-an-agent-run" data-text="3. anatomy of an agent run">3. Anatomy of an agent run</a>
+<a class="toc-link level2" href="#4-installation-and-project-setup" data-text="4. installation and project setup">4. Installation and project setup</a>
+<a class="toc-link level3" href="#4-1-python-setup" data-text="4.1 python setup">4.1 Python setup</a>
+<a class="toc-link level3" href="#4-2-folder-layout" data-text="4.2 folder layout">4.2 Folder layout</a>
+<a class="toc-link level2" href="#5-first-working-agent" data-text="5. first working agent">5. First working agent</a>
+<a class="toc-link level2" href="#6-prompt-and-agent-configuration" data-text="6. prompt and agent configuration">6. Prompt and agent configuration</a>
+<a class="toc-link level3" href="#6-1-model-choice" data-text="6.1 model choice">6.1 Model choice</a>
+<a class="toc-link level2" href="#7-function-tools-the-first-useful-agent-architecture" data-text="7. function tools: the first useful agent architecture">7. Function tools: the first useful agent architecture</a>
+<a class="toc-link level3" href="#7-1-good-tool-contracts" data-text="7.1 good tool contracts">7.1 Good tool contracts</a>
+<a class="toc-link level3" href="#7-2-tool-error-and-timeout-behavior" data-text="7.2 tool error and timeout behavior">7.2 Tool error and timeout behavior</a>
+<a class="toc-link level2" href="#8-separating-model-input-from-local-execution-context" data-text="8. separating model input from local execution context">8. Separating model input from local execution context</a>
+<a class="toc-link level1" href="#part-ii-reliable-agent-behavior-and-state" data-text="part ii — reliable agent behavior and state">Part II — Reliable agent behavior and state</a>
+<a class="toc-link level2" href="#9-structured-outputs-and-typed-contracts" data-text="9. structured outputs and typed contracts">9. Structured outputs and typed contracts</a>
+<a class="toc-link level2" href="#10-multi-turn-conversations-session-vs-state-vs-memory" data-text="10. multi-turn conversations: session vs state vs memory">10. Multi-turn conversations: session vs state vs memory</a>
+<a class="toc-link level2" href="#11-streaming-agent-output-and-progress" data-text="11. streaming agent output and progress">11. Streaming agent output and progress</a>
+<a class="toc-link level2" href="#12-run-results-failures-and-stopping-rules" data-text="12. run results, failures, and stopping rules">12. Run results, failures, and stopping rules</a>
+<a class="toc-link level2" href="#13-input-output-and-tool-guardrails" data-text="13. input, output, and tool guardrails">13. Input, output, and tool guardrails</a>
+<a class="toc-link level2" href="#14-human-in-the-loop-hitl-approvals" data-text="14. human-in-the-loop (hitl) approvals">14. Human-in-the-loop (HITL) approvals</a>
+<a class="toc-link level2" href="#15-tracing-and-hooks" data-text="15. tracing and hooks">15. Tracing and hooks</a>
+<a class="toc-link level1" href="#part-iii-multi-agent-protocols-and-orchestration" data-text="part iii — multi-agent, protocols, and orchestration">Part III — Multi-agent, protocols, and orchestration</a>
+<a class="toc-link level2" href="#16-multi-agent-architecture-handoffs-vs-agents-as-tools" data-text="16. multi-agent architecture: handoffs vs agents as tools">16. Multi-agent architecture: handoffs vs agents as tools</a>
+<a class="toc-link level3" href="#16-1-handoff-specialist-owns-the-next-turn" data-text="16.1 handoff: specialist owns the next turn">16.1 Handoff: specialist owns the next turn</a>
+<a class="toc-link level3" href="#16-2-manager-pattern-specialist-is-a-tool" data-text="16.2 manager pattern: specialist is a tool">16.2 Manager pattern: specialist is a tool</a>
+<a class="toc-link level3" href="#16-3-parallelism-and-manager-control" data-text="16.3 parallelism and manager control">16.3 Parallelism and manager control</a>
+<a class="toc-link level2" href="#17-mcp-integrating-reusable-external-tools" data-text="17. mcp: integrating reusable external tools">17. MCP: integrating reusable external tools</a>
+<a class="toc-link level3" href="#17-1-choose-the-mcp-integration" data-text="17.1 choose the mcp integration">17.1 Choose the MCP integration</a>
+<a class="toc-link level3" href="#17-2-mcp-vs-mcp-apps-vs-ag-ui-vs-a2a" data-text="17.2 mcp vs mcp apps vs ag-ui vs a2a">17.2 MCP vs MCP Apps vs AG-UI vs A2A</a>
+<a class="toc-link level2" href="#18-retrieval-rag-evidence-and-source-truth" data-text="18. retrieval (rag), evidence, and source truth">18. Retrieval (RAG), evidence, and source truth</a>
+<a class="toc-link level2" href="#19-deterministic-orchestration-vs-adaptive-agent-loops" data-text="19. deterministic orchestration vs adaptive agent loops">19. Deterministic orchestration vs adaptive agent loops</a>
+<a class="toc-link level3" href="#19-1-explicit-state-machine-for-high-impact-changes" data-text="19.1 explicit state machine for high-impact changes">19.1 Explicit state machine for high-impact changes</a>
+<a class="toc-link level2" href="#20-agentic-ui-model-output-is-not-a-ui-authorization-decision" data-text="20. agentic ui: model output is not a ui authorization decision">20. Agentic UI: model output is not a UI authorization decision</a>
+<a class="toc-link level1" href="#part-iv-production-architecture-and-advanced-capabilities" data-text="part iv — production architecture and advanced capabilities">Part IV — Production architecture and advanced capabilities</a>
+<a class="toc-link level2" href="#21-authentication-and-authorization-architecture" data-text="21. authentication and authorization architecture">21. Authentication and authorization architecture</a>
+<a class="toc-link level3" href="#21-1-read-request-sequence" data-text="21.1 read request sequence">21.1 Read request sequence</a>
+<a class="toc-link level3" href="#21-2-essential-negative-tests" data-text="21.2 essential negative tests">21.2 Essential negative tests</a>
+<a class="toc-link level2" href="#22-prompt-injection-tools-and-supply-chain-security" data-text="22. prompt injection, tools, and supply-chain security">22. Prompt injection, tools, and supply-chain security</a>
+<a class="toc-link level2" href="#23-testing-and-evaluation" data-text="23. testing and evaluation">23. Testing and evaluation</a>
+<a class="toc-link level3" href="#23-1-tests-by-layer" data-text="23.1 tests by layer">23.1 Tests by layer</a>
+<a class="toc-link level3" href="#23-2-a-small-offline-mock-with-real-software-tests" data-text="23.2 a small offline mock with real software tests">23.2 A small offline mock with real software tests</a>
+<a class="toc-link level3" href="#23-3-an-evaluation-dataset" data-text="23.3 an evaluation dataset">23.3 An evaluation dataset</a>
+<a class="toc-link level2" href="#24-observability-cost-and-service-health" data-text="24. observability, cost and service health">24. Observability, cost and service health</a>
+<a class="toc-link level2" href="#25-latency-scale-and-cost" data-text="25. latency, scale and cost">25. Latency, scale and cost</a>
+<a class="toc-link level2" href="#26-durability-retries-and-unknown-outcomes" data-text="26. durability, retries and unknown outcomes">26. Durability, retries and unknown outcomes</a>
+<a class="toc-link level3" href="#26-1-failure-recovery-sequence" data-text="26.1 failure/recovery sequence">26.1 Failure/recovery sequence</a>
+<a class="toc-link level2" href="#27-advanced-sdk-capabilities-choose-only-when-needed" data-text="27. advanced sdk capabilities: choose only when needed">27. Advanced SDK capabilities: choose only when needed</a>
+<a class="toc-link level3" href="#27-1-sandbox-agents-and-code-editing" data-text="27.1 sandbox agents and code editing">27.1 Sandbox agents and code editing</a>
+<a class="toc-link level3" href="#27-2-voice-pipelines-vs-realtime-agents" data-text="27.2 voice pipelines vs realtime agents">27.2 Voice pipelines vs realtime agents</a>
+<a class="toc-link level3" href="#27-3-hosted-tools-and-tool-search" data-text="27.3 hosted tools and tool search">27.3 Hosted tools and tool search</a>
+<a class="toc-link level3" href="#27-4-agent-skills-and-reusable-procedures" data-text="27.4 agent skills and reusable procedures">27.4 Agent Skills and reusable procedures</a>
+<a class="toc-link level3" href="#27-5-a2a-interoperability" data-text="27.5 a2a interoperability">27.5 A2A interoperability</a>
+<a class="toc-link level2" href="#28-deployment-reference-architecture" data-text="28. deployment reference architecture">28. Deployment reference architecture</a>
+<a class="toc-link level3" href="#28-1-component-ownership" data-text="28.1 component ownership">28.1 Component ownership</a>
+<a class="toc-link level3" href="#28-2-common-production-decisions" data-text="28.2 common production decisions">28.2 Common production decisions</a>
+<a class="toc-link level2" href="#29-architecture-decision-handbook" data-text="29. architecture decision handbook">29. Architecture decision handbook</a>
+<a class="toc-link level1" href="#part-v-detailed-use-cases-and-hands-on-capstone" data-text="part v — detailed use cases and hands-on capstone">Part V — Detailed use cases and hands-on capstone</a>
+<a class="toc-link level2" href="#30-use-case-catalog-and-capstone" data-text="30. use-case catalog and capstone">30. Use-case catalog and capstone</a>
+<a class="toc-link level3" href="#case-a-faq-support-assistant-beginner" data-text="case a — faq support assistant (beginner)">Case A — FAQ support assistant (beginner)</a>
+<a class="toc-link level3" href="#case-b-ticket-lookup-agent-beginner-intermediate" data-text="case b — ticket lookup agent (beginner → intermediate)">Case B — Ticket lookup agent (beginner → intermediate)</a>
+<a class="toc-link level3" href="#case-c-ticket-triage-and-routing-beginner" data-text="case c — ticket triage and routing (beginner)">Case C — Ticket triage and routing (beginner)</a>
+<a class="toc-link level3" href="#case-d-document-q-a-with-grounded-retrieval-intermediate" data-text="case d — document q&amp;a with grounded retrieval (intermediate)">Case D — Document Q&amp;A with grounded retrieval (intermediate)</a>
+<a class="toc-link level3" href="#case-e-refund-proposal-and-human-approval-intermediate-advanced" data-text="case e — refund proposal and human approval (intermediate → advanced)">Case E — Refund proposal and human approval (intermediate → advanced)</a>
+<a class="toc-link level3" href="#case-f-it-incident-investigator-advanced" data-text="case f — it incident investigator (advanced)">Case F — IT incident investigator (advanced)</a>
+<a class="toc-link level3" href="#case-g-analytics-assistant-and-generative-ui-advanced" data-text="case g — analytics assistant and generative ui (advanced)">Case G — Analytics assistant and Generative UI (advanced)</a>
+<a class="toc-link level3" href="#case-h-code-editing-data-analysis-sandbox-advanced" data-text="case h — code-editing / data analysis sandbox (advanced)">Case H — Code-editing / data analysis sandbox (advanced)</a>
+<a class="toc-link level3" href="#case-i-realtime-voice-customer-service-advanced" data-text="case i — realtime voice customer service (advanced)">Case I — Realtime voice customer service (advanced)</a>
+<a class="toc-link level3" href="#30-1-capstone-enterprise-ticket-incident-assistant" data-text="30.1 capstone — enterprise ticket + incident assistant">30.1 Capstone — Enterprise ticket + incident assistant</a>
+<a class="toc-link level3" href="#30-2-capstone-contract-set" data-text="30.2 capstone contract set">30.2 Capstone contract set</a>
+<a class="toc-link level3" href="#30-3-deliverables-for-a-solution-architecture-portfolio" data-text="30.3 deliverables for a solution-architecture portfolio">30.3 Deliverables for a solution-architecture portfolio</a>
+<a class="toc-link level3" href="#30-4-example-architecture-decision-record-adr" data-text="30.4 example architecture decision record (adr)">30.4 Example architecture decision record (ADR)</a>
+<a class="toc-link level2" href="#31-troubleshooting-and-version-aware-reference-index" data-text="31. troubleshooting and version-aware reference index">31. Troubleshooting and version-aware reference index</a>
+<a class="toc-link level3" href="#31-1-typical-setup-and-runtime-problems" data-text="31.1 typical setup and runtime problems">31.1 Typical setup and runtime problems</a>
+<a class="toc-link level3" href="#31-2-version-discipline" data-text="31.2 version discipline">31.2 Version discipline</a>
+<a class="toc-link level3" href="#31-3-official-reading-list" data-text="31.3 official reading list">31.3 Official reading list</a>
+<a class="toc-link level3" href="#31-4-glossary" data-text="31.4 glossary">31.4 Glossary</a></nav>
+</aside>
+<main><article>
+  <div class="toolbar"><div class="meta"><strong>Study handbook</strong> · Verified 6 Nov 2026 · Official sources</div><button class="print-btn" type="button" onclick="window.print()">Print / Save as PDF</button></div>
+<h1 id="openai-agents-sdk-solution-architecture-study-guide">OpenAI Agents SDK — Solution Architecture Study Guide</h1>
+<p><strong>From fundamentals to advanced, production-grade agentic systems</strong><br />
+<strong>Edition:</strong> 2026-11-06 · <strong>Primary language:</strong> Python · <strong>Audience:</strong> AI solution architects and engineers<br />
+<strong>Primary SDK:</strong> <code>openai-agents</code> (Agents SDK for Python), not to be confused with the lower-level <code>openai</code> API client.</p>
+<blockquote>
+<p><strong>Scope and verification.</strong> This handbook interprets “OpenAI SDK” as the <strong>OpenAI Agents SDK</strong> because the surrounding learning goal is agentic architecture. It explains where the lower-level OpenAI API SDK fits. Official SDK documents and public release notes were checked on 2026-11-06. The Python Agents SDK repository listed <strong>v0.24.0 (2026-10-15)</strong> as its latest stable release and a newer <strong>v0.24.0-alpha.6</strong> prerelease; this document teaches documented APIs, not prerelease-only behavior. SDK features, model compatibility, and service limits change. Verify the version and relevant official pages before deployment. Code needing an API key is <strong>illustrative and not executed against OpenAI</strong> for this handbook. References are in §31.</p>
+</blockquote>
+<hr />
+<h2 id="how-to-use-this-guide">How to use this guide</h2>
+<p><strong>Read in order for your first pass:</strong> Chapters 1–11 → 13–15 → 20–23. <strong>For an architecture review:</strong> chapters 2, 6, 12, 16–29. <strong>For hands-on work:</strong> run the short snippets with synthetic records, then build the capstone in Chapter 30. Code snippets assume Python 3.10+ unless otherwise noted. Use an isolated virtual environment, a development API key, and a supported model in your account. Do not put secrets in source files.</p>
+<p><strong>Project curriculum mapping:</strong> This is a <strong>custom case</strong> closest to <code>sdt-module-01-agent-fundamentals.md</code>, extended as needed into orchestration, MCP, security, and operations. It follows the AI Study Tutor principles: real problem → needed concepts → minimum architecture → mock → production evolution → trade-offs. The accompanying Project source <code>concept-production-controls.md</code> informs the authorization, retry, and recovery guidance. Those Project sources are architectural study material, not the authoritative SDK API documentation.</p>
+<h3 id="learning-path-at-a-glance">Learning path at a glance</h3>
+<table>
+<thead>
+<tr>
+  <th>Level</th>
+  <th>Chapters</th>
+  <th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Foundations</td>
+  <td>1–7</td>
+  <td>Explain the model/API/SDK boundary; run one bounded agent</td>
+</tr>
+<tr>
+  <td>Core</td>
+  <td>8–15</td>
+  <td>Build tools, typed outputs, local context, sessions, streams, guardrails</td>
+</tr>
+<tr>
+  <td>Intermediate</td>
+  <td>16–20</td>
+  <td>Choose multi-agent patterns, approvals, MCP, retrieval, orchestration</td>
+</tr>
+<tr>
+  <td>Advanced</td>
+  <td>21–29</td>
+  <td>Add tracing, evaluation, security, durability, performance, platform patterns</td>
+</tr>
+<tr>
+  <td>Applied</td>
+  <td>30</td>
+  <td>Complete a staged enterprise case with architecture deliverables</td>
+</tr>
+</tbody>
+</table>
+<h1 id="part-i-problem-system-boundary-and-fundamentals">Part I — Problem, system boundary, and fundamentals</h1>
+<h2 id="1-begin-with-a-real-problem-ticket-status-assistant">1. Begin with a real problem: ticket-status assistant</h2>
+<p>A support operator asks: <strong>“What is the status of ticket T-100?”</strong> The answer must come from a ticket database, not the model’s memory. In the first version, the system only reads data. It never closes, refunds, or modifies tickets.</p>
+<table>
+<thead>
+<tr>
+  <th>Aspect</th>
+  <th>First-version decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Actor</td>
+  <td>Authenticated support operator</td>
+</tr>
+<tr>
+  <td>Business result</td>
+  <td>Correct ticket status with source ID and timestamp</td>
+</tr>
+<tr>
+  <td>Source of truth</td>
+  <td>Internal ticket service/database</td>
+</tr>
+<tr>
+  <td>Trust boundary</td>
+  <td>Backend authenticates operator; ticket service authorizes each read</td>
+</tr>
+<tr>
+  <td>Priority 1</td>
+  <td>No cross-customer ticket disclosure</td>
+</tr>
+<tr>
+  <td>Priority 2</td>
+  <td>Correct factual answer or explicit “not found/not permitted”</td>
+</tr>
+<tr>
+  <td>Priority 3</td>
+  <td>Bounded tool calls and latency</td>
+</tr>
+<tr>
+  <td>Out of scope</td>
+  <td>Modifying a ticket, multiple agents, MCP, vector index, automatic approvals</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Smallest credible solution:</strong> An application API could call <code>GET /tickets/{id}</code> directly and format the result. No agent is required. An agent becomes useful when requests are varied (“find the ticket about checkout failures, inspect its last update, and explain it in plain English”) and tool selection/explanation requires language understanding.</p>
+<h3 id="1-1-minimal-architecture">1.1 Minimal architecture</h3>
+<pre><code class="language-text">+------------------------+
+| Operator / web client  |
++------------------------+
+            |
+            v
++------------------------+
+| Backend API + identity |
++------------------------+
+            |
+            v
++------------------------+
+| Agent + Runner         |
+| bounded tool selection |
++------------------------+
+            |
+            v
++------------------------+
+| Authorized ticket API  |
+| system of record       |
++------------------------+
+</code></pre>
+<p><strong>Happy path:</strong> backend validates identity → calls agent with task and local identity context → agent requests <code>get_ticket</code> → backend tool applies the ticket access policy → result reaches model → model returns a grounded explanation. <strong>Failure path:</strong> if operator lacks permission, tool returns a safe denial; the assistant must not guess ticket contents.</p>
+<h2 id="2-what-exactly-is-the-openai-agents-sdk">2. What exactly is the OpenAI Agents SDK?</h2>
+<p>The <strong>OpenAI API client SDK</strong> (<code>pip install openai</code>) wraps model/platform endpoints such as the Responses API. You, the developer, can orchestrate your own tool loop on top of it. The <strong>OpenAI Agents SDK</strong> (<code>pip install openai-agents</code>) adds application-level orchestration primitives: agents, a runner/agent loop, tools, handoffs, sessions, guardrails, approval interruptions and tracing. For OpenAI models, the Agents SDK uses the Responses API by default. These are related but separate layers. <a href="https://openai.github.io/openai-agents-python/agents/">Official: Agents</a></p>
+<pre><code class="language-text">+----------------------------------------+
+| Your application / REST API / web UI   |
++----------------------------------------+
+                    |
+                    v
++----------------------------------------+
+| OpenAI Agents SDK                       |
+| Agent / Runner / Tools / State / Trace |
++----------------------------------------+
+                    |
+                    v
++----------------------------------------+
+| Model provider / Responses API          |
++----------------------------------------+
+</code></pre>
+<h3 id="2-1-core-vocabulary">2.1 Core vocabulary</h3>
+<table>
+<thead>
+<tr>
+  <th>Term</th>
+  <th>Plain-English meaning</th>
+  <th>Architecture implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>Agent</code></td>
+  <td>Model with instructions and optional tools/handoffs/output type</td>
+  <td>Define one task boundary clearly</td>
+</tr>
+<tr>
+  <td><code>Runner</code></td>
+  <td>Executes the agent loop</td>
+  <td>Loop/stop rules matter</td>
+</tr>
+<tr>
+  <td>Tool</td>
+  <td>Callable capability exposed to model</td>
+  <td>Tool implementation needs validation and authorization</td>
+</tr>
+<tr>
+  <td>Handoff</td>
+  <td>Transfer active control to specialist</td>
+  <td>Receiver may see prior conversation; filter sensitive history</td>
+</tr>
+<tr>
+  <td>Agent as tool</td>
+  <td>Specialist called by manager</td>
+  <td>Manager retains responsibility for final response</td>
+</tr>
+<tr>
+  <td><code>RunContextWrapper</code></td>
+  <td>Context object available to your Python code</td>
+  <td>Keep identity/credentials out of model messages</td>
+</tr>
+<tr>
+  <td>Session</td>
+  <td>SDK-managed conversation history</td>
+  <td>Not an authoritative business database</td>
+</tr>
+<tr>
+  <td>Guardrail</td>
+  <td>SDK validation mechanism</td>
+  <td>Not a replacement for business policy checks</td>
+</tr>
+<tr>
+  <td>Run interruption</td>
+  <td>Execution paused for approval</td>
+  <td>Requires trusted identity, durable state, and resume</td>
+</tr>
+<tr>
+  <td>Trace / span</td>
+  <td>Recorded execution timeline</td>
+  <td>Must apply sensitive-data controls</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-2-what-the-sdk-does-not-give-you-automatically">2.2 What the SDK does <em>not</em> give you automatically</h3>
+<p>It does not establish who may read a record, guarantee true business facts, make a tool idempotent, decide safe retry policy, secure every external MCP server, provide your tenancy model, or turn every step into a crash-proof distributed workflow. Your own backend still owns these responsibilities.</p>
+<h3 id="2-3-when-not-to-use-agents-sdk">2.3 When <em>not</em> to use Agents SDK</h3>
+<ul>
+<li>Fixed classification with a few labels: use a structured model call and deterministic routing.</li>
+<li>Fetch-and-display an exact known ID: direct API may be simpler and cheaper.</li>
+<li>A strict financial approval path: use a workflow/state machine for side effects; optionally use an agent for proposals.</li>
+<li>A long-running cross-service process requiring contractual retries: integrate a durable orchestrator; do not rely only on an in-memory agent loop.</li>
+</ul>
+<h2 id="3-anatomy-of-an-agent-run">3. Anatomy of an agent run</h2>
+<pre><code class="language-text">+-------------+      +--------------+      +------------------+
+| User input  | ---&gt; | Runner       | ---&gt; | Agent + model    |
++-------------+      +--------------+      +------------------+
+                          ^                       |
+                          |                       v
+                          |                 +-------------+
+                          +---------------- | Tool call?  |
+                             tool result    +-------------+
+                                                |
+                                             final answer
+                                                v
+                                         +---------------+
+                                         | RunResult     |
+                                         +---------------+
+</code></pre>
+<p>The runtime commonly calls the model, executes a selected tool or handoff, returns relevant output to the model, and repeats until final output, approval interruption or error. <strong>The model proposes which tool to call; application code enforces what the tool actually does.</strong> A tool must reject unacceptable or unauthorized arguments even if the model selected it confidently.</p>
+<p><strong>Key limits to define:</strong> number of turns, tool timeouts, maximum records returned, input size, total cost budget, and “insufficient evidence” exit behavior. <code>Runner.run</code> supports a <code>max_turns</code> parameter; do not assume a vague prompt alone can enforce a hard limit. <a href="https://openai.github.io/openai-agents-python/running_agents/">Official: Running agents</a></p>
+<h2 id="4-installation-and-project-setup">4. Installation and project setup</h2>
+<h3 id="4-1-python-setup">4.1 Python setup</h3>
+<pre><code class="language-bash">mkdir agents-sdk-lab
+cd agents-sdk-lab
+python -m venv .venv
+source .venv/bin/activate         # macOS / Linux
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install 'openai-agents&gt;=0.24.0,&lt;0.25.0' pydantic
+python -m pip show openai-agents
+</code></pre>
+<p>The pinned range is a <strong>study reproducibility choice</strong>, not a claim that future versions are incompatible. The official quickstart uses <code>pip install openai-agents</code>. For production, pin the <strong>resolved exact version in a lock file</strong> after testing. <a href="https://openai.github.io/openai-agents-python/quickstart/">Official: Quickstart</a></p>
+<pre><code class="language-bash">export OPENAI_API_KEY='YOUR_DEVELOPMENT_KEY'
+# Windows PowerShell: $env:OPENAI_API_KEY='YOUR_DEVELOPMENT_KEY'
+</code></pre>
+<p><strong>Do not</strong> commit keys, put them into HTML, pass them through a browser, or embed them inside agent prompt text. Backends should load secrets from a protected environment or secrets manager. Check your account’s supported model IDs in official model documentation; examples here omit explicit <code>model=</code> unless a specific capability requires one.</p>
+<h3 id="4-2-folder-layout">4.2 Folder layout</h3>
+<pre><code class="language-text">agents-sdk-lab/
+|-- app.py                    # first agent
+|-- ticket_agent.py           # tools + authorization
+|-- mock_business_service.py  # deterministic fake data
+|-- test_business_service.py  # no API key needed
+|-- requirements.txt          # pinned by your own lock process
+`-- README.md
+</code></pre>
+<h2 id="5-first-working-agent">5. First working agent</h2>
+<p>Save this as <code>app.py</code>. It calls a live model, so it needs an API key and may incur charges.</p>
+<pre><code class="language-python">import asyncio
+from agents import Agent, Runner
+
+agent = Agent(
+    name=&quot;Plain English Assistant&quot;,
+    instructions=(
+        &quot;Explain concepts in simple English. &quot;
+        &quot;If you lack facts, say what is missing.&quot;
+    ),
+)
+
+async def main() -&gt; None:
+    result = await Runner.run(
+        agent,
+        &quot;What is the difference between an API and an SDK?&quot;,
+        max_turns=3,
+    )
+    print(result.final_output)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<p><strong>Observe:</strong> <code>Agent(...)</code> defines behavior. <code>Runner.run(...)</code> executes it. <code>result.final_output</code> is the final answer. Nothing here is multi-agent, MCP, RAG, or durable workflow orchestration. Start simple. To test the script, run <code>python app.py</code> after selecting valid credentials/model configuration.</p>
+<h2 id="6-prompt-and-agent-configuration">6. Prompt and agent configuration</h2>
+<p>Agents can have a <code>name</code>, <code>instructions</code>, <code>model</code>, <code>model_settings</code>, <code>tools</code>, <code>handoffs</code>, <code>output_type</code>, <code>mcp_servers</code>, <code>input_guardrails</code>, <code>output_guardrails</code>, and hooks. Avoid stuffing business permissions into instructions alone. <a href="https://openai.github.io/openai-agents-python/agents/">Official: Agents</a></p>
+<p><strong>Better instructions are operational:</strong></p>
+<pre><code class="language-python">from agents import Agent
+
+support_agent = Agent(
+    name=&quot;Ticket Reader&quot;,
+    instructions=(
+        &quot;Help operators understand ticket records. &quot;
+        &quot;Use get_ticket for facts; never invent status or ownership. &quot;
+        &quot;When the tool reports denied or missing, explain that plainly. &quot;
+        &quot;Do not claim to close or update tickets.&quot;
+    ),
+)
+</code></pre>
+<p><strong>Prompt design rules:</strong> define the job, allowed data, output form, unknown/error behavior and when to stop. Keep short-lived record values in tools rather than large static prompts. Treat retrieved documents, webpages, logs, and tool results as <strong>untrusted data</strong>: they may contain text that looks like instructions.</p>
+<h3 id="6-1-model-choice">6.1 Model choice</h3>
+<p>Choose by <strong>measured task quality, latency, compatibility and cost</strong>, not by naming convention or parameter count. Some model/tool features vary by model and API. Run an evaluation before changing a model in production. For current model support, use <a href="https://developers.openai.com/api/docs/models">official OpenAI model documentation</a>.</p>
+<h2 id="7-function-tools-the-first-useful-agent-architecture">7. Function tools: the first useful agent architecture</h2>
+<p>A tool is a named, typed function the model may ask the runtime to invoke. The SDK derives tool argument schemas from Python types/docstrings. <a href="https://openai.github.io/openai-agents-python/tools/">Official: Tools</a></p>
+<pre><code class="language-python">import asyncio
+from agents import Agent, Runner
+from agents.decorators import tool
+
+TICKETS = {
+    &quot;T-100&quot;: {&quot;status&quot;: &quot;open&quot;, &quot;summary&quot;: &quot;Checkout errors&quot;},
+    &quot;T-101&quot;: {&quot;status&quot;: &quot;resolved&quot;, &quot;summary&quot;: &quot;Password reset&quot;},
+}
+
+@tool
+def get_ticket(ticket_id: str) -&gt; dict:
+    &quot;&quot;&quot;Read a synthetic support ticket by exact ID.&quot;&quot;&quot;
+    record = TICKETS.get(ticket_id)
+    if record is None:
+        return {&quot;status&quot;: &quot;not_found&quot;, &quot;ticket_id&quot;: ticket_id}
+    return {&quot;ticket_id&quot;: ticket_id, **record}
+
+agent = Agent(
+    name=&quot;Ticket reader demo&quot;,
+    instructions=&quot;Use get_ticket for ticket facts; do not invent records.&quot;,
+    tools=[get_ticket],
+)
+
+async def main() -&gt; None:
+    result = await Runner.run(agent, &quot;What happened in T-100?&quot;, max_turns=4)
+    print(result.final_output)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<p><strong>Important:</strong> This is a <strong>single-user fake-data lab</strong>. Do <em>not</em> copy its globally accessible <code>TICKETS</code> dictionary into a multi-tenant service. The production service must derive user/tenant identity from verified backend context and check record-level permission before reading or returning data.</p>
+<h3 id="7-1-good-tool-contracts">7.1 Good tool contracts</h3>
+<p>Use a name that describes one capability, typed arguments, a bounded response shape, explicit error codes, and no hidden side effects. Prefer a structured business response:</p>
+<pre><code class="language-json">{
+  &quot;ticket_id&quot;: &quot;T-100&quot;,
+  &quot;status&quot;: &quot;open&quot;,
+  &quot;summary&quot;: &quot;Checkout errors&quot;,
+  &quot;observed_at&quot;: &quot;2026-11-06T12:00:00Z&quot;,
+  &quot;source&quot;: &quot;ticket-service&quot;,
+  &quot;result&quot;: &quot;ok&quot;
+}
+</code></pre>
+<p>This is an <strong>illustrative business JSON contract</strong>, not an SDK wire-protocol message. Errors should distinguish <code>not_found</code>, <code>forbidden</code>, <code>upstream_timeout</code> and <code>temporarily_unavailable</code> where safe; avoid leaking existence of restricted records if your policy forbids it.</p>
+<h3 id="7-2-tool-error-and-timeout-behavior">7.2 Tool error and timeout behavior</h3>
+<p>The documented <code>@tool(timeout=...)</code> applies to async function-tool handlers; a timed-out tool can return model-visible error text or raise, depending on configuration. A timeout is not proof that a remote write failed. For writes, always reconcile provider state before retrying. <a href="https://openai.github.io/openai-agents-python/tools/">Official: Tools, timeouts</a></p>
+<h2 id="8-separating-model-input-from-local-execution-context">8. Separating model input from local execution context</h2>
+<p><strong>Local context</strong> is app-owned data passed to tool code through <code>RunContextWrapper</code>. It is <em>not itself given to the LLM</em>. Model-visible context is different: prompts, messages, tool schemas and tool results. Never assume local context protects values if your tool subsequently returns them to the model. <a href="https://openai.github.io/openai-agents-python/context/">Official: Context management</a></p>
+<pre><code class="language-python">from dataclasses import dataclass
+from agents import Agent, Runner, RunContextWrapper
+from agents.decorators import tool
+
+@dataclass
+class RequestContext:
+    user_id: str       # authenticated server-side
+    tenant_id: str     # authenticated server-side
+
+# Mock authorization table; a real system uses trusted service policy.
+ALLOWED = {(&quot;tenant-A&quot;, &quot;operator-7&quot;, &quot;T-100&quot;)}
+
+@tool
+def get_secure_ticket(
+    ctx: RunContextWrapper[RequestContext], ticket_id: str
+) -&gt; dict:
+    &quot;&quot;&quot;Read one ticket only when backend policy permits it.&quot;&quot;&quot;
+    key = (ctx.context.tenant_id, ctx.context.user_id, ticket_id)
+    if key not in ALLOWED:
+        return {&quot;result&quot;: &quot;denied&quot;}
+    return {&quot;result&quot;: &quot;ok&quot;, &quot;ticket_id&quot;: ticket_id, &quot;status&quot;: &quot;open&quot;}
+
+secure_agent = Agent[RequestContext](
+    name=&quot;Secure ticket reader&quot;,
+    instructions=&quot;Look up ticket records. Report denied records as unavailable.&quot;,
+    tools=[get_secure_ticket],
+)
+
+# Example use inside an authenticated server request:
+# result = await Runner.run(
+#     secure_agent, &quot;Read T-100&quot;,
+#     context=RequestContext(user_id=&quot;operator-7&quot;, tenant_id=&quot;tenant-A&quot;),
+# )
+</code></pre>
+<p><strong>Trust rule:</strong> only the backend creates <code>RequestContext</code> after authentication. Do not create it from <code>user_id</code> or <code>tenant_id</code> proposed by an LLM or sent unverified by a browser. An authorization decision should also account for current policy and record ownership, not just a static allowlist.</p>
+<h1 id="part-ii-reliable-agent-behavior-and-state">Part II — Reliable agent behavior and state</h1>
+<h2 id="9-structured-outputs-and-typed-contracts">9. Structured outputs and typed contracts</h2>
+<p>Use a typed output when downstream code expects data, not prose. A Pydantic model with <code>Agent(output_type=...)</code> gives a typed final result that your code can validate and handle. <a href="https://openai.github.io/openai-agents-python/agents/">Official: Agents, output types</a></p>
+<pre><code class="language-python">from typing import Literal
+from pydantic import BaseModel
+from agents import Agent, Runner
+
+class TriageResult(BaseModel):
+    team: Literal[&quot;billing&quot;, &quot;technical&quot;, &quot;general&quot;]
+    priority: Literal[&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;]
+    reason: str
+
+triage = Agent(
+    name=&quot;Ticket classifier&quot;,
+    instructions=&quot;Classify synthetic support tickets into the given schema.&quot;,
+    output_type=TriageResult,
+)
+
+# result = await Runner.run(triage, &quot;Our checkout fails for everyone&quot;)
+# classified: TriageResult = result.final_output
+# assert classified.team in {&quot;billing&quot;, &quot;technical&quot;, &quot;general&quot;}
+</code></pre>
+<p><strong>Design boundary:</strong> syntactically valid JSON is not a business decision. For instance, <code>priority='high'</code> must not automatically grant refund privileges. Apply deterministic rules and review before side effects.</p>
+<h2 id="10-multi-turn-conversations-session-vs-state-vs-memory">10. Multi-turn conversations: session vs state vs memory</h2>
+<p>These three ideas are often confused:</p>
+<table>
+<thead>
+<tr>
+  <th>Concept</th>
+  <th>Stores</th>
+  <th>Does not prove</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Session history</td>
+  <td>Conversation messages/tool context</td>
+  <td>Ticket truth or customer permissions</td>
+</tr>
+<tr>
+  <td>Workflow state</td>
+  <td>Current step, approvals, pending operations, operation IDs</td>
+  <td>Human identity unless verified</td>
+</tr>
+<tr>
+  <td>Long-term memory</td>
+  <td>Approved durable preferences/facts</td>
+  <td>Live status of an order</td>
+</tr>
+</tbody>
+</table>
+<p>The SDK supports manual history (<code>result.to_input_list()</code>), SDK sessions (<code>SQLiteSession</code>, Redis/SQLAlchemy and others), and server-managed continuation (<code>conversation_id</code> / <code>previous_response_id</code>). Choose <strong>one</strong> session/continuation strategy per run; a session cannot be combined with those run-level continuation options. <a href="https://openai.github.io/openai-agents-python/sessions/">Official: Sessions</a></p>
+<pre><code class="language-python">from agents import Agent, Runner, SQLiteSession
+
+agent = Agent(name=&quot;Helper&quot;, instructions=&quot;Answer plainly.&quot;)
+session = SQLiteSession(&quot;demo-thread-001&quot;)
+
+# a = await Runner.run(agent, &quot;My project is about tool safety&quot;, session=session)
+# b = await Runner.run(agent, &quot;Summarize my project topic&quot;, session=session)
+</code></pre>
+<p><strong>Production decisions:</strong> who owns session IDs, retention period, encryption, deletion, tenant separation, summarization/compaction, and how resumed runs load the right session. Never treat conversation state as a high-integrity transaction log.</p>
+<h2 id="11-streaming-agent-output-and-progress">11. Streaming agent output and progress</h2>
+<p><code>Runner.run_streamed()</code> yields a result with <code>stream_events()</code>. Raw response events include token-level model updates; run-item events describe completed tool/handoff/message items. Consume the iterator until it ends before assuming run bookkeeping is complete. <a href="https://openai.github.io/openai-agents-python/streaming/">Official: Streaming</a></p>
+<pre><code class="language-python">import asyncio
+from agents import Agent, Runner
+
+agent = Agent(name=&quot;Explainer&quot;, instructions=&quot;Explain in two short paragraphs.&quot;)
+
+async def main():
+    result = Runner.run_streamed(agent, &quot;Why is authorization server-side?&quot;)
+    async for event in result.stream_events():
+        if event.type == &quot;run_item_stream_event&quot;:
+            print(f&quot;event: {event.name}&quot;)
+        elif event.type == &quot;agent_updated_stream_event&quot;:
+            print(f&quot;active agent: {event.new_agent.name}&quot;)
+    print(&quot;final:&quot;, result.final_output)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<p><strong>UI design:</strong> do not expose raw sensitive tool payloads to the browser. Provide user-facing statuses such as “searching tickets”, “waiting for approval”, “completed”, “needs review” and “unknown remote outcome”. Streaming is an interface/experience pattern, not a guarantee of durable execution.</p>
+<h2 id="12-run-results-failures-and-stopping-rules">12. Run results, failures, and stopping rules</h2>
+<p>A run may produce final output, tool items, handoffs, or approval interruptions. Understand <code>final_output</code>, <code>last_agent</code>, run items, and the run-state checkpoint APIs. Common failures include model/provider errors, tool timeouts, max turns, invalid tool args, blocked guardrails, and pending approvals. <a href="https://openai.github.io/openai-agents-python/results/">Official: Results</a></p>
+<p><strong>Recommended policy:</strong></p>
+<ol>
+<li>Cap model turns using <code>max_turns</code> and tool-specific time budgets.</li>
+<li>Return safe machine-readable failures from deterministic tools.</li>
+<li>Log an internal correlation ID without exposing secret payloads.</li>
+<li>Never silently transform <code>forbidden</code> or <code>timeout</code> into invented results.</li>
+<li>For operations with side effects, use a persisted operation ID and status reconciliation.</li>
+</ol>
+<p>The difference between an <strong>error</strong> and an <strong>unknown outcome</strong> matters. A timed-out refund provider could have processed the refund; repeating it without reconciliation can duplicate the payment.</p>
+<h2 id="13-input-output-and-tool-guardrails">13. Input, output, and tool guardrails</h2>
+<p>The SDK provides guardrails around agent inputs and outputs, plus tool guardrails for eligible function tools. An agent-level input guardrail applies to the first agent in the chain; the output guardrail applies to the final output. Tool guardrails apply around configured tool calls, not automatically to every hosted or built-in tool type. <a href="https://openai.github.io/openai-agents-python/guardrails/">Official: Guardrails</a></p>
+<pre><code class="language-python">from agents import Agent, GuardrailFunctionOutput, input_guardrail
+
+@input_guardrail(run_in_parallel=False)
+def reject_empty_request(ctx, agent, user_input):
+    blocked = isinstance(user_input, str) and not user_input.strip()
+    return GuardrailFunctionOutput(
+        output_info={&quot;reason&quot;: &quot;empty input&quot; if blocked else &quot;ok&quot;},
+        tripwire_triggered=blocked,
+    )
+
+agent = Agent(
+    name=&quot;Validated reader&quot;,
+    input_guardrails=[reject_empty_request],
+)
+</code></pre>
+<p>This example illustrates input validation only. Blocking mode (<code>run_in_parallel=False</code>) is useful when a dangerous tool must not start before the input check finishes. <strong>Neither guardrails nor prompt instructions replace authorization at the business API.</strong> Never depend on an LLM guardrail as the only protection for payments, record access or destructive actions.</p>
+<h2 id="14-human-in-the-loop-hitl-approvals">14. Human-in-the-loop (HITL) approvals</h2>
+<p>For a sensitive tool, the SDK can mark a call as requiring approval. The run exposes an interruption; your application presents a review screen, binds the decision to an authenticated approver and persists the pending request, then resumes the run. This is an application workflow, not an automatic business authorization guarantee. <a href="https://openai.github.io/openai-agents-python/human_in_the_loop/">Official: Human-in-the-loop</a></p>
+<pre><code class="language-python">from agents import Agent
+from agents.decorators import tool
+
+@tool(needs_approval=True)
+async def propose_cancel_order(order_id: int) -&gt; str:
+    &quot;&quot;&quot;Demonstration-only: simulate a cancellation after approval.&quot;&quot;&quot;
+    return f&quot;Mock cancellation recorded for order {order_id}&quot;
+
+agent = Agent(
+    name=&quot;Order change assistant&quot;,
+    instructions=&quot;Request approval before order changes.&quot;,
+    tools=[propose_cancel_order],
+)
+</code></pre>
+<p><strong>Approval sequence</strong> (logical, omitting SDK-specific serialization details):</p>
+<pre><code class="language-text">+-------------------------+
+| Agent proposes action   |
++-------------------------+
+             |
+             v
++-------------------------+
+| Persist pending request |
+| operation ID + args     |
++-------------------------+
+             |
+             v
++-------------------------+
+| Authenticated reviewer  |
+| approves exact request  |
++-------------------------+
+             |
+             v
++-------------------------+
+| Business policy check   |
+| role + owner + limits   |
++-------------------------+
+             |
+             v
++-------------------------+
+| Idempotent action       |
+| audit + reconciliation  |
++-------------------------+
+</code></pre>
+<p><strong>Resumable SDK pattern:</strong> use <code>result.interruptions</code>, obtain <code>state = result.to_state()</code>, apply <code>state.approve(interruption)</code> or reject, then resume via <code>Runner.run(agent, state, session=session)</code> (if using that session). The SDK supports pending approval serialization, but you must decide durable storage and trusted reviewer binding. Approval <strong>screens</strong> do not themselves authorize money movement.</p>
+<h2 id="15-tracing-and-hooks">15. Tracing and hooks</h2>
+<p>Tracing records model generations, function calls, handoffs and guardrails; a trace represents a workflow and spans are its steps. The Python SDK enables tracing by default, but privacy controls and export configuration must be reviewed. The official documentation states tracing is unavailable for organizations using the API under a Zero Data Retention policy. <a href="https://openai.github.io/openai-agents-python/tracing/">Official: Tracing</a></p>
+<p><strong>Good trace fields:</strong> request/run ID, tool name, elapsed time, outcome status, safe tenant hash, retry count, SDK/model version and token usage. <strong>Avoid:</strong> API keys, full access tokens, unnecessary PII, private retrieved documents and raw high-impact tool payloads.</p>
+<pre><code class="language-python">from agents import Agent, Runner, trace
+
+agent = Agent(name=&quot;Triage&quot;, instructions=&quot;Classify briefly.&quot;)
+
+# with trace(&quot;Ticket investigation&quot;, group_id=&quot;thread-001&quot;):
+#     result = await Runner.run(agent, &quot;What should we inspect first?&quot;)
+</code></pre>
+<p>Do not assume adding a redaction trace processor before a separate exporter prevents leaks: the official tracing docs describe processor failure isolation. If export depends on successful redaction, make redaction and export one application-owned fail-closed step.</p>
+<hr />
+<h1 id="part-iii-multi-agent-protocols-and-orchestration">Part III — Multi-agent, protocols, and orchestration</h1>
+<h2 id="16-multi-agent-architecture-handoffs-vs-agents-as-tools">16. Multi-agent architecture: handoffs vs agents as tools</h2>
+<p>The fact that a system needs three skills does <strong>not</strong> prove it needs three agents. First try one agent with three bounded tools. Add a specialist when it has a genuinely different task, policy, tool set, model profile or ownership boundary. The SDK supports two important patterns. <a href="https://openai.github.io/openai-agents-python/multi_agent/">Official: Agent orchestration</a></p>
+<h3 id="16-1-handoff-specialist-owns-the-next-turn">16.1 Handoff: specialist owns the next turn</h3>
+<pre><code class="language-text">+------------------+
+| User             |
++------------------+
+         |
+         v
++------------------+
+| Triage agent     |
++------------------+
+         |
+   handoff chosen
+         v
++------------------+
+| Billing agent    |
+| final responder  |
++------------------+
+</code></pre>
+<pre><code class="language-python">from agents import Agent, Runner
+
+billing = Agent(
+    name=&quot;Billing Specialist&quot;,
+    handoff_description=&quot;Handles billing questions&quot;,
+    instructions=&quot;Answer billing questions; never authorize payments.&quot;,
+)
+technical = Agent(
+    name=&quot;Technical Specialist&quot;,
+    handoff_description=&quot;Handles technical incidents&quot;,
+    instructions=&quot;Answer technical troubleshooting questions.&quot;,
+)
+triage = Agent(
+    name=&quot;Triage&quot;,
+    instructions=&quot;Transfer each case to the best specialist.&quot;,
+    handoffs=[billing, technical],
+)
+
+# result = await Runner.run(triage, &quot;My card was charged twice&quot;)
+# print(result.last_agent.name, result.final_output)
+</code></pre>
+<p><strong>Trade-off:</strong> specialists can have focused instructions, but the new agent may receive previous history. Filter or minimize handoff history when sensitive fields should not cross the boundary. A handoff inside the SDK is <strong>not</strong> the same as A2A delegation to another independently operated service. <a href="https://openai.github.io/openai-agents-python/handoffs/">Official: Handoffs</a></p>
+<h3 id="16-2-manager-pattern-specialist-is-a-tool">16.2 Manager pattern: specialist is a tool</h3>
+<pre><code class="language-text">+-----------------------+
+| Manager agent         |
++-----------------------+
+       |         |
+       v         v
++----------+  +----------+
+| Billing  |  | Policy   |
+| helper   |  | helper   |
++----------+  +----------+
+       |         |
+       +----+----+
+            |
+            v
++-----------------------+
+| Manager combines      |
+| grounded answer       |
++-----------------------+
+</code></pre>
+<pre><code class="language-python">from agents import Agent
+
+billing = Agent(name=&quot;Billing Analyst&quot;, instructions=&quot;Analyze mock charges.&quot;)
+policy = Agent(name=&quot;Policy Analyst&quot;, instructions=&quot;Analyze cited mock policies.&quot;)
+manager = Agent(
+    name=&quot;Case Manager&quot;,
+    instructions=&quot;Use specialists for evidence; produce the final answer yourself.&quot;,
+    tools=[
+        billing.as_tool(
+            tool_name=&quot;analyze_billing&quot;,
+            tool_description=&quot;Analyze a billing issue without changing records&quot;,
+        ),
+        policy.as_tool(
+            tool_name=&quot;analyze_policy&quot;,
+            tool_description=&quot;Explain policy evidence&quot;,
+        ),
+    ],
+)
+</code></pre>
+<p><strong>Choose handoff</strong> when the specialist should directly own the conversation. <strong>Choose agent-as-tool</strong> when one manager must integrate several findings. <strong>Choose ordinary Python functions</strong> for simple deterministic helpers; agents add model calls, latency and evaluation burden.</p>
+<h3 id="16-3-parallelism-and-manager-control">16.3 Parallelism and manager control</h3>
+<p>You can coordinate parallel independent queries with normal Python concurrency (<code>asyncio.gather</code>) where appropriate, rather than turning every branch into another agent. Bound concurrency to protect upstream systems. A model deciding “parallel” does not remove the need for dependency checks and failure handling.</p>
+<h2 id="17-mcp-integrating-reusable-external-tools">17. MCP: integrating reusable external tools</h2>
+<p><strong>MCP (Model Context Protocol)</strong> connects hosts/clients to tools, resources and prompts exposed by MCP servers. The Agents SDK can integrate hosted MCP tools and local/client-managed servers. MCP is a <strong>tool/data interoperability</strong> boundary, not a frontend UI protocol and not the same thing as an SDK handoff. <a href="https://openai.github.io/openai-agents-python/mcp/">Official: MCP in Agents SDK</a></p>
+<pre><code class="language-text">+------------------------+
+| Python agent runtime   |
+| MCP client             |
++------------------------+
+             |
+             | MCP request/response
+             v
++------------------------+
+| Ticket MCP server      |
+| get_ticket, search     |
++------------------------+
+             |
+             v
++------------------------+
+| Authorized ticket API  |
++------------------------+
+</code></pre>
+<h3 id="17-1-choose-the-mcp-integration">17.1 Choose the MCP integration</h3>
+<table>
+<thead>
+<tr>
+  <th>Requirement</th>
+  <th>SDK option</th>
+  <th>Important concern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Local tool server process</td>
+  <td><code>MCPServerStdio</code></td>
+  <td>Process limits, trust and tool filtering</td>
+</tr>
+<tr>
+  <td>Remote endpoint managed by your application</td>
+  <td><code>MCPServerStreamableHttp</code></td>
+  <td>Authentication, endpoint trust, timeouts</td>
+</tr>
+<tr>
+  <td>Existing HTTP + SSE server</td>
+  <td><code>MCPServerSse</code></td>
+  <td>Compatibility with server transport</td>
+</tr>
+<tr>
+  <td>OpenAI-managed hosted MCP calls</td>
+  <td><code>HostedMCPTool</code></td>
+  <td>Provider availability, approval/data flow</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Illustrative connected-server code</strong> (requires a <em>real compatible server</em> at the specified URL and a valid token):</p>
+<pre><code class="language-python">import asyncio, os
+from agents import Agent, Runner
+from agents.mcp import MCPServerStreamableHttp
+
+async def main():
+    async with MCPServerStreamableHttp(
+        name=&quot;Ticket MCP&quot;,
+        params={
+            &quot;url&quot;: &quot;http://localhost:8000/mcp&quot;,
+            &quot;headers&quot;: {&quot;Authorization&quot;: f&quot;Bearer {os.environ['MCP_SERVER_TOKEN']}&quot;},
+            &quot;timeout&quot;: 10,
+        },
+        cache_tools_list=True,
+    ) as server:
+        agent = Agent(
+            name=&quot;Ticket investigator&quot;,
+            instructions=&quot;Use MCP ticket tools only for facts.&quot;,
+            mcp_servers=[server],
+        )
+        result = await Runner.run(agent, &quot;Inspect ticket T-100&quot;)
+        print(result.final_output)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<p><strong>What to test:</strong> connection refusal, invalid token, missing tool, incompatible schema, forbidden ticket, stale cached tool catalog, prompt injection returned by an MCP tool, and timeout/retry behavior. <strong>Never</strong> let an MCP tool trust <code>user_id</code> from model arguments as proof of identity; the MCP server should use verified credentials and record-level checks.</p>
+<h3 id="17-2-mcp-vs-mcp-apps-vs-ag-ui-vs-a2a">17.2 MCP vs MCP Apps vs AG-UI vs A2A</h3>
+<table>
+<thead>
+<tr>
+  <th>Technology</th>
+  <th>Main purpose</th>
+  <th>Typical boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>MCP</td>
+  <td>Reusable tools/resources/prompts</td>
+  <td>Agent host/client ↔ MCP server</td>
+</tr>
+<tr>
+  <td>MCP Apps</td>
+  <td>Embedded HTML UI inside compatible AI host</td>
+  <td>Host ↔ sandboxed app view associated with MCP tools</td>
+</tr>
+<tr>
+  <td>AG-UI</td>
+  <td>Agent events/state to owned frontend</td>
+  <td>Agent runtime ↔ web UI</td>
+</tr>
+<tr>
+  <td>A2A</td>
+  <td>Delegation between independently deployed agents</td>
+  <td>Remote agent ↔ remote agent</td>
+</tr>
+<tr>
+  <td>Agent Skills</td>
+  <td>Reusable procedural instructions</td>
+  <td>Skill package ↔ agent context/runtime</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>Agents SDK does not automatically make a tool result into an MCP App</strong>. MCP Apps requires a compatible host and the optional UI extension. Likewise, an SDK handoff is internal orchestration; cross-organization A2A requires a separately designed protocol/service integration. For UI rendering, the application/host still owns trusted component handling and permissions. <a href="https://github.com/modelcontextprotocol/ext-apps">Official: MCP Apps</a>, <a href="https://github.com/ag-ui-protocol/ag-ui">AG-UI</a>, <a href="https://a2a-protocol.org/">A2A</a></p>
+<h2 id="18-retrieval-rag-evidence-and-source-truth">18. Retrieval (RAG), evidence, and source truth</h2>
+<p>An agent can answer from retrieved evidence, but <strong>retrieval</strong> and <strong>memory</strong> solve different problems. RAG finds approved source passages; a session maintains conversation turns; the business service owns authoritative current records.</p>
+<pre><code class="language-text">+-----------------------+
+| Authorized question   |
++-----------------------+
+            |
+            v
++-----------------------+
+| ACL-aware retrieval   |
++-----------------------+
+            |
+            v
++-----------------------+
+| Cited passages        |
+| source + version      |
++-----------------------+
+            |
+            v
++-----------------------+
+| Agent synthesizes     |
+| or abstains           |
++-----------------------+
+</code></pre>
+<p><strong>Retrieval options:</strong> a local approved search tool, the Responses API <code>FileSearchTool</code> when its store/governance matches the requirement, or your enterprise retrieval service exposed as a Python function/MCP tool. Choosing a tool does not decide whether permissions, freshness and citations are valid. <a href="https://openai.github.io/openai-agents-python/tools/">Official: Tools</a></p>
+<p><strong>Correct evidence contract:</strong> <code>source_id</code>, passage ID, effective date, last indexed time, access scope and matched text. Validate final citations against the passages actually retrieved. If nothing is sufficient, answer “not supported by the available approved evidence.”</p>
+<p><strong>Failure scenario:</strong> Engineering user searches an index containing HR-only policy. Filter by verified ACL <strong>before</strong> the text reaches the model. Post-generation filtering is too late.</p>
+<h2 id="19-deterministic-orchestration-vs-adaptive-agent-loops">19. Deterministic orchestration vs adaptive agent loops</h2>
+<p>Many production workflows are <strong>hybrid</strong>: a deterministic controller chooses the approved sequence; one or more agents perform narrow extraction/analysis steps. For example, approval, eligibility and payment execution are deterministic; drafting a readable recommendation may be model-driven.</p>
+<table>
+<thead>
+<tr>
+  <th>Pattern</th>
+  <th>Best for</th>
+  <th>Main risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>One prompt</td>
+  <td>Explanation, format conversion</td>
+  <td>Grounding limits</td>
+</tr>
+<tr>
+  <td>One agent + tools</td>
+  <td>Flexible lookup and investigation</td>
+  <td>Loops, uncontrolled calls</td>
+</tr>
+<tr>
+  <td>Agent handoff</td>
+  <td>Focused specialist dialogue</td>
+  <td>Context disclosure and ownership</td>
+</tr>
+<tr>
+  <td>Manager + specialists</td>
+  <td>Evidence from distinct specialties</td>
+  <td>Cost and compounded errors</td>
+</tr>
+<tr>
+  <td>Deterministic state machine</td>
+  <td>Payments, approvals, onboarding</td>
+  <td>More explicit engineering</td>
+</tr>
+<tr>
+  <td>Durable workflow engine + agent tasks</td>
+  <td>Days-long or crash-recoverable operations</td>
+  <td>Platform complexity</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Avoid confusing <code>Session</code> with a durable workflow engine.</strong> A conversation log alone is not enough to prevent duplicate writes or resume a transaction after a lost network response. The SDK documentation discusses durable execution integrations (e.g., Temporal and others), but you still need explicit workflow and side-effect contracts. <a href="https://openai.github.io/openai-agents-python/running_agents/">Official: Running agents</a></p>
+<h3 id="19-1-explicit-state-machine-for-high-impact-changes">19.1 Explicit state machine for high-impact changes</h3>
+<pre><code class="language-text">+----------+     +----------+     +-----------+
+| PROPOSED | --&gt; | APPROVED | --&gt; | EXECUTING |
++----------+     +----------+     +-----------+
+                        |                |
+                        v                v
+                   +----------+    +-----------+
+                   | REJECTED |    | COMPLETED |
+                   +----------+    +-----------+
+                                         ^
+                                         |
+                                    +---------+
+                                    | UNKNOWN |
+                                    +---------+
+</code></pre>
+<p><strong>Critical invariant:</strong> <code>UNKNOWN</code> does not imply <code>FAILED</code>. A reconciliation operation should determine whether the external side effect happened. Do not automatically re-run a payment, refund, send or delete after an ambiguous timeout.</p>
+<h2 id="20-agentic-ui-model-output-is-not-a-ui-authorization-decision">20. Agentic UI: model output is not a UI authorization decision</h2>
+<p>There are three common UI approaches for an Agents SDK backend:</p>
+<ol>
+<li><strong>Plain HTML frontend:</strong> your API returns approved JSON. The frontend renders known components. Simple, clear and easy to print.</li>
+<li><strong>Streaming UI:</strong> the backend translates approved agent events into app-specific SSE/WebSocket messages, or uses a compatible protocol such as AG-UI.</li>
+<li><strong>Embedded AI-host UI:</strong> if the host supports MCP Apps, an MCP tool can be associated with a sandboxed interactive view. This is not provided by <code>Agent</code> alone.</li>
+</ol>
+<p>For all three, backend authority remains separate from display:</p>
+<pre><code class="language-text">+---------------------------+
+| Agent proposes next step  |
++---------------------------+
+              |
+              v
++---------------------------+
+| HTML button / app view    |
+| user reviews             |
++---------------------------+
+              |
+              v
++---------------------------+
+| Backend authenticates +   |
+| authorizes exact action   |
++---------------------------+
+              |
+              v
++---------------------------+
+| Business service commits  |
++---------------------------+
+</code></pre>
+<p><strong>Do not</strong> consider a rendered “Approve” button, streamed <code>approved=true</code> field or text in a tool response to be proof of authorization. Require a trusted identity, exact action/resource/amount binding, expiry, state validation and idempotency. These rules remain true with MCP Apps, AG-UI, or a proprietary frontend.</p>
+<h1 id="part-iv-production-architecture-and-advanced-capabilities">Part IV — Production architecture and advanced capabilities</h1>
+<h2 id="21-authentication-and-authorization-architecture">21. Authentication and authorization architecture</h2>
+<p>A production app usually has several identities: the human operator, your application service, the model API credential, and any downstream SaaS/MCP credentials. Keep these separate. The <strong>system of record</strong> makes the final record-level authorization decision.</p>
+<h3 id="21-1-read-request-sequence">21.1 Read request sequence</h3>
+<pre><code class="language-text">Operator -&gt; Backend: GET /ask?question=... (session cookie / token)
+Backend  -&gt; Identity: verify subject, tenant, role
+Backend  -&gt; Runner: start run with local authenticated context
+Runner   -&gt; get_ticket: model-selected ticket_id
+Tool     -&gt; Ticket API: user/tenant-scoped authorized read
+Ticket   -&gt; Tool: permitted record or safe denial
+Tool     -&gt; Runner: validated result
+Runner   -&gt; Backend: grounded reply
+Backend  -&gt; Operator: final response
+</code></pre>
+<p><strong>What is never an authority source:</strong> prompt text (“I am the admin”), a document’s instruction, a model-generated role, an iframe local variable, or a handoff agent’s own claim about permissions.</p>
+<h3 id="21-2-essential-negative-tests">21.2 Essential negative tests</h3>
+<ul>
+<li>User A requests User B’s record: denied.</li>
+<li>Model passes a different <code>tenant_id</code>: ignored or rejected.</li>
+<li>Session with prior access resumes after revocation: fresh service check denies.</li>
+<li>MCP server returns instruction to call delete tool: tool policy blocks it.</li>
+<li>Approval is changed after review: backend rejects modified action.</li>
+</ul>
+<h2 id="22-prompt-injection-tools-and-supply-chain-security">22. Prompt injection, tools, and supply-chain security</h2>
+<p><strong>Prompt injection</strong> occurs when lower-trust text tries to alter agent behavior: ticket notes, retrieved PDFs, webpage text, tool responses or third-party skill files can contain hostile “instructions”. Labels in a prompt help the model, but <strong>enforcement belongs in code and service policy</strong>.</p>
+<p><strong>Defense design:</strong> minimize privileged tools → allowlist permitted tool types → check args/identity on every call → sandbox untrusted code/file tools → redact sensitive context → review third-party MCP servers/skills → log decisions → evaluate injected cases. For destructive actions, use human approval <strong>plus</strong> business-level validation.</p>
+<table>
+<thead>
+<tr>
+  <th>Threat</th>
+  <th>Agent-only mitigation (weak)</th>
+  <th>Enforced mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Document says “ignore prior rules”</td>
+  <td>Prompt warns not to obey</td>
+  <td>Tool cannot take unauthorized action</td>
+</tr>
+<tr>
+  <td>Model guesses restricted ticket ID</td>
+  <td>Model says “check owner”</td>
+  <td>Backend checks identity+record ACL</td>
+</tr>
+<tr>
+  <td>Tool response includes credential</td>
+  <td>Ask model not to repeat it</td>
+  <td>Strip/redact sensitive fields before model/UI</td>
+</tr>
+<tr>
+  <td>Duplicate write after retry</td>
+  <td>Model told “only once”</td>
+  <td>Stable idempotency key + ledger + reconciliation</td>
+</tr>
+<tr>
+  <td>Malicious plugin/skill</td>
+  <td>Trust its description</td>
+  <td>Approved registry, review, isolation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="23-testing-and-evaluation">23. Testing and evaluation</h2>
+<p>Separate <strong>software correctness</strong> from <strong>model quality</strong>.</p>
+<h3 id="23-1-tests-by-layer">23.1 Tests by layer</h3>
+<table>
+<thead>
+<tr>
+  <th>Layer</th>
+  <th>Test</th>
+  <th>Example expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Business tool (offline)</td>
+  <td>AuthZ logic</td>
+  <td>Cross-user read denied</td>
+</tr>
+<tr>
+  <td>Tool contract</td>
+  <td>Type/schema checks</td>
+  <td>Invalid ticket ID rejected</td>
+</tr>
+<tr>
+  <td>Run behavior</td>
+  <td>Tool failure injection</td>
+  <td>No fabricated success</td>
+</tr>
+<tr>
+  <td>Output</td>
+  <td>Typed schema validation</td>
+  <td>Known fields parsed</td>
+</tr>
+<tr>
+  <td>Retrieval</td>
+  <td>Grounding/citation test</td>
+  <td>Source IDs actually exist</td>
+</tr>
+<tr>
+  <td>Agent quality</td>
+  <td>Scenario-level evaluator</td>
+  <td>Answer backed by approved evidence</td>
+</tr>
+<tr>
+  <td>Recovery</td>
+  <td>Crash/retry simulation</td>
+  <td>At most one logical refund</td>
+</tr>
+<tr>
+  <td>Security</td>
+  <td>Prompt injection attempt</td>
+  <td>Forbidden tool effect blocked</td>
+</tr>
+<tr>
+  <td>UI</td>
+  <td>Approval/expiry checks</td>
+  <td>Stale approval denied</td>
+</tr>
+</tbody>
+</table>
+<p>The SDK has a <a href="https://openai.github.io/openai-agents-python/testing/">Testing guide</a>; keep deterministic unit tests in normal Python test runners, and add representative model evaluations before release.</p>
+<h3 id="23-2-a-small-offline-mock-with-real-software-tests">23.2 A small <strong>offline</strong> mock with real software tests</h3>
+<p><code>mock_business_service.py</code> (no model or key required):</p>
+<pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Principal:
+    user_id: str
+    tenant_id: str
+
+# Synthetic records only.
+RECORDS = {
+    &quot;T-100&quot;: {&quot;tenant_id&quot;: &quot;A&quot;, &quot;owner_id&quot;: &quot;u1&quot;, &quot;status&quot;: &quot;open&quot;},
+    &quot;T-200&quot;: {&quot;tenant_id&quot;: &quot;B&quot;, &quot;owner_id&quot;: &quot;u2&quot;, &quot;status&quot;: &quot;closed&quot;},
+}
+
+def read_ticket(principal: Principal, ticket_id: str) -&gt; dict:
+    record = RECORDS.get(ticket_id)
+    if record is None:
+        return {&quot;result&quot;: &quot;not_available&quot;}
+    if (record[&quot;tenant_id&quot;], record[&quot;owner_id&quot;]) != (
+        principal.tenant_id, principal.user_id
+    ):
+        return {&quot;result&quot;: &quot;not_available&quot;}
+    return {&quot;result&quot;: &quot;ok&quot;, &quot;ticket_id&quot;: ticket_id,
+            &quot;status&quot;: record[&quot;status&quot;]}
+</code></pre>
+<p><code>test_business_service.py</code> (Python standard library):</p>
+<pre><code class="language-python">import unittest
+from mock_business_service import Principal, read_ticket
+
+class TicketPolicyTests(unittest.TestCase):
+    def test_authorized(self):
+        self.assertEqual(
+            read_ticket(Principal(&quot;u1&quot;, &quot;A&quot;), &quot;T-100&quot;)[&quot;status&quot;], &quot;open&quot;
+        )
+
+    def test_cross_tenant_denied(self):
+        self.assertEqual(
+            read_ticket(Principal(&quot;u1&quot;, &quot;A&quot;), &quot;T-200&quot;)[&quot;result&quot;],
+            &quot;not_available&quot;
+        )
+
+    def test_unknown_not_invented(self):
+        self.assertEqual(
+            read_ticket(Principal(&quot;u1&quot;, &quot;A&quot;), &quot;T-999&quot;)[&quot;result&quot;],
+            &quot;not_available&quot;
+        )
+
+if __name__ == &quot;__main__&quot;:
+    unittest.main()
+</code></pre>
+<p>Run <code>python -m unittest -v</code>. Notice that the critical authorization policy works and can be tested <strong>without any language model</strong>. The agent tool should delegate to such a service, not reimplement policy through instructions.</p>
+<h3 id="23-3-an-evaluation-dataset">23.3 An evaluation dataset</h3>
+<p>For an incident assistant, create a versioned JSONL set with <code>input</code>, permitted evidence IDs, expected tool behavior, forbidden effect list and success rubric. Measure <strong>task completion</strong>, <strong>grounding/citation precision</strong>, <strong>authorization violation rate</strong>, <strong>unnecessary tool calls</strong>, <strong>latency</strong> and <strong>cost</strong>, instead of only checking if the answer sounds good. Include “no evidence”, “upstream unavailable” and “malicious retrieved text” cases.</p>
+<h2 id="24-observability-cost-and-service-health">24. Observability, cost and service health</h2>
+<p>The SDK has traces and token usage. Build operational monitoring around the <strong>business journey</strong>, not only model calls.</p>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th>Why it matters</th>
+  <th>Example alert/test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>End-to-end task success</td>
+  <td>Actual user outcome</td>
+  <td>Fall in grounded completion rate</td>
+</tr>
+<tr>
+  <td>Tool error rate</td>
+  <td>Upstream service health</td>
+  <td>Ticket API 5xx spike</td>
+</tr>
+<tr>
+  <td>p50/p95 visible latency</td>
+  <td>Responsiveness</td>
+  <td>Approval UI pending too long</td>
+</tr>
+<tr>
+  <td>Tokens/requests per task</td>
+  <td>Cost</td>
+  <td>Unexpected extra agent loops</td>
+</tr>
+<tr>
+  <td>Guardrail/policy denials</td>
+  <td>Safety/false positives</td>
+  <td>New prompt injection attempts</td>
+</tr>
+<tr>
+  <td>Unsupported-claim rate</td>
+  <td>Quality</td>
+  <td>Citation regression</td>
+</tr>
+<tr>
+  <td>Human correction rate</td>
+  <td>Quality drift</td>
+  <td>Increase after model update</td>
+</tr>
+<tr>
+  <td>Duplicate operation count</td>
+  <td>Side-effect correctness</td>
+  <td>Any second refund for one operation ID</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Trace correlation:</strong> carry a request ID across web API, Runner, business tools and external services. Attach safe metadata; minimize or avoid raw prompts/results in exported traces when data sensitivity requires it. If no trace exporter can meet required data policy, disable or replace it deliberately rather than assuming defaults are safe. <a href="https://openai.github.io/openai-agents-python/tracing/">Official: Tracing</a></p>
+<h2 id="25-latency-scale-and-cost">25. Latency, scale and cost</h2>
+<p>An agent may do multiple model and tool calls per request. A simple one-shot prompt often has lower latency and cost than a multi-agent workflow. Make architecture changes only when measured requirements demand them.</p>
+<p><strong>Reduce cost/latency safely:</strong> narrow prompts and tool schemas; return compact structured tool results; defer large tool catalogs when supported; use a suitable model per task; bound turns/concurrency; cache non-sensitive and non-user-specific read results with explicit freshness; batch independent work carefully; add retrieval only when needed. Cache scope must include tenant, identity/access policy and version where relevant. Never cache a user’s authorized response for a different user by mistake.</p>
+<p><strong>Budget model</strong> (illustrative, not an OpenAI price quote):</p>
+<pre><code class="language-text">Cost per successful task
+  = model request/response costs
+  + hosted tool costs (when applicable)
+  + external API / infrastructure costs
+  + retry &amp; failed-run overhead
+</code></pre>
+<p>Collect actual usage and provider pricing before making a cost claim. For planning, calculate <strong>cost per grounded successful task</strong>, not just cost per request. <a href="https://openai.github.io/openai-agents-python/usage/">Official: Usage</a></p>
+<h2 id="26-durability-retries-and-unknown-outcomes">26. Durability, retries and unknown outcomes</h2>
+<p>A reliable production service needs application-owned durable records for pending actions, approvals, external operation IDs and reconciliation. Session history and streamed messages do not prove what happened in the business service.</p>
+<h3 id="26-1-failure-recovery-sequence">26.1 Failure/recovery sequence</h3>
+<pre><code class="language-text">+--------------------------+
+| User approved refund     |
++--------------------------+
+             |
+             v
++--------------------------+
+| Save operation ID        |
+| refund-ORD17-v1          |
++--------------------------+
+             |
+             v
++--------------------------+
+| Send to mock provider    |
++--------------------------+
+             |
+          timeout
+             v
++--------------------------+
+| Mark outcome UNKNOWN     |
++--------------------------+
+             |
+             v
++--------------------------+
+| Query provider by ID     |
++--------------------------+
+       |             |
+    found           absent
+       |             |
+       v             v
++----------+   +----------------+
+| Record   |   | Policy decides |
+| success  |   | retry / review |
++----------+   +----------------+
+</code></pre>
+<p><strong>Rules:</strong> persist before side effect; use a stable idempotency key; reconcile after ambiguous failures; cap retries; do not let the model choose arbitrary operation IDs; keep an audit trail of proposal, approval, execution and provider evidence. For long-lived workflows, consider a durable orchestrator rather than keeping one Python process alive indefinitely.</p>
+<h2 id="27-advanced-sdk-capabilities-choose-only-when-needed">27. Advanced SDK capabilities: choose only when needed</h2>
+<h3 id="27-1-sandbox-agents-and-code-editing">27.1 Sandbox agents and code editing</h3>
+<p>The documented <strong>SandboxAgent</strong> path adds workspace-oriented execution with manifests, filesystem/shell capabilities, sandbox clients and resumable workspace state. It is useful for coding assistants, research over files, patch/test loops and artifact generation. It creates <strong>new security boundaries</strong>: filesystem scope, network egress, code execution, secrets, dependency supply chain and review before merge. <a href="https://openai.github.io/openai-agents-python/sandbox_agents/">Official: Sandbox agents</a></p>
+<p><strong>Use case:</strong> inspect a toy repository, propose a patch, run unit tests inside an isolated workspace, show diff, require human review before merge. Do not let a sandbox with real credentials access production systems by default.</p>
+<h3 id="27-2-voice-pipelines-vs-realtime-agents">27.2 Voice pipelines vs realtime agents</h3>
+<p><strong>Voice pipeline:</strong> speech-to-text → agent/workflow → text-to-speech. Useful for spoken interfaces when modest latency is acceptable. The SDK documents <code>VoicePipeline</code> and <code>SingleAgentVoiceWorkflow</code>. <strong>Realtime agents:</strong> persistent realtime session and incremental audio/text, supporting interruptions and tool calls. Python Realtime transport is server-side WebSocket/SIP, not browser WebRTC. <a href="https://openai.github.io/openai-agents-python/voice/quickstart/">Official: Voice quickstart</a>, <a href="https://openai.github.io/openai-agents-python/realtime/guide/">Realtime guide</a></p>
+<p>Choose based on interaction latency, audio quality, interruptions, privacy/retention and integration needs; do not assume both have identical APIs.</p>
+<h3 id="27-3-hosted-tools-and-tool-search">27.3 Hosted tools and tool search</h3>
+<p>The Agents SDK documents OpenAI-hosted tools for supported models, including web/file search, code interpreter, hosted MCP and other provider-backed capabilities. Availability and exact arguments depend on model/SDK version. Tool search can reduce exposure of very large tool catalogs when supported. A hosted tool may execute outside your application process, so explicitly review <strong>data flow, trust, approvals and observability</strong>. <a href="https://openai.github.io/openai-agents-python/tools/">Official: Tools</a></p>
+<h3 id="27-4-agent-skills-and-reusable-procedures">27.4 Agent Skills and reusable procedures</h3>
+<p>Agent Skills package repeatable procedural guidance, often using a <code>SKILL.md</code> entry and supporting resources. This is different from an API: skills tell an agent <strong>how</strong> to work; tools let it access capabilities; business services decide <strong>what is authorized</strong>. For a coding sandbox, study the SDK’s Skills capability after basic agent/tool patterns. <a href="https://openai.github.io/openai-agents-python/sandbox/guide/">Official: Sandbox concepts</a></p>
+<h3 id="27-5-a2a-interoperability">27.5 A2A interoperability</h3>
+<p>If another team runs its own remote agent with independent task lifecycle and ownership, consider a verified A2A adapter or service integration. In-process <code>Agent.as_tool()</code> and handoffs do not themselves create an A2A-compliant service. Verify the chosen A2A implementation against its official protocol version; authenticate the remote service, validate agent metadata and artifacts, and minimize disclosed case data. <a href="https://a2a-protocol.org/">Official: A2A</a></p>
+<h2 id="28-deployment-reference-architecture">28. Deployment reference architecture</h2>
+<pre><code class="language-text">+--------------------------+
+| Browser / chat client    |
++--------------------------+
+             |
+             v
++--------------------------+
+| API gateway + identity   |
++--------------------------+
+             |
+             v
++--------------------------+
+| App service              |
+| intent, run ID, policy   |
++--------------------------+
+             |
+             v
++--------------------------+
+| Agent SDK Runner         |
+| bounded tools / traces   |
++--------------------------+
+        |            |
+        v            v
++--------------+  +-------------------+
+| Read tools   |  | Draft/approval    |
+| / retrieval  |  | workflow service  |
++--------------+  +-------------------+
+        |            |
+        v            v
++--------------+  +-------------------+
+| Governed     |  | Business write    |
+| data APIs    |  | API + action log  |
++--------------+  +-------------------+
+
+Cross-cutting: authZ, secret management, tracing,
+rate control, evaluation, audit, cost budgets.
+</code></pre>
+<h3 id="28-1-component-ownership">28.1 Component ownership</h3>
+<table>
+<thead>
+<tr>
+  <th>Component</th>
+  <th>Owns</th>
+  <th>Must not assume</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Browser</td>
+  <td>Display and local form state</td>
+  <td>“Approve” UI alone authorizes effect</td>
+</tr>
+<tr>
+  <td>API gateway</td>
+  <td>Identity verification / request admission</td>
+  <td>Model-generated user ID is trusted</td>
+</tr>
+<tr>
+  <td>Agent runtime</td>
+  <td>Language decisions, tool selection, run events</td>
+  <td>Business record is true without source</td>
+</tr>
+<tr>
+  <td>Read service</td>
+  <td>Actual data and per-record access</td>
+  <td>Tool schema grants permission</td>
+</tr>
+<tr>
+  <td>Approval service</td>
+  <td>Pending action, reviewer, expiry, binding</td>
+  <td>Session text is an audit log</td>
+</tr>
+<tr>
+  <td>Write service</td>
+  <td>Final policy, idempotency, effect</td>
+  <td>Timeout means no effect</td>
+</tr>
+<tr>
+  <td>Observability</td>
+  <td>Correlated operational evidence</td>
+  <td>Raw traces are privacy-safe by default</td>
+</tr>
+</tbody>
+</table>
+<h3 id="28-2-common-production-decisions">28.2 Common production decisions</h3>
+<ul>
+<li><strong>Availability:</strong> fail safely if identity or policy service is unavailable.</li>
+<li><strong>Scaling:</strong> keep stateless API workers where possible; put durable action state in a database/queue.</li>
+<li><strong>Tenancy:</strong> scope sessions, caches, credentials, search and logs by verified tenant.</li>
+<li><strong>Versioning:</strong> pin/test SDK, model, prompt, tool schemas and MCP compatibility together.</li>
+<li><strong>Deployment:</strong> use staged rollout; compare candidate vs baseline on a fixed evaluation set and representative traffic.</li>
+<li><strong>Disaster recovery:</strong> restore state and reconcile unknown remote effects before resuming writes.</li>
+</ul>
+<h2 id="29-architecture-decision-handbook">29. Architecture decision handbook</h2>
+<p>Use the simplest option that meets the business requirement:</p>
+<table>
+<thead>
+<tr>
+  <th>If you need…</th>
+  <th>Usually start with…</th>
+  <th>Evolve to… only if…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>One formatted answer</td>
+  <td>Direct Responses call</td>
+  <td>Agent if flexible tool loop is needed</td>
+</tr>
+<tr>
+  <td>Known record by ID</td>
+  <td>Direct authenticated API</td>
+  <td>Agent if dynamic lookup/explanation matters</td>
+</tr>
+<tr>
+  <td>Reusable tools across hosts</td>
+  <td>MCP</td>
+  <td>Governed MCP catalog as it scales</td>
+</tr>
+<tr>
+  <td>Multiple specialist tasks</td>
+  <td>One agent + tools</td>
+  <td>Handoff/agent-as-tool when ownership differs</td>
+</tr>
+<tr>
+  <td>Controlled business writes</td>
+  <td>State machine + approval</td>
+  <td>Durable orchestration for long workflows</td>
+</tr>
+<tr>
+  <td>Searchable documents</td>
+  <td>Permission-aware retrieval</td>
+  <td>Hybrid search/rerank after evaluation</td>
+</tr>
+<tr>
+  <td>Live frontend updates</td>
+  <td>SSE and known JSON</td>
+  <td>AG-UI for interoperable event semantics</td>
+</tr>
+<tr>
+  <td>App embedded in AI chat</td>
+  <td>Host-supported MCP Apps</td>
+  <td>Fallback when host lacks extension</td>
+</tr>
+<tr>
+  <td>Remote independently owned agent</td>
+  <td>Typed service API</td>
+  <td>A2A when task/agent interoperability matters</td>
+</tr>
+<tr>
+  <td>Workspace file/code work</td>
+  <td>Restricted sandbox</td>
+  <td>SandboxAgent for persistent tool-rich workflows</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Architectural anti-patterns:</strong> (1) using 5 agents when 1 agent and 2 APIs suffice; (2) treating prompts as authorization; (3) assuming every tool use requires MCP; (4) treating MCP Apps as a different name for AG-UI; (5) retrying side effects blindly; (6) ignoring version and model capability checks; (7) shipping without scenario evaluations.</p>
+<hr />
+<h1 id="part-v-detailed-use-cases-and-hands-on-capstone">Part V — Detailed use cases and hands-on capstone</h1>
+<h2 id="30-use-case-catalog-and-capstone">30. Use-case catalog and capstone</h2>
+<p>This chapter turns concepts into solution-architecture decisions. The records and business rules are intentionally <strong>synthetic</strong>. Each case states the source of truth, minimal design, production upgrades and where an SDK feature earns its place.</p>
+<h3 id="case-a-faq-support-assistant-beginner">Case A — FAQ support assistant (beginner)</h3>
+<p><strong>Problem:</strong> Answer a customer’s return-policy question only from approved policy paragraphs. <strong>Source of truth:</strong> approved FAQ documents. <strong>Start:</strong> deterministic retrieval of one relevant answer and source ID. <strong>Add SDK:</strong> one grounded answer agent. <strong>Production:</strong> document version/freshness, ACL filtering, citation checks, abstention when no evidence. <strong>Trade-off:</strong> for a small exact FAQ, retrieval plus template formatting may be sufficient.</p>
+<p><strong>Example request:</strong> <code>Can I return an opened item?</code><br />
+<strong>Expected contract:</strong> <code>{&quot;status&quot;:&quot;grounded&quot;,&quot;source_ids&quot;:[&quot;faq-returns-01&quot;],&quot;answer&quot;:&quot;...&quot;}</code> or <code>{&quot;status&quot;:&quot;insufficient_evidence&quot;}</code>.</p>
+<h3 id="case-b-ticket-lookup-agent-beginner-intermediate">Case B — Ticket lookup agent (beginner → intermediate)</h3>
+<p><strong>Problem:</strong> Operator asks about current ticket status. <strong>Source of truth:</strong> ticket service. <strong>Start:</strong> one <code>get_ticket</code> function tool with local fake data. <strong>Add SDK:</strong> type-aware tool selection, concise explanation, bounded turns. <strong>Production:</strong> backend identity, per-ticket access, tool timeout, structured error, full trace. <strong>Trade-off:</strong> a direct record API is cheaper when no flexible reasoning is needed.</p>
+<h3 id="case-c-ticket-triage-and-routing-beginner">Case C — Ticket triage and routing (beginner)</h3>
+<p><strong>Problem:</strong> New support text needs an assigned queue and priority. <strong>Source of truth:</strong> ticketing rules and approved queue taxonomy. <strong>Start:</strong> structured output model (<code>team</code>, <code>priority</code>, <code>reason</code>) and deterministic validation. <strong>Production:</strong> unknown category, confidence/abstention, monitoring misroutes and schema versioning. <strong>Trade-off:</strong> rules/classifiers are preferable for fixed phrases and contractual decision trees.</p>
+<h3 id="case-d-document-q-a-with-grounded-retrieval-intermediate">Case D — Document Q&amp;A with grounded retrieval (intermediate)</h3>
+<p><strong>Problem:</strong> Employees search policies with citations. <strong>Source of truth:</strong> versioned, permission-controlled documents. <strong>Start:</strong> offline keyword retrieval + <code>source_id</code>; add an agent only to synthesize evidence. <strong>Production:</strong> hybrid retrieval, ACL prefilter, fresh index, citation validation and evidence evaluation. <strong>Trade-off:</strong> long context vs RAG depends on corpus size, updates and access controls.</p>
+<h3 id="case-e-refund-proposal-and-human-approval-intermediate-advanced">Case E — Refund proposal and human approval (intermediate → advanced)</h3>
+<p><strong>Problem:</strong> Support agent proposes a refund; a reviewer authorizes a specific action. <strong>Source of truth:</strong> order and payments systems. <strong>Start:</strong> agent drafts <code>RefundProposal</code>, no write tool. <strong>Add SDK:</strong> approval interruption around a simulated tool. <strong>Production:</strong> persisted proposal, verified approver, eligible amount, expiry, idempotency key, reconciliation after timeout, immutable audit. <strong>Trade-off:</strong> never replace the deterministic payment workflow with an unconstrained agent loop.</p>
+<p><strong>Illustrative business contracts:</strong></p>
+<pre><code class="language-json">{
+  &quot;proposal_id&quot;: &quot;P-17&quot;,
+  &quot;order_id&quot;: &quot;ORD-17&quot;,
+  &quot;amount_minor&quot;: 2500,
+  &quot;currency&quot;: &quot;USD&quot;,
+  &quot;state&quot;: &quot;pending_approval&quot;,
+  &quot;expires_at&quot;: &quot;2026-11-06T20:00:00Z&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+  &quot;operation_id&quot;: &quot;refund-ORD-17-v1&quot;,
+  &quot;proposal_id&quot;: &quot;P-17&quot;,
+  &quot;approver_subject&quot;: &quot;reviewer-3&quot;,
+  &quot;decision&quot;: &quot;approved&quot;,
+  &quot;approved_version&quot;: 1
+}
+</code></pre>
+<p><strong>Failure to demonstrate:</strong> processing succeeds at provider but response times out; application stores <code>unknown</code> then looks up the operation before retrying.</p>
+<h3 id="case-f-it-incident-investigator-advanced">Case F — IT incident investigator (advanced)</h3>
+<p><strong>Problem:</strong> Operator asks “Why did checkout fail after deployment?” <strong>Source of truth:</strong> monitoring, change log, incident record and runbooks. <strong>Start:</strong> one bounded agent with read-only <code>get_metric</code> and <code>get_change</code> tools. <strong>Add SDK:</strong> streaming activity, possibly specialists for logs and changes. <strong>Production:</strong> query quotas, evidence timeline, source attribution, human approval before remediation, incident-linked traces. <strong>Trade-off:</strong> runbook-first deterministic steps vs model-led adaptive investigation.</p>
+<p><strong>Request/response contract example:</strong></p>
+<pre><code class="language-json">{
+  &quot;incident_id&quot;: &quot;INC-42&quot;,
+  &quot;time_range&quot;: {&quot;start&quot;: &quot;2026-11-06T10:00:00Z&quot;,
+                 &quot;end&quot;: &quot;2026-11-06T11:00:00Z&quot;},
+  &quot;requested_analysis&quot;: &quot;suspected deployment regression&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+  &quot;incident_id&quot;: &quot;INC-42&quot;,
+  &quot;status&quot;: &quot;needs_review&quot;,
+  &quot;hypotheses&quot;: [
+    {&quot;claim&quot;: &quot;errors increased after release R7&quot;,
+     &quot;evidence_ids&quot;: [&quot;metric-12&quot;, &quot;change-R7&quot;]}
+  ],
+  &quot;authorized_action&quot;: &quot;none&quot;
+}
+</code></pre>
+<h3 id="case-g-analytics-assistant-and-generative-ui-advanced">Case G — Analytics assistant and Generative UI (advanced)</h3>
+<p><strong>Problem:</strong> Analyst asks for a quarter’s expenses and changes department filters. <strong>Source of truth:</strong> governed metric API. <strong>Start:</strong> one typed result: <code>period</code>, <code>department</code>, <code>categories</code>, <code>as_of</code>. <strong>UI:</strong> ordinary self-contained HTML renders a table/chart from trusted JSON. <strong>MCP Apps alternative:</strong> when a compatible AI host must embed the interactive view, add a separate MCP server linked to an approved UI resource. <strong>Production:</strong> per-department authorization and stale data handling. <strong>Trade-off:</strong> never generate unrestricted executable HTML and run it as authority.</p>
+<h3 id="case-h-code-editing-data-analysis-sandbox-advanced">Case H — Code-editing / data analysis sandbox (advanced)</h3>
+<p><strong>Problem:</strong> Investigate a test failure, propose a patch and generate a report. <strong>Source of truth:</strong> checked-out repository/tests or authorized input files. <strong>Start:</strong> isolated workspace with fake repo and no secrets. <strong>Add SDK:</strong> SandboxAgent and permissioned file/shell capabilities. <strong>Production:</strong> network allowlist, resource limits, dependency pinning, diff review, code scanning, human merge approval. <strong>Trade-off:</strong> model reasoning should recommend edits; test execution and merge authority remain deterministic.</p>
+<h3 id="case-i-realtime-voice-customer-service-advanced">Case I — Realtime voice customer service (advanced)</h3>
+<p><strong>Problem:</strong> Spoken ticket lookup with interruptions. <strong>Source of truth:</strong> customer/ticket APIs. <strong>Start:</strong> voice pipeline with typed read-only tools. <strong>Move to realtime:</strong> if incremental audio, latency and barge-in require a live connection. <strong>Production:</strong> identity verification, consent/retention, call handoff, cancellation behavior and transcript logging policy. <strong>Trade-off:</strong> simpler STT→agent→TTS pipeline vs more complex real-time media session.</p>
+<h3 id="30-1-capstone-enterprise-ticket-incident-assistant">30.1 Capstone — Enterprise ticket + incident assistant</h3>
+<p><strong>Business goal:</strong> an operator asks about an incident, the assistant searches permitted ticket/metrics data, displays a factual summary, offers a remediation <em>proposal</em>, and requires approval before a mocked ticket update. Start with a single read-only agent. Add complexity only when specific requirements justify it.</p>
+<p><strong>Phase 1 — Minimum:</strong> one agent, <code>get_ticket</code>, <code>get_metric</code>, structured <code>InvestigationSummary</code>. Everything is synthetic. Build three failure fixtures: unknown ticket, unauthorized tenant and upstream timeout.</p>
+<p><strong>Phase 2 — Evidence:</strong> include <code>source_id</code>, <code>observed_at</code>, evidence list and abstention state. Reject citations not returned from authorized tools.</p>
+<p><strong>Phase 3 — State:</strong> introduce a session for chat history; keep workflow state separate in durable storage.</p>
+<p><strong>Phase 4 — Proposal:</strong> add a <code>propose_ticket_update</code> path that writes <strong>only</strong> a draft. A real backend validates the reviewer and commits the change with a stable operation ID.</p>
+<p><strong>Phase 5 — Interoperability:</strong> turn shared read tools into an MCP service only if a second compatible host needs them. For an embedded dashboard, evaluate MCP Apps host support; for a web-owned streaming frontend, compare plain SSE with AG-UI.</p>
+<p><strong>Phase 6 — Operations:</strong> add trace IDs, eval cases, safety tests, bounded retries, a release checklist and a recovery plan for unknown writes.</p>
+<h3 id="30-2-capstone-contract-set">30.2 Capstone contract set</h3>
+<pre><code class="language-python"># The following Pydantic types are application contracts, not an SDK API.
+from typing import Literal
+from pydantic import BaseModel, Field
+
+class Evidence(BaseModel):
+    source_id: str
+    observed_at: str
+    claim: str
+
+class InvestigationSummary(BaseModel):
+    incident_id: str
+    status: Literal[&quot;grounded&quot;, &quot;insufficient_evidence&quot;, &quot;needs_review&quot;]
+    findings: list[Evidence]
+    recommended_action: str | None = None
+
+class TicketUpdateDraft(BaseModel):
+    ticket_id: str
+    action: Literal[&quot;add_comment&quot;, &quot;change_priority&quot;]
+    reason: str = Field(min_length=1, max_length=500)
+    proposal_id: str
+</code></pre>
+<p><strong>Trust boundary note:</strong> model-generated <code>proposal_id</code> is <em>not</em> trusted as an authoritative ID. The application creates its own ID after validating the suggestion. The same applies to ticket IDs, user IDs, and any model-generated approval status.</p>
+<h3 id="30-3-deliverables-for-a-solution-architecture-portfolio">30.3 Deliverables for a solution-architecture portfolio</h3>
+<ol>
+<li>Context diagram with user, API, agent, business sources and trust boundaries.</li>
+<li>One read-only request sequence and one approval/write sequence.</li>
+<li>Typed JSON contracts and versioned API endpoints.</li>
+<li>A simple offline tool and authorization test suite.</li>
+<li>Screenshots or HTML views of grounded findings and denied/pending states.</li>
+<li>Failure/recovery scenario for an ambiguous remote outcome.</li>
+<li>Architecture decision records: direct API vs tool; single vs multi-agent; MCP vs direct; session vs workflow state; plain UI vs host-embedded UI.</li>
+<li>Evaluation evidence, trace correlation design, cost/latency budget and deployment plan.</li>
+</ol>
+<h3 id="30-4-example-architecture-decision-record-adr">30.4 Example architecture decision record (ADR)</h3>
+<p><strong>Decision:</strong> use one bounded ticket-investigation agent with two read-only function tools for the first release.<br />
+<strong>Reason:</strong> flexible natural-language lookup is useful; shared multi-host tool interoperability is not yet required.<br />
+<strong>Rejected:</strong> 3-agent supervisor and MCP gateway, because they add latency, failure modes and version maintenance without meeting a named requirement.<br />
+<strong>Risks:</strong> hallucinated synthesis and tool timeouts.<br />
+<strong>Controls:</strong> source IDs, explicit errors, authorization in tools, bounded turns and scenario evaluation.<br />
+<strong>Revisit when:</strong> second AI host needs shared tools, or independently owned investigation specialist is introduced.</p>
+<hr />
+<h2 id="31-troubleshooting-and-version-aware-reference-index">31. Troubleshooting and version-aware reference index</h2>
+<h3 id="31-1-typical-setup-and-runtime-problems">31.1 Typical setup and runtime problems</h3>
+<table>
+<thead>
+<tr>
+  <th>Symptom</th>
+  <th>Most likely category</th>
+  <th>What to check first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>ModuleNotFoundError: agents</code></td>
+  <td>Wrong virtual environment/package</td>
+  <td>Active interpreter, <code>pip show openai-agents</code></td>
+</tr>
+<tr>
+  <td>Authentication failure</td>
+  <td>API key or project configuration</td>
+  <td>Environment key/permissions; never log key</td>
+</tr>
+<tr>
+  <td>Unsupported tool/model</td>
+  <td>Capability mismatch</td>
+  <td>Model docs and SDK guide for this feature</td>
+</tr>
+<tr>
+  <td>Model never calls tool</td>
+  <td>Instructions/tool discovery</td>
+  <td>Tool name/description, task relevance, trace</td>
+</tr>
+<tr>
+  <td>Model loops</td>
+  <td>Missing termination or ambiguous tool</td>
+  <td><code>max_turns</code>, tool output clarity, tool-choice settings</td>
+</tr>
+<tr>
+  <td>Typed output rejected</td>
+  <td>Schema complexity/validation</td>
+  <td>Simplify schema, inspect model behavior</td>
+</tr>
+<tr>
+  <td>Forbidden record accidentally visible</td>
+  <td>Authorization missing</td>
+  <td>Verify server-side policy; block release</td>
+</tr>
+<tr>
+  <td>MCP connection refused</td>
+  <td>Transport/auth endpoint</td>
+  <td>Real endpoint, TLS/auth, server compatibility</td>
+</tr>
+<tr>
+  <td>UI says succeeded after timeout</td>
+  <td>Incorrect state model</td>
+  <td>Reconcile provider effect; show <code>unknown</code></td>
+</tr>
+<tr>
+  <td>Too many tokens</td>
+  <td>Long history and tool output</td>
+  <td>Inspect usage, compact/context/retrieval strategy</td>
+</tr>
+<tr>
+  <td>Trace contains PII</td>
+  <td>Unsafe telemetry configuration</td>
+  <td>Stop export, redact, assess stored copies</td>
+</tr>
+</tbody>
+</table>
+<h3 id="31-2-version-discipline">31.2 Version discipline</h3>
+<p><strong>Verified reference baseline:</strong> OpenAI Agents SDK Python <strong>v0.24.0 stable</strong> was listed on its official public release page on November 6, 2026; API examples are drawn from official documentation checked the same day. A later prerelease exists. The lower-level <code>openai</code> Python SDK is a <strong>different package</strong> and has an independent release cadence. Do not copy code from mismatched versions without testing.</p>
+<p>For a new project, record: SDK version and commit/release date; Python version; actual model ID; hosting environment; relevant MCP protocol/SDK version; agent prompt version; tool schema version; and evaluation dataset version. Re-check versions before upgrades or production rollout.</p>
+<h3 id="31-3-official-reading-list">31.3 Official reading list</h3>
+<p>These are <strong>official project/vendor sources</strong>; prioritize them over unverified blog examples. URLs should be rechecked as SDK docs evolve.</p>
+<table>
+<thead>
+<tr>
+  <th>Subject</th>
+  <th>Official documentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Python Agents SDK intro / quickstart</td>
+  <td><a href="https://openai.github.io/openai-agents-python/quickstart/">https://openai.github.io/openai-agents-python/quickstart/</a></td>
+</tr>
+<tr>
+  <td>Agents/configuration/structured output</td>
+  <td><a href="https://openai.github.io/openai-agents-python/agents/">https://openai.github.io/openai-agents-python/agents/</a></td>
+</tr>
+<tr>
+  <td>Runner and conversation management</td>
+  <td><a href="https://openai.github.io/openai-agents-python/running_agents/">https://openai.github.io/openai-agents-python/running_agents/</a></td>
+</tr>
+<tr>
+  <td>Function, hosted and sandbox tools</td>
+  <td><a href="https://openai.github.io/openai-agents-python/tools/">https://openai.github.io/openai-agents-python/tools/</a></td>
+</tr>
+<tr>
+  <td>SDK context</td>
+  <td><a href="https://openai.github.io/openai-agents-python/context/">https://openai.github.io/openai-agents-python/context/</a></td>
+</tr>
+<tr>
+  <td>Sessions and memory</td>
+  <td><a href="https://openai.github.io/openai-agents-python/sessions/">https://openai.github.io/openai-agents-python/sessions/</a></td>
+</tr>
+<tr>
+  <td>Streaming</td>
+  <td><a href="https://openai.github.io/openai-agents-python/streaming/">https://openai.github.io/openai-agents-python/streaming/</a></td>
+</tr>
+<tr>
+  <td>Agent orchestration</td>
+  <td><a href="https://openai.github.io/openai-agents-python/multi_agent/">https://openai.github.io/openai-agents-python/multi_agent/</a></td>
+</tr>
+<tr>
+  <td>Handoffs</td>
+  <td><a href="https://openai.github.io/openai-agents-python/handoffs/">https://openai.github.io/openai-agents-python/handoffs/</a></td>
+</tr>
+<tr>
+  <td>Guardrails</td>
+  <td><a href="https://openai.github.io/openai-agents-python/guardrails/">https://openai.github.io/openai-agents-python/guardrails/</a></td>
+</tr>
+<tr>
+  <td>Human-in-the-loop</td>
+  <td><a href="https://openai.github.io/openai-agents-python/human_in_the_loop/">https://openai.github.io/openai-agents-python/human_in_the_loop/</a></td>
+</tr>
+<tr>
+  <td>MCP integration</td>
+  <td><a href="https://openai.github.io/openai-agents-python/mcp/">https://openai.github.io/openai-agents-python/mcp/</a></td>
+</tr>
+<tr>
+  <td>Tracing</td>
+  <td><a href="https://openai.github.io/openai-agents-python/tracing/">https://openai.github.io/openai-agents-python/tracing/</a></td>
+</tr>
+<tr>
+  <td>SDK Testing</td>
+  <td><a href="https://openai.github.io/openai-agents-python/testing/">https://openai.github.io/openai-agents-python/testing/</a></td>
+</tr>
+<tr>
+  <td>Usage</td>
+  <td><a href="https://openai.github.io/openai-agents-python/usage/">https://openai.github.io/openai-agents-python/usage/</a></td>
+</tr>
+<tr>
+  <td>Sandbox agents</td>
+  <td><a href="https://openai.github.io/openai-agents-python/sandbox_agents/">https://openai.github.io/openai-agents-python/sandbox_agents/</a></td>
+</tr>
+<tr>
+  <td>Voice agents</td>
+  <td><a href="https://openai.github.io/openai-agents-python/voice/quickstart/">https://openai.github.io/openai-agents-python/voice/quickstart/</a></td>
+</tr>
+<tr>
+  <td>Realtime agents</td>
+  <td><a href="https://openai.github.io/openai-agents-python/realtime/guide/">https://openai.github.io/openai-agents-python/realtime/guide/</a></td>
+</tr>
+<tr>
+  <td>Python SDK releases</td>
+  <td><a href="https://github.com/openai/openai-agents-python/releases">https://github.com/openai/openai-agents-python/releases</a></td>
+</tr>
+<tr>
+  <td>OpenAI Agents SDK TypeScript (optional)</td>
+  <td><a href="https://openai.github.io/openai-agents-js/">https://openai.github.io/openai-agents-js/</a></td>
+</tr>
+<tr>
+  <td>OpenAI API reference/models</td>
+  <td><a href="https://developers.openai.com/api/docs/">https://developers.openai.com/api/docs/</a></td>
+</tr>
+<tr>
+  <td>MCP protocol</td>
+  <td><a href="https://modelcontextprotocol.io/specification">https://modelcontextprotocol.io/specification</a></td>
+</tr>
+<tr>
+  <td>MCP Apps extension</td>
+  <td><a href="https://github.com/modelcontextprotocol/ext-apps">https://github.com/modelcontextprotocol/ext-apps</a></td>
+</tr>
+<tr>
+  <td>AG-UI protocol</td>
+  <td><a href="https://github.com/ag-ui-protocol/ag-ui">https://github.com/ag-ui-protocol/ag-ui</a></td>
+</tr>
+<tr>
+  <td>A2A protocol</td>
+  <td><a href="https://a2a-protocol.org/">https://a2a-protocol.org/</a></td>
+</tr>
+<tr>
+  <td>OpenTelemetry GenAI conventions</td>
+  <td><a href="https://opentelemetry.io/docs/specs/semconv/gen-ai/">https://opentelemetry.io/docs/specs/semconv/gen-ai/</a></td>
+</tr>
+<tr>
+  <td>OWASP GenAI security</td>
+  <td><a href="https://genai.owasp.org/">https://genai.owasp.org/</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="31-4-glossary">31.4 Glossary</h3>
+<p><strong>ACL:</strong> access-control list. <strong>ADR:</strong> architecture decision record. <strong>A2A:</strong> inter-agent service interoperability protocol. <strong>Agent loop:</strong> repeated model/tool processing until exit. <strong>Approval interruption:</strong> runner pause requiring a decision. <strong>Context:</strong> information available to code or model; not always the same. <strong>Guardrail:</strong> a validation/check mechanism. <strong>Handoff:</strong> internal transfer to a specialist agent. <strong>Hosted tool:</strong> tool executed through a model/platform-provided capability. <strong>Idempotency:</strong> retries of one logical operation do not duplicate effects. <strong>MCP:</strong> standard tool/resource/prompt connection boundary. <strong>MCP Apps:</strong> optional in-chat interactive app extension. <strong>RAG:</strong> retrieval-augmented generation. <strong>RunState:</strong> SDK state used in interruption/resumption. <strong>Session:</strong> conversation-history store. <strong>Span:</strong> one trace operation. <strong>System of record:</strong> authoritative business source. <strong>Tool contract:</strong> typed arguments, outputs, errors and security requirements. <strong>Unknown outcome:</strong> external side effect may have succeeded despite lost response.</p>
+<hr />
+<p><strong>Final design principle:</strong> <em>Let models reason and draft; let tools fetch and validate; let business services authorize; let durable state protect effects; let evaluations and traces prove the system works.</em></p>
+
+<footer>OpenAI Agents SDK — Architecture Study Handbook · 2026-11-06 · Open-source SDK concepts verified against official docs; examples with live model calls require valid credentials and testing.</footer>
+</article></main></div>
+<script>
+(function(){
+ var q=document.getElementById('toc-search');
+ var links=Array.from(document.querySelectorAll('.toc-link'));
+ q.addEventListener('input',function(){
+  var s=q.value.trim().toLowerCase();
+  links.forEach(function(a){a.hidden=!!s && !a.dataset.text.includes(s);});
+ });
+})();
+</script>
+</body></html>

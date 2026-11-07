@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light only">
+<meta name="description" content="A practical, architecture-first fundamentals primer for Agentic AI, MCP, Generative UI, and secure tool-use patterns.">
+<title>Agentic AI Solution Architecture — Fundamentals Primer</title>
+<style>
+:root{--bg:#f6f8fb;--paper:#ffffff;--ink:#18273e;--muted:#5a6a7e;--border:#dce4ed;--blue:#1e548e;--blue2:#edf4fc;--green:#236b4b;--mono:#182e45}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:18px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+a{color:var(--blue);text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{text-decoration-thickness:2px}
+.site{display:grid;grid-template-columns:258px minmax(0,870px);gap:38px;max-width:1270px;margin:0 auto;padding:32px 24px 65px}
+.sidebar{align-self:start;position:sticky;top:24px;max-height:calc(100vh - 44px);overflow:auto;border:1px solid var(--border);background:#fff;border-radius:14px;padding:22px 18px}
+.brand{font-size:11px;color:var(--blue);letter-spacing:.12em;font-weight:850;text-transform:uppercase;border-bottom:1px solid var(--border);padding:0 8px 13px;margin-bottom:13px}
+.sidebar .toc-label{font-size:12px;letter-spacing:.04em;color:var(--muted);font-weight:750;margin:0 8px 9px}
+.sidebar nav{display:flex;flex-direction:column;gap:1px}
+.sidebar nav a{display:block;border-left:3px solid transparent;border-radius:3px;text-decoration:none;padding:6px 8px 6px 11px;font-size:12.5px;line-height:1.4;color:#435268}
+.sidebar nav a:hover,.sidebar nav a.active{background:#edf4fc;color:var(--blue);border-left-color:var(--blue)}
+.sidebar footer{font-size:11px;color:var(--muted);margin:17px 8px 0;line-height:1.4}
+.main{min-width:0}
+.cover{background:linear-gradient(145deg,#fff 0%,#eff5fc 100%);border:1px solid var(--border);border-radius:18px;padding:52px 50px 45px;margin-bottom:18px;position:relative;overflow:hidden}
+.cover::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:#2e649a}
+.kicker{color:var(--blue);text-transform:uppercase;letter-spacing:.13em;font-size:12px;font-weight:800;margin-bottom:14px}
+.cover h1{font-weight:850;font-size:40px;line-height:1.14;letter-spacing:-.035em;max-width:750px;margin:0 0 17px}
+.deck{color:#3a506a;font-size:18px;max-width:650px;line-height:1.55;margin:0 0 23px}
+.meta{display:flex;flex-wrap:wrap;gap:9px}
+.meta span{font-size:12px;font-weight:700;color:#274c72;background:#e3effb;border:1px solid #cfdfef;border-radius:999px;padding:6px 11px}
+.content{background:white;border:1px solid var(--border);border-radius:18px;padding:29px 48px 45px;box-shadow:0 4px 20px rgba(20,44,70,.035)}
+.content>p:first-child{font-size:14px;line-height:1.65;color:var(--muted)}
+.content h2{font-size:25px;letter-spacing:-.023em;line-height:1.28;margin:49px 0 15px;padding-top:5px;padding-bottom:11px;border-bottom:1px solid var(--border)}
+.content h2:first-of-type{margin-top:32px}
+.content h3{font-size:18px;letter-spacing:-.015em;margin:27px 0 11px;line-height:1.35}
+.content p{margin:11px 0 15px}
+.content ul,.content ol{padding-left:22px;margin:12px 0 17px}
+.content li{padding-left:3px;margin:5px 0}
+.content blockquote{margin:22px 0;border-left:4px solid #2d6095;background:var(--blue2);padding:12px 19px;border-radius:0 8px 8px 0;color:#294760}
+.content blockquote p{margin:6px 0}
+.content code{font:13px/1.55 "SFMono-Regular",Consolas,"Liberation Mono",monospace;background:#eef3f8;color:var(--mono);border-radius:4px;padding:2px 5px;overflow-wrap:anywhere}
+.content pre{background:#14273d;border:1px solid #28425f;color:#f0f4fc;padding:20px 22px;border-radius:11px;overflow:auto;line-height:1.48;font-size:12.8px;margin:16px 0 21px}
+.content pre code{display:block;background:transparent;color:inherit;border:0;padding:0;white-space:pre;overflow-wrap:normal;font-size:inherit}
+.content .table-wrap{max-width:100%;overflow:auto;margin:18px 0 23px}
+.content table{border-collapse:collapse;width:100%;font-size:13.4px;line-height:1.48}
+.content th{background:#e9f0f8;color:#24476a;text-align:left;font-weight:780;border:1px solid #cbd9e8;padding:12px 11px;vertical-align:top}
+.content td{border:1px solid var(--border);padding:11px 11px;vertical-align:top}
+.content tbody tr:nth-child(even){background:#fbfcff}
+.content table code{font-size:12px}
+.content hr{height:0;border:0;border-top:1px solid var(--border);margin:33px 0}
+.content strong{font-weight:760}
+.content a{overflow-wrap:anywhere}
+.chooser{border:1px solid #cddde9;background:#f7fbff;padding:19px 22px;border-radius:12px;margin:19px 0 8px}
+.chooser h2{font-size:17px;margin:0 0 9px;border:0;padding:0}
+.chooser p{font-size:13px;color:#4e6277;margin:4px 0 10px}
+.chooser select{width:100%;background:#fff;border:1px solid #b6c8db;padding:11px;border-radius:7px;color:#17324f;font-size:14px}
+#choice-text{background:#e8f2fb;padding:14px 15px;border-radius:8px;margin-top:12px;color:#214d79;min-height:68px}
+#choice-text .recommendation{display:none}
+#choice-text .recommendation:first-child{display:block}
+#choice-text strong{display:block;font-size:14px;margin-bottom:2px}
+#choice-text .reason{display:block;font-size:13px;line-height:1.5}
+/* CSS-only selection works even where the preview blocks JavaScript. */
+.chooser:has(#need option:checked) #choice-text .recommendation:first-child{display:none}
+.chooser:has(#need option[value="static"]:checked) #choice-text [data-need="static"],
+.chooser:has(#need option[value="language"]:checked) #choice-text [data-need="language"],
+.chooser:has(#need option[value="fixed"]:checked) #choice-text [data-need="fixed"],
+.chooser:has(#need option[value="tools"]:checked) #choice-text [data-need="tools"],
+.chooser:has(#need option[value="mcp"]:checked) #choice-text [data-need="mcp"],
+.chooser:has(#need option[value="ui"]:checked) #choice-text [data-need="ui"],
+.chooser:has(#need option[value="stream"]:checked) #choice-text [data-need="stream"],
+.chooser:has(#need option[value="remote"]:checked) #choice-text [data-need="remote"]{display:block}
+/* Script fallback for browsers without CSS :has support. */
+.chooser.js-selector #choice-text .recommendation{display:none}
+.chooser.js-selector[data-selected="static"] #choice-text [data-need="static"],
+.chooser.js-selector[data-selected="language"] #choice-text [data-need="language"],
+.chooser.js-selector[data-selected="fixed"] #choice-text [data-need="fixed"],
+.chooser.js-selector[data-selected="tools"] #choice-text [data-need="tools"],
+.chooser.js-selector[data-selected="mcp"] #choice-text [data-need="mcp"],
+.chooser.js-selector[data-selected="ui"] #choice-text [data-need="ui"],
+.chooser.js-selector[data-selected="stream"] #choice-text [data-need="stream"],
+.chooser.js-selector[data-selected="remote"] #choice-text [data-need="remote"]{display:block}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.note{font-size:13px;color:var(--muted)}
+@media(max-width:930px){.site{display:block;max-width:860px;padding:16px}.sidebar{position:static;max-height:none;margin-bottom:16px;padding:17px}.sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.cover{padding:32px 28px}.cover h1{font-size:34px}.content{padding:22px 29px}}
+@media(max-width:580px){.cover{padding:27px 22px}.cover h1{font-size:29px}.deck{font-size:16px}.content{padding:18px 18px}.content h2{font-size:22px}.sidebar nav{grid-template-columns:1fr}.content pre{padding:15px 12px;font-size:11.6px}.content table{font-size:12.2px}}
+@media print{
+ @page{size:A4;margin:15mm 15mm 17mm}
+ :root{--ink:#111;--muted:#444;--border:#ccd2da}
+ html{scroll-behavior:auto}
+ body{background:#fff;color:#111;font-size:10.4pt;line-height:1.47;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .site{display:block;max-width:none;padding:0;margin:0}
+ .sidebar,.chooser{display:none!important}
+ .cover{border:0;border-bottom:2px solid #315f89;border-radius:0;box-shadow:none;background:#fff;padding:10mm 0 11mm;margin:0 0 8mm}
+ .cover::before{display:none}
+ .cover h1{font-size:30pt;color:#102b45}
+ .deck{font-size:14pt}
+ .meta span{color:#000;border:1px solid #ddd;background:#f7f7f7;padding:4px 8px}
+ .content{border:0;border-radius:0;padding:0;box-shadow:none}
+ .content h2{font-size:17pt;margin:15pt 0 8pt;page-break-after:avoid;break-after:avoid}
+ .content h3{font-size:12.5pt;page-break-after:avoid;break-after:avoid}
+ .content p,.content li{orphans:3;widows:3}
+ .content pre{background:#f3f5f8!important;color:#111!important;border-color:#ccd2da;font-size:8pt;white-space:pre-wrap;overflow:visible;break-inside:avoid}
+ .content pre code{white-space:pre-wrap;overflow-wrap:anywhere}
+ .content .table-wrap{overflow:visible}
+ .content table{font-size:8.2pt}
+ .content tr{page-break-inside:avoid;break-inside:avoid}
+ .content th{background:#e9eef4!important;color:#111}
+ .content blockquote{background:#eff4f9!important;color:#111}
+ a{color:#0e477b;text-decoration:underline}
+ }
+</style>
+</head>
+<body>
+<div class="site">
+<aside class="sidebar">
+  <div class="brand">AI Architecture / Study Notes</div>
+  <div class="toc-label">CONTENTS</div>
+  <nav aria-label="Table of contents"><a href="#1-begin-with-a-real-problem">1. Begin with a real problem</a>
+<a href="#2-the-building-blocks-in-plain-english">2. The building blocks, in plain English</a>
+<a href="#3-pick-the-simplest-valid-pattern">3. Pick the simplest valid pattern</a>
+<a href="#4-minimal-architecture-faq-assistant">4. Minimal architecture: FAQ assistant</a>
+<a href="#5-add-one-read-only-tool-ticket-lookup">5. Add one read-only tool: ticket lookup</a>
+<a href="#6-what-an-agent-loop-actually-does">6. What an agent loop actually does</a>
+<a href="#7-retrieval-context-and-memory-are-different">7. Retrieval, context and memory are different</a>
+<a href="#8-mcp-a-standard-boundary-for-tools-and-context">8. MCP: a standard boundary for tools and context</a>
+<a href="#9-generative-ui-mcp-apps-ag-ui-a2ui-and-a2a">9. Generative UI, MCP Apps, AG-UI, A2UI, and A2A</a>
+<a href="#10-production-concerns-derive-the-control-from-the-failure">10. Production concerns: derive the control from the failure</a>
+<a href="#11-a-small-local-mock-you-can-run">11. A small local mock you can run</a>
+<a href="#12-architecture-checklist-and-next-reading">12. Architecture checklist and next reading</a>
+<a href="#references-and-verification">References and verification</a></nav>
+  <footer>Self-contained • Light theme • Print-friendly<br>Official references included</footer>
+</aside>
+<main class="main">
+  <header class="cover">
+    <div class="kicker">The first guide in your learning roadmap</div>
+    <h1>Agentic AI<br>Solution Architecture</h1>
+    <p class="deck">Fundamentals primer: build from a real problem, understand tool-using agents, then place MCP, Generative UI and A2A at the correct boundaries.</p>
+    <div class="meta"><span>Foundation module</span><span>35–45 minute read</span><span>With runnable Python mock</span><span>6 Nov 2026</span></div>
+  </header>
+  <article class="content">
+    <section class="chooser" aria-label="Architecture pattern quick selector">
+      <h2>Quick pattern selector</h2>
+      <p>Choose a need to see the first architecture pattern to consider. The full reasoning is in section 3.</p>
+      <label for="need" class="note">System requirement</label>
+      <select id="need">
+        <option value="static">Predictable rules and exact data</option>
+        <option value="language">Only language or formatting</option>
+        <option value="fixed">Same steps on every request</option>
+        <option value="tools">Dynamic tool selection</option>
+        <option value="mcp">Reuse tool across several AI hosts</option>
+        <option value="ui">Interactive UI inside an AI host</option>
+        <option value="stream">Live agent progress in my own web app</option>
+        <option value="remote">Independent remote specialist agent</option>
+      </select>
+      <div id="choice-text" aria-label="Recommended architecture pattern">
+        <div class="recommendation" data-need="static"><strong>Recommended: Deterministic code</strong><span class="reason">Use explicit business rules and trusted APIs. Example: look up a known order ID and return its exact status.</span></div>
+        <div class="recommendation" data-need="language"><strong>Recommended: Single model call</strong><span class="reason">Use an LLM for wording or extraction. Validate structured output before using it.</span></div>
+        <div class="recommendation" data-need="fixed"><strong>Recommended: Fixed workflow</strong><span class="reason">Run a known sequence of steps with explicit conditions and error handling. An agent planner is not needed.</span></div>
+        <div class="recommendation" data-need="tools"><strong>Recommended: Bounded tool-using agent</strong><span class="reason">Let the model choose from approved tools, with schema validation, access checks, and stop limits.</span></div>
+        <div class="recommendation" data-need="mcp"><strong>Recommended: MCP integration</strong><span class="reason">Use a reusable MCP server for tools or context shared by compatible AI hosts. Enforce access at the server.</span></div>
+        <div class="recommendation" data-need="ui"><strong>Recommended: MCP Apps</strong><span class="reason">For an interactive view embedded in a supporting AI host, use the optional MCP Apps UI extension and a text fallback.</span></div>
+        <div class="recommendation" data-need="stream"><strong>Recommended: AG-UI or a simple event stream</strong><span class="reason">Use AG-UI when your own frontend needs standardized agent run events and state. Simple streaming may be enough otherwise.</span></div>
+        <div class="recommendation" data-need="remote"><strong>Recommended: A2A</strong><span class="reason">Delegate across independently deployed agent services. Validate remote identity, permissions, and returned results.</span></div>
+      </div>
+      <div id="selector-announcement" class="sr-only" role="status" aria-live="polite"></div>
+    </section>
+  <p><strong>Start here | Foundation module | Version: 2026-11-06</strong><br/>
+<strong>Scope:</strong> agent fundamentals, tool calling, bounded workflows, architecture decisions, and a first look at MCP, Generative UI, and A2A.<br/>
+<strong>Estimated reading:</strong> 35–45 minutes. <strong>Optional local mock:</strong> 10 minutes.<br/>
+<strong>Audience:</strong> software engineers, architects, and technical leads new to agentic AI.</p>
+<blockquote>
+<p><strong>Core rule:</strong> Design around a business problem and a trusted source of truth. Do not add an agent, protocol, vector database, or multiple services unless a requirement justifies it.</p>
+</blockquote>
+<p>This primer follows the project's <code>SKILL.md</code>, <code>sdt-module-01-agent-fundamentals.md</code>, and the optional FAQ anchor. Cross-protocol and production-control references are only used to preview later topics. Current protocol descriptions were checked against their official documentation on the version date. Examples and policies below are <strong>synthetic</strong>, not real company rules or production-ready code.</p>
+<hr/>
+<h2 id="1-begin-with-a-real-problem">1. Begin with a real problem</h2>
+<p><strong>Scenario:</strong> A customer-support assistant must answer return-policy questions from approved company information. Later, customers also want to know the status of their own support tickets.</p>
+<ul>
+<li><strong>Actors:</strong> customer, support application, approved policy owner, ticket service, human support agent.</li>
+<li><strong>Business result:</strong> return an accurate answer with evidence; never expose another customer's ticket.</li>
+<li><strong>Sources of truth:</strong> the approved policy repository for return rules; the ticket service for live ticket status. The LLM is <strong>not</strong> a source of truth.</li>
+<li><strong>Initial scope:</strong> read-only questions. No refunds, account changes, email sending, or ticket closing.</li>
+<li><strong>Ranked constraints:</strong> (1) factual correctness, (2) access control, (3) source freshness, (4) clear failure behavior, (5) latency and cost.</li>
+</ul>
+<p><strong>Representative requests:</strong></p>
+<blockquote>
+<p>“Can I return an unopened item after 14 days?”<br/>
+“What is the status of ticket T-100?”</p>
+</blockquote>
+<p>Start with the first request. It may need no autonomous agent at all.</p>
+<h2 id="2-the-building-blocks-in-plain-english">2. The building blocks, in plain English</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Simple definition</th>
+<th>In the support example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Model / LLM</strong></td>
+<td>Software that predicts and generates language or structured content from input.</td>
+<td>Writes a clear answer from a policy passage.</td>
+</tr>
+<tr>
+<td><strong>Prompt and context</strong></td>
+<td>Instructions plus the information supplied for the current model call.</td>
+<td>“Only answer from policy POL-01,” followed by the approved text.</td>
+</tr>
+<tr>
+<td><strong>Structured output</strong></td>
+<td>A response constrained to a known data shape.</td>
+<td><code>{ "answer": "...", "source_ids": ["POL-01"] }</code></td>
+</tr>
+<tr>
+<td><strong>Tool / function call</strong></td>
+<td>A named operation with defined inputs and outputs.</td>
+<td><code>get_ticket(ticket_id)</code> reads a ticket service.</td>
+</tr>
+<tr>
+<td><strong>Agent</strong></td>
+<td>A model-driven application that can choose and use tools across steps under runtime controls.</td>
+<td>Decides whether to search policy or call the ticket tool.</td>
+</tr>
+<tr>
+<td><strong>Workflow</strong></td>
+<td>A predefined sequence of steps and decisions.</td>
+<td>Retrieve policy → verify evidence → format answer.</td>
+</tr>
+<tr>
+<td><strong>Orchestration</strong></td>
+<td>The code/runtime that schedules steps, stores state and handles failure.</td>
+<td>Limits tool calls and stops after a timeout.</td>
+</tr>
+<tr>
+<td><strong>Grounding</strong></td>
+<td>Making the answer depend on retrieved or verified evidence.</td>
+<td>Cites the policy passage rather than inventing a return rule.</td>
+</tr>
+<tr>
+<td><strong>Authorization (AuthZ)</strong></td>
+<td>Checking whether this authenticated actor may access this specific resource or perform this action.</td>
+<td>Alice may read T-100 but not Bob's T-200.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Important:</strong> A model producing the words “I called the ticket system” does not prove a tool was called. Only the application runtime can execute tools and record verified results.</p>
+<h2 id="3-pick-the-simplest-valid-pattern">3. Pick the simplest valid pattern</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Design</th>
+<th>Choose it when</th>
+<th>Example</th>
+<th>Main weakness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Deterministic application code</strong></td>
+<td>Inputs and business rules are predictable.</td>
+<td>Exact lookup of an existing policy ID.</td>
+<td>Does not handle flexible language well.</td>
+</tr>
+<tr>
+<td><strong>Single model call</strong></td>
+<td>Language understanding or formatting is needed, but no dynamic tools.</td>
+<td>Rewrite an approved rule in simple English.</td>
+<td>May misstate information without validation.</td>
+</tr>
+<tr>
+<td><strong>Fixed workflow</strong></td>
+<td>Every request has the same ordered steps.</td>
+<td>Retrieve → validate → answer.</td>
+<td>Less flexible when tasks vary.</td>
+</tr>
+<tr>
+<td><strong>Bounded tool-using agent</strong></td>
+<td>The next tool really depends on the user's question or intermediate results.</td>
+<td>Choose policy search or ticket lookup, at most three tool calls.</td>
+<td>More variable latency, cost and failure paths.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Decision principle:</strong> Prefer deterministic code for rules, permissions, and side effects. Use a model for interpretation and language. Use an agent when dynamic tool selection provides clear value.</p>
+<h2 id="4-minimal-architecture-faq-assistant">4. Minimal architecture: FAQ assistant</h2>
+<p>For twelve approved FAQ items, an exact or keyword lookup may be enough. A vector database and MCP are not prerequisites.</p>
+<pre><code class="language-text">+-------------------------+
+| Customer / web client   |
++-------------------------+
+             |
+             v
++-------------------------+
+| Support API             |
+| Input + identity checks |
++-------------------------+
+             |
+             v
++-------------------------+
+| Approved FAQ lookup     |
+| Returns source IDs      |
++-------------------------+
+             |
+             v
++-------------------------+
+| Answer or abstain       |
+| Optional LLM phrasing   |
++-------------------------+
+</code></pre>
+<p><strong>Ownership:</strong> the support API owns request validation; the policy system owns the rule; the answer layer owns how to present the result. The model does not approve policy changes.</p>
+<p><strong>Happy path:</strong> (1) customer asks, (2) API retrieves an approved matching passage, (3) the service returns a grounded answer with its ID, (4) the UI displays it.</p>
+<p><strong>Failure path:</strong> if no approved policy matches, return <code>insufficient_evidence</code> and offer escalation. Do not guess.</p>
+<h3 id="worked-contract-application-json-not-a-protocol-wire-format">Worked contract (application JSON, not a protocol wire format)</h3>
+<p>Request:</p>
+<pre><code class="language-json">{"question":"Can I return an unopened item after 14 days?"}
+</code></pre>
+<p>Synthetic approved record:</p>
+<pre><code class="language-json">{"source_id":"POL-01","status":"approved","text":"Unopened items may be returned within 30 days of delivery."}
+</code></pre>
+<p>Example response:</p>
+<pre><code class="language-json">{
+  "status":"grounded",
+  "answer":"Yes. The example policy allows unopened-item returns within 30 days of delivery.",
+  "source_ids":["POL-01"]
+}
+</code></pre>
+<p>The example uses a fake return policy. A real implementation must use the current rule owned by the business.</p>
+<h2 id="5-add-one-read-only-tool-ticket-lookup">5. Add one read-only tool: ticket lookup</h2>
+<p>Now the customer asks, “What is the status of T-100?” The model cannot know the live status. We need a trusted tool.</p>
+<pre><code class="language-text">+-------------------------+
+| Authenticated customer  |
++-------------------------+
+             |
+             v
++-------------------------+
+| Support API / agent     |
+| Chooses allowed tool    |
++-------------------------+
+             |
+             v
++-------------------------+
+| get_ticket(ticket_id)   |
+| Server-side AuthZ       |
++-------------------------+
+             |
+             v
++-------------------------+
+| Ticket system           |
+| Business source of truth|
++-------------------------+
+</code></pre>
+<p><strong>Tool signature (conceptual):</strong></p>
+<pre><code class="language-text">get_ticket(ticket_id: string) -&gt;
+  {ticket_id: string, status: string, updated_at: string}
+  OR {error: "not_found" | "forbidden" | "unavailable"}
+</code></pre>
+<p>Example tool request proposed by the model:</p>
+<pre><code class="language-json">{"tool":"get_ticket","arguments":{"ticket_id":"T-100"}}
+</code></pre>
+<p>Example verified tool result:</p>
+<pre><code class="language-json">{"ticket_id":"T-100","status":"in_progress","updated_at":"2026-11-05T16:30:00Z"}
+</code></pre>
+<p><strong>Trust boundary:</strong> the model may suggest a <code>ticket_id</code>. The backend gets the authenticated user from trusted session or token context and checks ticket ownership itself. The model cannot pass <code>"user_id":"alice"</code> and gain Alice's rights.</p>
+<p>If T-200 belongs to a different user, the tool must return <code>forbidden</code> <strong>before</strong> the model sees that ticket's content.</p>
+<h2 id="6-what-an-agent-loop-actually-does">6. What an agent loop actually does</h2>
+<p>An agent is more than one prompt. A runtime repeatedly asks the model what to do next, validates a proposed tool call, executes it, and supplies the verified result back to the model.</p>
+<pre><code class="language-text">+------------------------+
+| User request           |
++------------------------+
+            |
+            v
++------------------------+
+| Model proposes         |
+| answer or tool call    |
++------------------------+
+            |
+            v
++------------------------+
+| Runtime checks budget, |
+| schema and permissions |
++------------------------+
+            |
+            v
++------------------------+
+| Tool runs and returns  |
+| verified result        |
++------------------------+
+            |
+            v
++------------------------+
+| Model answers or asks  |
+| for another tool call  |
++------------------------+
+</code></pre>
+<p>An illustrative runtime:</p>
+<pre><code class="language-python">for step in range(MAX_STEPS):
+    decision = model.propose_next_step(context)  # conceptual model API
+    if decision.kind == "final":
+        return validate_answer(decision.answer)
+    call = validate_allowed_tool_and_schema(decision.tool_call)
+    result = execute_with_server_authorization(call, identity)
+    context.append(result)
+return {"status": "stopped", "reason": "step_limit"}
+</code></pre>
+<p>This is <strong>architecture pseudocode</strong>, not executable SDK code. The runtime must also enforce time limits, error handling and limits on sensitive data passed into context.</p>
+<p>A good agent has a clear <strong>finish condition</strong>. Unlimited tool loops are not a feature.</p>
+<h2 id="7-retrieval-context-and-memory-are-different">7. Retrieval, context and memory are different</h2>
+<ul>
+<li><strong>Retrieval:</strong> find relevant source material, such as the approved return policy.</li>
+<li><strong>RAG (retrieval-augmented generation):</strong> retrieve passages and then ask the model to answer using them.</li>
+<li><strong>Context:</strong> the information placed in a particular model request; it has a finite capacity and cost.</li>
+<li><strong>Memory:</strong> retained information about a user/session across requests, subject to retention and permission rules.</li>
+</ul>
+<p>For the small FAQ assistant, keyword matching may be sufficient. If policies grow to thousands of documents, add appropriate retrieval, source IDs, access filters, freshness tracking, and possibly semantic/hybrid search.</p>
+<p><strong>The search index is derived data, not the policy source of truth.</strong> If a policy changes, the index needs an update process. If the source is restricted, retrieval must enforce that restriction before its text reaches the model.</p>
+<h2 id="8-mcp-a-standard-boundary-for-tools-and-context">8. MCP: a standard boundary for tools and context</h2>
+<p><strong>Model Context Protocol (MCP)</strong> standardizes communication between an AI host and external capability providers. It does not tell the model how to reason and does not grant business permission.</p>
+<pre><code class="language-text">+-------------------------+
+| AI host                 |
+| Conversation + runtime  |
++-------------------------+
+             |
+             v
++-------------------------+
+| MCP client              |
+| Protocol connection     |
++-------------------------+
+             |
+             v
++-------------------------+
+| MCP server              |
+| Tools / resources /     |
+| prompts                 |
++-------------------------+
+             |
+             v
++-------------------------+
+| Owner system / API      |
+| Identity + AuthZ        |
++-------------------------+
+</code></pre>
+<p><strong>Three common MCP primitives:</strong></p>
+<ul>
+<li><strong>Tools:</strong> callable operations, such as <code>get_ticket</code>.</li>
+<li><strong>Resources:</strong> retrievable context, such as a policy document.</li>
+<li><strong>Prompts:</strong> reusable prompt templates exposed to the host.</li>
+</ul>
+<p><strong>Direct function or MCP?</strong> If one application owns a single tool, a direct typed API call is often simpler. If multiple compatible AI hosts need the same integration, MCP can give you a reusable boundary. An MCP tool's input schema is not a permission check.</p>
+<p>MCP uses a defined protocol and versioned capabilities. Check the exact specification/SDK supported by your host before copying tutorials.</p>
+<h2 id="9-generative-ui-mcp-apps-ag-ui-a2ui-and-a2a">9. Generative UI, MCP Apps, AG-UI, A2UI, and A2A</h2>
+<p>These technologies solve <strong>different boundaries</strong>. They are not five versions of the same architecture.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Boundary</th>
+<th>Example</th>
+<th>Key caution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Structured Generative UI</strong></td>
+<td>Model data → application-owned approved UI components</td>
+<td>Return ticket status as a validated card schema.</td>
+<td>Never render arbitrary model HTML without control.</td>
+</tr>
+<tr>
+<td><strong>MCP Apps</strong></td>
+<td>MCP host ↔ sandboxed embedded UI associated with server tools</td>
+<td>Interactive ticket dashboard inside an AI chat host.</td>
+<td>Optional extension; requires compatible host.</td>
+</tr>
+<tr>
+<td><strong>AG-UI</strong></td>
+<td>Agent runtime ↔ first-party frontend event/state stream</td>
+<td>Show live “fetching ticket → summarizing” progress.</td>
+<td>Not a replacement for MCP tools.</td>
+</tr>
+<tr>
+<td><strong>A2UI</strong></td>
+<td>Declarative UI description ↔ trusted component renderer</td>
+<td>Agent proposes a form using approved controls.</td>
+<td>Needs a compatible renderer and allowed components.</td>
+</tr>
+<tr>
+<td><strong>A2A</strong></td>
+<td>One independently deployed agent ↔ another agent service</td>
+<td>Delegate fraud review to a remote specialist.</td>
+<td>Adds remote trust, task and failure handling.</td>
+</tr>
+<tr>
+<td><strong>Agent Skills</strong></td>
+<td>Reusable agent instructions and references</td>
+<td>A documented support-triage procedure.</td>
+<td>Instructions do not execute tools or grant access.</td>
+</tr>
+</tbody>
+</table></div>
+<p>For your first FAQ/ticket system, none of these extensions is required. Introduce a protocol <strong>only after</strong> its integration or UI requirement appears.</p>
+<h3 id="a-concrete-ui-progression">A concrete UI progression</h3>
+<ol>
+<li><strong>Plain answer:</strong> text says “T-100 is in progress.”</li>
+<li><strong>Structured UI:</strong> app renders an approved ticket card from validated JSON.</li>
+<li><strong>AG-UI (if needed):</strong> first-party app shows live agent run and tool events.</li>
+<li><strong>MCP Apps (if needed):</strong> compatible AI host embeds a sandboxed ticket view linked to MCP tools.</li>
+<li><strong>A2A (if needed):</strong> an independently operated specialist handles a delegated task.</li>
+</ol>
+<p>Do not describe a plain HTML preview as an MCP App unless it actually uses the extension's host/server/view contract.</p>
+<h2 id="10-production-concerns-derive-the-control-from-the-failure">10. Production concerns: derive the control from the failure</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Failure you must prevent</th>
+<th>Required architectural idea</th>
+<th>How you would demonstrate it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model invents a return policy</td>
+<td>Approved evidence + abstention</td>
+<td>Unknown question returns <code>insufficient_evidence</code>.</td>
+</tr>
+<tr>
+<td>Alice reads Bob's ticket</td>
+<td>Server-side per-ticket authorization</td>
+<td>T-200 is denied to Alice.</td>
+</tr>
+<tr>
+<td>Tool result contains hostile instructions</td>
+<td>Treat retrieved/tool text as untrusted</td>
+<td>No privileged action is executed from ticket text.</td>
+</tr>
+<tr>
+<td>Agent repeatedly calls tools</td>
+<td>Step, time and cost limits</td>
+<td>Run terminates at its configured limit.</td>
+</tr>
+<tr>
+<td>UI button says “Approved” but backend did not approve</td>
+<td>Server checks user, resource, action and current state</td>
+<td>Unauthorized click is rejected.</td>
+</tr>
+<tr>
+<td>Write call times out after succeeding</td>
+<td>Stable operation ID + reconcile before retry</td>
+<td>Only one logical effect is recorded.</td>
+</tr>
+<tr>
+<td>System is “up” but answers are wrong</td>
+<td>Task-level evaluations and traces</td>
+<td>Grounding regressions and tool failures are visible.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Read-only tools are best for the first project.</strong> When you eventually add refund, email or ticket-close actions, separate proposal from execution:</p>
+<pre><code class="language-text">+-------------------------+
+| Agent proposes action   |
++-------------------------+
+             |
+             v
++-------------------------+
+| Application stores      |
+| pending action + ID     |
++-------------------------+
+             |
+             v
++-------------------------+
+| Human reviews action    |
++-------------------------+
+             |
+             v
++-------------------------+
+| Business service checks |
+| identity + policy +     |
+| current state           |
++-------------------------+
+             |
+             v
++-------------------------+
+| Execute once, audit and |
+| reconcile result        |
++-------------------------+
+</code></pre>
+<p><strong>Approval screens and model text do not enforce authorization.</strong> The business service is the final enforcement point.</p>
+<h2 id="11-a-small-local-mock-you-can-run">11. A small local mock you can run</h2>
+<p>The companion script <code>agent_fundamentals_mock.py</code> is intentionally <strong>not</strong> an LLM agent or an MCP server. It demonstrates the mechanics you must understand first: routing requests, looking up trusted data, checking ownership, citing source IDs, and returning honest failures.</p>
+<p><strong>Requirements:</strong> Python 3.9+; no third-party packages; no network calls. Use synthetic data only.</p>
+<pre><code class="language-bash">python agent_fundamentals_mock.py --user alice --question "Can I return an unopened item after 14 days?"
+python agent_fundamentals_mock.py --user alice --question "What is the status of ticket T-100?"
+python agent_fundamentals_mock.py --user alice --question "What is the status of ticket T-200?"
+python agent_fundamentals_mock.py --smoke
+</code></pre>
+<p><strong>Illustrative outcomes:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Expected behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Return-policy question</td>
+<td>Returns approved synthetic policy <code>POL-01</code>.</td>
+</tr>
+<tr>
+<td>Alice asks about T-100</td>
+<td>Returns Alice's ticket status.</td>
+</tr>
+<tr>
+<td>Alice asks about T-200</td>
+<td>Returns <code>forbidden</code>, never the private ticket fields.</td>
+</tr>
+<tr>
+<td>Unknown policy question</td>
+<td>Returns <code>insufficient_evidence</code>, not an invented answer.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The mock uses deterministic selection to make the trust and data flow easy to see. An actual model/tool loop can be introduced later without changing the authorization boundary.</p>
+<h2 id="12-architecture-checklist-and-next-reading">12. Architecture checklist and next reading</h2>
+<p>Before choosing a framework, write down the answers to these:</p>
+<ul>
+<li><strong>Outcome:</strong> What business task must succeed?</li>
+<li><strong>Truth:</strong> Which service/document owns the facts?</li>
+<li><strong>Trust:</strong> Who is the user, and where is authorization enforced?</li>
+<li><strong>Tools:</strong> Which operations are necessary, read-only, or side-effecting?</li>
+<li><strong>State:</strong> What must survive retries, crashes, or a resumed session?</li>
+<li><strong>Failure:</strong> What happens when evidence is missing or a tool times out?</li>
+<li><strong>Evidence:</strong> How will you measure correct answers and trace errors?</li>
+<li><strong>Complexity:</strong> Why is an agent, MCP, AG-UI, or A2A better than a simpler design?</li>
+</ul>
+<p><strong>Suggested progression through this project's AI catalog:</strong></p>
+<ol>
+<li><strong>AI design #01 — FAQ support assistant:</strong> grounding and abstention.</li>
+<li><strong>AI design #03 — Order-status tool agent:</strong> tools, runtime and access checks.</li>
+<li><strong>AI design #09 — Local ticket-lookup MCP server:</strong> protocol boundary.</li>
+<li><strong>AI design #34 — AI sales dashboard:</strong> structured Generative UI.</li>
+<li><strong>AI design #36 — Expense-analysis MCP App:</strong> interactive host-embedded UI.</li>
+<li><strong>AI design #38 — Live incident console:</strong> AG-UI events and state.</li>
+<li><strong>AI design #43 — Remote fraud specialist:</strong> A2A delegation.</li>
+</ol>
+<h3 id="six-principles-to-retain">Six principles to retain</h3>
+<ol>
+<li><strong>Begin with the source of truth, not the model.</strong></li>
+<li><strong>Use the simplest architecture that satisfies the task.</strong></li>
+<li><strong>A tool schema is not a permission policy.</strong></li>
+<li><strong>A model may propose; trusted application code must validate and execute.</strong></li>
+<li><strong>Keep UI, protocol, runtime and business authorization as separate boundaries.</strong></li>
+<li><strong>Test failure behavior and task correctness, not just a successful demo.</strong></li>
+</ol>
+<hr/>
+<h2 id="references-and-verification">References and verification</h2>
+<h3 id="project-reference-sources">Project reference sources</h3>
+<ul>
+<li><code>SKILL.md</code> — problem-first, six-stage teaching method.</li>
+<li><code>sdt-module-01-agent-fundamentals.md</code> — primary source for this primer, cases #01–#08.</li>
+<li><code>sdt-anchor-01-faq-support-assistant.md</code> — FAQ source-of-truth and grounding example.</li>
+<li><code>concept-protocol-boundaries.md</code> — short, boundary-oriented comparison of MCP Apps, AG-UI, A2UI, A2A and Skills.</li>
+<li><code>concept-production-controls.md</code> — authorization, idempotency, security and evaluation controls.</li>
+<li><code>sdt-catalog.md</code> — exact next-case titles and routing.</li>
+</ul>
+<h3 id="official-documentation-checked-2026-11-06">Official documentation (checked 2026-11-06)</h3>
+<ul>
+<li><a href="https://modelcontextprotocol.io/docs/learn/architecture">Model Context Protocol architecture</a> and <a href="https://modelcontextprotocol.io/specification">specification</a></li>
+<li><a href="https://github.com/modelcontextprotocol/ext-apps/blob/main/docs/overview.md">MCP Apps overview and specification</a></li>
+<li><a href="https://github.com/ag-ui-protocol/ag-ui/blob/main/docs/introduction.mdx">AG-UI protocol overview</a></li>
+<li><a href="https://a2a-protocol.org/latest/specification/">A2A protocol specification</a></li>
+<li><a href="https://agentskills.io/specification">Agent Skills specification</a></li>
+<li><a href="https://openai.github.io/openai-agents-python/agents/">OpenAI Agents SDK — agents</a></li>
+<li><a href="https://opentelemetry.io/docs/specs/semconv/gen-ai/">OpenTelemetry Generative AI conventions</a></li>
+</ul>
+<p><strong>Version warning:</strong> protocol features and host support can change. This is a conceptual primer, not a claim that every host supports every optional extension.</p>
+
+  </article>
+</main>
+</div>
+<script>
+(function(){
+  var chooser=document.querySelector('.chooser');
+  var select=document.getElementById('need');
+  var announcement=document.getElementById('selector-announcement');
+  if(chooser && select){
+    function updateSelector(){
+      chooser.classList.add('js-selector');
+      chooser.setAttribute('data-selected',select.value);
+      var selected=chooser.querySelector('.recommendation[data-need="'+select.value+'"]');
+      if(announcement && selected){announcement.textContent=selected.textContent.trim();}
+    }
+    select.addEventListener('change',updateSelector);
+    select.addEventListener('input',updateSelector);
+    updateSelector();
+  }
+  if('IntersectionObserver' in window){
+    var links=Array.prototype.slice.call(document.querySelectorAll('.sidebar nav a'));
+    var h2s=Array.prototype.slice.call(document.querySelectorAll('.content h2[id]'));
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          links.forEach(function(link){
+            link.classList.toggle('active',link.getAttribute('href')==='#'+entry.target.id);
+          });
+        }
+      });
+    },{rootMargin:'-12% 0px -73% 0px',threshold:0});
+    h2s.forEach(function(heading){obs.observe(heading);});
+  }
+})();
+</script>
+</body></html>

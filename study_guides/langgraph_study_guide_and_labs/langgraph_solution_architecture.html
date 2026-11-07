@@ -1,0 +1,447 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LangGraph — Solution Architecture Study Guide</title><style>
+:root{color-scheme:light;--ink:#17283b;--sub:#516174;--line:#dce4ed;--blue:#245c9b;--bluebg:#eef5ff;--bg:#f6f8fc;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);padding:40px max(5%,calc((100% - 1160px)/2));}header .kicker{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--blue);text-transform:uppercase}
+h1{font-size:clamp(30px,4vw,44px);line-height:1.13;margin:11px 0 13px;letter-spacing:-.03em}h2{font-size:25px;line-height:1.3;letter-spacing:-.02em;margin:0 0 18px}h3{font-size:18px;line-height:1.4;margin:25px 0 9px}
+p{margin:9px 0 14px}.sub{color:var(--sub);font-size:17px;max-width:790px}.badges{display:flex;gap:9px;flex-wrap:wrap;margin-top:23px}.badge{background:var(--bluebg);color:var(--blue);border:1px solid #cfe0f9;padding:5px 11px;font-size:12px;border-radius:15px;font-weight:700}
+.layout{max-width:1200px;display:grid;grid-template-columns:246px minmax(0,1fr);gap:26px;margin:0 auto;padding:25px 20px 80px}nav{position:sticky;top:14px;align-self:start;max-height:calc(100vh - 25px);overflow:auto;padding:20px 17px;background:#fff;border:1px solid var(--line);border-radius:12px}nav b{font-size:13px;color:var(--sub)}nav a{display:block;padding:7px 6px;text-decoration:none;color:var(--ink);font-size:13px;border-radius:6px}nav a:hover{background:var(--bluebg);color:var(--blue)}main{min-width:0}section{background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px 30px;margin-bottom:20px;break-inside:avoid-page}section:target{outline:2px solid #b9d3f6}a{color:var(--blue)}ul,ol{padding-left:23px}li{margin:4px 0}strong{font-weight:700}pre{background:#f1f4f8;border:1px solid #dce4ed;padding:16px 18px;border-radius:8px;overflow:auto;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#183651;white-space:pre;tab-size:4}code{font:0.92em ui-monospace,SFMono-Regular,Consolas,monospace;background:#f1f4f8;padding:2px 3px;border-radius:4px}pre code{font-size:1em;padding:0;background:transparent}.diagram{background:#fff;color:#1a3651;border:1px solid #cbd9e5}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0 20px}th,td{border-bottom:1px solid var(--line);text-align:left;padding:9px 10px;vertical-align:top}th{background:#f0f4f8;color:#253c53;font-size:13px}tr:nth-child(even) td{background:#fcfdff}.note,.warn{padding:14px 17px;border-radius:7px;margin:18px 0;border:1px solid #c5d8ef;background:#f1f7ff}.warn{background:#fff8e9;border-color:#ead5a4}.weeks{display:grid;gap:10px}.week{border:1px solid var(--line);border-radius:9px;padding:13px 16px}.week label{display:flex;gap:9px;align-items:center;cursor:pointer}.week input{width:18px;height:18px;accent-color:#245c9b}.week-title{font-size:16px;font-weight:700}.week p{margin:5px 0}.resources li{margin-bottom:4px}.footer{font-size:12px;color:#68778b;padding:16px 0;text-align:center}
+@media(max-width:800px){.layout{display:block;padding:14px}nav{position:static;max-height:none;margin-bottom:16px}nav a{display:inline-block;margin-right:7px}section{padding:20px 17px}header{padding:32px 20px}table{font-size:12px}pre{font-size:11px}}
+@media print{@page{size:A4;margin:14mm}body{background:#fff;color:#111;font-size:10pt}header{padding:0 0 18px;border-bottom:2px solid #333}h1{font-size:25pt}h2{font-size:17pt}h3{font-size:12pt}.layout{display:block;padding:0;margin:0}nav{display:none}section{border:0;border-radius:0;padding:14px 0;margin:0;break-inside:auto}section+section{break-before:page}a{color:#111;text-decoration:underline}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f9f9f9;color:#111;font-size:7pt}table{font-size:8pt}th,td{padding:5px}.note,.warn{background:#fff!important;color:#111}header .badges{display:none}}
+</style></head><body>
+<header><div class="kicker">Agentic AI · Solution architecture curriculum</div><h1>LangGraph: Detailed Study Guide</h1><p class="sub">Learn stateful workflow design, conditional routing, agent loops, durable checkpoints, human approvals, streaming, and production architecture—with two Python mock labs.</p><div class="badges"><span class="badge">6 weeks · 6–8 hours/week</span><span class="badge">Python Graph API</span><span class="badge">No model API key for labs</span><span class="badge">Print / PDF friendly</span></div></header>
+<div class="layout"><nav><b>GUIDE CONTENTS</b><a href="#goal">Goal + prerequisites</a><a href="#mental-model">Mental model</a><a href="#lab1">Lab 1: first graph</a><a href="#state">State + reducers</a><a href="#control">Routing + agent loops</a><a href="#persistence">Persistence + threads</a><a href="#lab2">Lab 2: approval</a><a href="#parallel">Parallelism + streaming</a><a href="#reliability">Reliability</a><a href="#production">Production architecture</a><a href="#plan">Six-week plan</a><a href="#decisions">Decision guide</a><a href="#reference">API quick reference</a></nav><main><section id="goal"><h2>1. Learning goal and prerequisites</h2>
+<p><strong>Goal:</strong> design and explain robust LangGraph workflows, not only build a chat agent. You should be able to choose when a graph is justified, model typed state, control execution, handle failures, and protect business actions.</p>
+<p><strong>Recommended prerequisites:</strong> basic Python, functions and dictionaries, type hints, HTTP/API fundamentals, tool calling and structured LLM output. You do not need RAG, MCP, A2A or LangSmith to complete the first labs.</p>
+<div class="note"><strong>Scope of this guide:</strong> LangGraph Python Graph API. The example uses deterministic mock functions, so no paid model or API key is needed. LangGraph implements both workflows and agent loops; it does not require an LLM in every node.</div>
+<h3>Case study</h3><p>Build an <strong>IT Incident Investigator</strong>. An operator submits an alert. The system classifies severity, collects synthetic evidence, recommends a next step, requests approval for a simulated escalation, and keeps enough state to continue later.</p>
+<table><thead><tr><th>Actor</th><th>Responsibility</th></tr></thead><tbody>
+<tr><td>Operator</td><td>Starts investigation, reviews recommended actions, approves or rejects.</td></tr>
+<tr><td>LangGraph runtime</td><td>Controls steps, routing, state updates and pause/resume.</td></tr>
+<tr><td>Monitoring tools</td><td>Return evidence; real source of truth remains the monitoring platform.</td></tr>
+<tr><td>Business service</td><td>Validates identity and authorization, and performs real external effects. The model cannot grant these permissions.</td></tr>
+<tr><td>Checkpointer</td><td>Stores thread-local execution checkpoints; not a substitute for the business database.</td></tr>
+</tbody></table>
+<h3>Ranked constraints</h3><ol><li>Never perform unauthorized or duplicate high-impact operations.</li><li>Give traceable evidence and safe stop conditions.</li><li>Survive pauses, errors and worker restarts when durable persistence is configured.</li><li>Keep latency and tool/token cost bounded.</li><li>Make the design testable without depending on model quality.</li></ol>
+</section><section id="mental-model"><h2>2. Mental model: graph, state, nodes and edges</h2>
+<p>LangGraph gives you a graph runtime. <strong>Nodes</strong> are Python functions that do steps. <strong>Edges</strong> decide which step runs next. <strong>State</strong> is shared, typed data passed between steps. Nodes normally return <em>partial updates</em> to state, not a replacement for the entire state.</p>
+<pre class="diagram">+------------------------+
+| Operator submits alert |
++------------------------+
+            |
+            v
++------------------------+
+| Classify severity      |
++------------------------+
+            |
+       +----+----+
+       |         |
+      low       high
+       |         |
+       v         v
++-------------+ +---------------------+
+| Record only | | Investigate metrics |
++-------------+ +---------------------+
+       |                |
+       |                v
+       |       +---------------------+
+       |       | Recommend next step |
+       |       +---------------------+
+       |                |
+       +-------+--------+
+               v
+             [END]</pre>
+<h3>Core vocabulary</h3><table><thead><tr><th>Term</th><th>Practical meaning</th></tr></thead><tbody>
+<tr><td><code>StateGraph</code></td><td>Builder that defines state schema, nodes and edges.</td></tr>
+<tr><td><code>TypedDict</code></td><td>One way to declare keys and types of shared state.</td></tr>
+<tr><td><code>START</code> / <code>END</code></td><td>Virtual entry and terminal graph markers.</td></tr>
+<tr><td>Node</td><td>A callable that reads state and returns updates.</td></tr>
+<tr><td>Normal edge</td><td>Always transitions to a named successor.</td></tr>
+<tr><td>Conditional edge</td><td>Routes according to an application decision function.</td></tr>
+<tr><td><code>compile()</code></td><td>Builds the executable graph and attaches run-time features such as checkpointing.</td></tr>
+<tr><td><code>invoke()</code></td><td>Executes the graph and returns its resulting state/output.</td></tr>
+</tbody></table>
+<div class="warn"><strong>Architecture rule:</strong> LangGraph is not itself a business system of record, identity provider, or authorization system. Keep those responsibilities at trusted service boundaries.</div>
+</section><section id="lab1"><h2>3. Lab 1 — Build your first graph</h2>
+<p>Build a deterministic severity classifier. The goal is to understand routing and state before adding nondeterministic model behavior.</p>
+<h3>Setup</h3><pre><code>python -m venv .venv
+# Activate your environment (platform-dependent)
+python -m pip install -U langgraph
+python langgraph_lab_01_routing.py</code></pre>
+<p>Save the following as <code>langgraph_lab_01_routing.py</code> (also supplied separately).</p><pre><code>&quot;&quot;&quot;LangGraph Lab 01: deterministic incident routing; no LLM/API key required.
+
+Install: python -m pip install -U langgraph
+Run: python langgraph_lab_01_routing.py
+&quot;&quot;&quot;
+from typing import Literal, TypedDict
+from langgraph.graph import START, END, StateGraph
+
+
+class IncidentState(TypedDict, total=False):
+    alert: str
+    severity: Literal[&quot;low&quot;, &quot;high&quot;]
+    evidence: list[str]
+    recommendation: str
+
+
+def classify(state: IncidentState) -&gt; dict:
+    text = state[&quot;alert&quot;].lower()
+    severity = &quot;high&quot; if any(x in text for x in (&quot;down&quot;, &quot;outage&quot;, &quot;payment&quot;)) else &quot;low&quot;
+    return {&quot;severity&quot;: severity}
+
+
+def route(state: IncidentState) -&gt; Literal[&quot;high&quot;, &quot;low&quot;]:
+    return state[&quot;severity&quot;]
+
+
+def investigate(state: IncidentState) -&gt; dict:
+    return {&quot;evidence&quot;: [&quot;mock-metrics: 5xx rate increased&quot;, &quot;mock-logs: 504 spike&quot;]}
+
+
+def recommend(state: IncidentState) -&gt; dict:
+    return {&quot;recommendation&quot;: &quot;Escalate for on-call review; no action executed.&quot;}
+
+
+def close_low(state: IncidentState) -&gt; dict:
+    return {&quot;recommendation&quot;: &quot;Record and monitor; no action executed.&quot;}
+
+
+builder = StateGraph(IncidentState)
+builder.add_node(&quot;classify&quot;, classify)
+builder.add_node(&quot;investigate&quot;, investigate)
+builder.add_node(&quot;recommend&quot;, recommend)
+builder.add_node(&quot;close_low&quot;, close_low)
+builder.add_edge(START, &quot;classify&quot;)
+builder.add_conditional_edges(&quot;classify&quot;, route, {&quot;high&quot;: &quot;investigate&quot;, &quot;low&quot;: &quot;close_low&quot;})
+builder.add_edge(&quot;investigate&quot;, &quot;recommend&quot;)
+builder.add_edge(&quot;recommend&quot;, END)
+builder.add_edge(&quot;close_low&quot;, END)
+app = builder.compile()
+
+if __name__ == &quot;__main__&quot;:
+    for alert in (&quot;Payments down in west region&quot;, &quot;Disk usage 65 percent&quot;):
+        result = app.invoke({&quot;alert&quot;: alert})
+        print(result)</code></pre>
+<h3>Inputs and expected behavior</h3><table><thead><tr><th>Input</th><th>Expected route</th><th>Expected result</th></tr></thead><tbody>
+<tr><td>Payments down in west region</td><td>high → investigate → recommend</td><td>Mock evidence and escalation recommendation</td></tr>
+<tr><td>Disk usage 65 percent</td><td>low → close_low</td><td>Monitoring recommendation; no evidence retrieval</td></tr>
+</tbody></table>
+<p><strong>Inspect:</strong> The state update from <code>classify</code> becomes the input of the routing function. The routing function should be deterministic and total (every permitted value has a destination).</p>
+<p><strong>Failure exercise:</strong> Remove a destination from the routing map and inspect the error. Then add a fallback branch that marks an unknown alert for manual triage.</p>
+</section><section id="state"><h2>4. State design and reducers</h2>
+<p>Design state around the business process. Store raw durable facts and step results, not large formatted prompts. A state key with no reducer normally uses last-write/overwrite behavior. A reducer defines how multiple updates combine, which is important for parallel branches.</p>
+<h3>Simple schema</h3><pre><code>from typing import Annotated, TypedDict
+import operator
+
+class InvestigationState(TypedDict, total=False):
+    incident_id: str
+    user_request: str
+    status: str
+    evidence: Annotated[list[str], operator.add]
+    final_report: str</code></pre>
+<p><code>evidence</code> uses an append-style reducer. If two workers return <code>{"evidence": ["metric-1"]}</code> and <code>{"evidence": ["log-2"]}</code>, both results can be merged. Without an appropriate reducer, simultaneous writes to one state key can conflict.</p>
+<div class="note"><strong>Important:</strong> do not use append reducers for values that must be replaced or cleared. The order of parallel results is not a good foundation for business meaning. Use stable IDs and deterministic ordering when needed.</div>
+<h3>State ownership rules</h3><ol><li><strong>Graph state:</strong> facts needed by upcoming workflow steps.</li><li><strong>Checkpointer:</strong> thread-scoped snapshots of graph state.</li><li><strong>Store:</strong> long-term, cross-thread application memory if required.</li><li><strong>Business database:</strong> source-of-truth incident records, approvals, action IDs, audit log.</li><li><strong>Runtime context:</strong> trusted dependencies and service configuration, not user-editable instructions.</li></ol>
+<p>For chat-centric agents, <code>MessagesState</code> includes message-specific update semantics. For an incident workflow, a typed business state is usually easier to inspect than storing everything in a single message list.</p>
+</section><section id="control"><h2>5. Dynamic control flow and agents</h2>
+<p>A <strong>workflow</strong> has mostly predefined steps. An <strong>agent</strong> chooses tools or actions dynamically based on state and model output. Both can run on LangGraph.</p>
+<table><thead><tr><th>Pattern</th><th>When to use</th><th>Main risk</th></tr></thead><tbody>
+<tr><td>Linear sequence</td><td>Extract → validate → summarize</td><td>Too rigid for unexpected inputs</td></tr>
+<tr><td>Router</td><td>Low/medium/high severity or task category</td><td>Wrong route or missing fallback</td></tr>
+<tr><td>Bounded tool loop</td><td>Agent needs iterative tool selection</td><td>Infinite tool calls and runaway cost</td></tr>
+<tr><td>Planner → executor</td><td>Multi-step research that can be re-planned</td><td>Unnecessary planning overhead</td></tr>
+<tr><td>Supervisor → specialist</td><td>Different skills/tools and clear subtasks</td><td>Complicated handoffs and conflicting findings</td></tr>
+</tbody></table>
+<p><strong>Minimum agent loop:</strong> model proposes a structured tool call → application validates tool/arguments/rights → tool executes → result is returned as data → loop repeats with an iteration limit → final answer. LangGraph provides orchestration but does not authorize the tool call.</p>
+<pre class="diagram">+---------------------+
+| Agent / model step  |
++---------------------+
+          |
+          v
++---------------------+
+| Tool needed?        |
++---------------------+
+       |        |
+      no       yes
+       |        |
+       v        v
+     [END] +---------------------+
+           | Validate tool call  |
+           +---------------------+
+                    |
+                    v
+           +---------------------+
+           | Execute bounded tool|
+           +---------------------+
+                    |
+                    +-------> Agent / model step</pre>
+<p>Useful LangGraph controls include <code>add_conditional_edges</code>, <code>Command(update=..., goto=...)</code> for combined state update and routing, and <code>Send</code> for dynamic fan-out.</p>
+<h3>Decision rule</h3><p>If business logic fully determines the next step, use ordinary Python or deterministic graph nodes. Introduce an LLM-driven decision only where text understanding, interpretation, or flexible tool selection adds measurable value.</p>
+</section><section id="persistence"><h2>6. Persistence, threads, memory and replay</h2>
+<p>A <strong>thread</strong> identifies a continuing workflow or conversation. Attach a checkpointer to persist snapshots and pass the same <code>thread_id</code> to continue or inspect it. A store is different: it is for data shared across runs/threads.</p>
+<h3>Basic checkpoint setup</h3><pre><code>from langgraph.checkpoint.memory import InMemorySaver
+
+app = builder.compile(checkpointer=InMemorySaver())
+config = {&quot;configurable&quot;: {&quot;thread_id&quot;: &quot;incident-42&quot;}}
+result = app.invoke({&quot;incident_id&quot;: &quot;INC-42&quot;}, config=config)
+snapshot = app.get_state(config)
+print(snapshot.values)</code></pre>
+<p><strong>InMemorySaver is only for local development.</strong> It does not survive process exit. Use a persistent checkpointer backend when restart recovery is a requirement. Account for checkpoint storage, cleanup, schema migrations, encryption and tenant isolation.</p>
+<table><thead><tr><th>Feature</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>Checkpoint</td><td>Saved graph state at an execution boundary.</td></tr>
+<tr><td>Thread</td><td>Identity that groups a continuing run/conversation.</td></tr>
+<tr><td>Resume</td><td>Continue after pause/failure using the same thread identity.</td></tr>
+<tr><td>State history</td><td>Inspect earlier snapshots to debug a run.</td></tr>
+<tr><td>Time travel</td><td>Replay or fork from a past checkpoint for investigation.</td></tr>
+<tr><td>Store</td><td>Cross-thread memory such as approved user preferences.</td></tr>
+</tbody></table>
+<div class="warn"><strong>Crucial distinction:</strong> checkpoint persistence does not guarantee exactly-once external side effects. A remote provider may complete a write and then lose the response. Your business service must use idempotency and reconciliation.</div>
+</section><section id="lab2"><h2>7. Lab 2 — Human approval and interrupt/resume</h2>
+<p>An incident agent may recommend paging an on-call team, but authorization must remain outside the model. This lab simulates a reviewed action without making any real external write.</p>
+<pre class="diagram">+------------------------+
+| Prepare proposal       |
++------------------------+
+            |
+            v
++------------------------+
+| interrupt() for review |
++------------------------+
+            |
+      operator decision
+            |
+       +----+-----+
+       |          |
+     reject     approve
+       |          |
+       v          v
++-----------+ +----------------+
+| Cancel    | | Simulate action|
++-----------+ +----------------+
+       |          |
+       +----+-----+
+            v
+          [END]</pre>
+<p>Save the following as <code>langgraph_lab_02_approval.py</code> (also supplied separately).</p><pre><code>&quot;&quot;&quot;LangGraph Lab 02: interrupt/resume with a fake, non-writing action.
+
+Install: python -m pip install -U langgraph
+Run: python langgraph_lab_02_approval.py
+
+Important: InMemorySaver is not durable across process restarts. The caller&#x27;s
+approval must be authenticated and authorized by a separate business service.
+&quot;&quot;&quot;
+from typing import Literal, TypedDict
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.graph import START, END, StateGraph
+from langgraph.types import Command, interrupt
+
+
+class ApprovalState(TypedDict, total=False):
+    incident_id: str
+    proposed_action: str
+    decision: Literal[&quot;approved&quot;, &quot;rejected&quot;]
+    result: str
+
+
+def prepare(state: ApprovalState) -&gt; dict:
+    return {&quot;proposed_action&quot;: &quot;Create a mock on-call escalation&quot;}
+
+
+def review(state: ApprovalState) -&gt; dict:
+    approved = interrupt({
+        &quot;incident_id&quot;: state[&quot;incident_id&quot;],
+        &quot;proposed_action&quot;: state[&quot;proposed_action&quot;],
+        &quot;question&quot;: &quot;Approve this simulated escalation?&quot;,
+    })
+    return {&quot;decision&quot;: &quot;approved&quot; if approved is True else &quot;rejected&quot;}
+
+
+def route(state: ApprovalState) -&gt; Literal[&quot;approved&quot;, &quot;rejected&quot;]:
+    return state[&quot;decision&quot;]
+
+
+def simulate_action(state: ApprovalState) -&gt; dict:
+    # This is only a local mock. No email/API/database write is made.
+    return {&quot;result&quot;: &quot;SIMULATED: escalation would be created&quot;}
+
+
+def cancel(state: ApprovalState) -&gt; dict:
+    return {&quot;result&quot;: &quot;Rejected: no escalation created&quot;}
+
+
+builder = StateGraph(ApprovalState)
+builder.add_node(&quot;prepare&quot;, prepare)
+builder.add_node(&quot;review&quot;, review)
+builder.add_node(&quot;simulate_action&quot;, simulate_action)
+builder.add_node(&quot;cancel&quot;, cancel)
+builder.add_edge(START, &quot;prepare&quot;)
+builder.add_edge(&quot;prepare&quot;, &quot;review&quot;)
+builder.add_conditional_edges(&quot;review&quot;, route, {
+    &quot;approved&quot;: &quot;simulate_action&quot;, &quot;rejected&quot;: &quot;cancel&quot;
+})
+builder.add_edge(&quot;simulate_action&quot;, END)
+builder.add_edge(&quot;cancel&quot;, END)
+app = builder.compile(checkpointer=InMemorySaver())
+
+if __name__ == &quot;__main__&quot;:
+    config = {&quot;configurable&quot;: {&quot;thread_id&quot;: &quot;demo-incident-42&quot;}}
+    first = app.invoke({&quot;incident_id&quot;: &quot;INC-42&quot;}, config=config)
+    print(&quot;Paused:&quot;, first.get(&quot;__interrupt__&quot;))
+    final = app.invoke(Command(resume=True), config=config)
+    print(&quot;Final:&quot;, final)</code></pre>
+<h3>What happens</h3><ol><li>First <code>invoke()</code> reaches the review node and returns an interrupt payload.</li><li>The caller displays the proposal and obtains a decision.</li><li>The caller resumes using <code>Command(resume=True)</code> and <strong>the same thread ID</strong>.</li><li>The graph takes the approved/rejected branch.</li></ol>
+<div class="warn"><strong>Replay trap:</strong> an interrupted node starts again from the beginning when resumed. Avoid non-idempotent external writes before <code>interrupt()</code>. For real approval, verify the authenticated reviewer, the exact action, authorization policy, and expiration on the backend.</div>
+</section><section id="parallel"><h2>8. Parallelism, subgraphs and streaming</h2>
+<h3>Fan-out / fan-in</h3><p>For an incident, log analysis, metrics analysis and deployment-change analysis can run as independent branches. Combine results with typed reducers, then synthesize findings. Use <code>Send</code> when the number of worker tasks is determined at runtime.</p>
+<pre class="diagram">               +------------------+
+               | Plan investigation|
+               +------------------+
+                         |
+               +---------+---------+
+               |         |         |
+               v         v         v
+         +----------+ +---------+ +----------+
+         | Log scan | | Metrics | | Changes  |
+         +----------+ +---------+ +----------+
+               |         |         |
+               +---------+---------+
+                         |
+                         v
+               +------------------+
+               | Merge evidence   |
+               +------------------+</pre>
+<p><strong>Subgraphs</strong> let a team create a graph that runs inside another graph. This is useful for reusable investigation units, or separately owned workflow parts. Do not equate an in-process subgraph with a remote A2A agent.</p>
+<h3>Streaming choices</h3><table><thead><tr><th>Mechanism</th><th>Use</th></tr></thead><tbody>
+<tr><td><code>invoke</code></td><td>Return final result for a short operation.</td></tr>
+<tr><td><code>stream(..., stream_mode=...)</code></td><td>Inspect low-level step updates, state values or messages.</td></tr>
+<tr><td><code>stream_events(..., version="v3")</code></td><td>Newer typed-projection interface for messages, values, interrupts and output.</td></tr>
+<tr><td>Web SSE / frontend adapter</td><td>Send server-approved progress information to a browser; LangGraph events are not themselves a complete browser authorization layer.</td></tr>
+</tbody></table>
+<p>The official documentation now recommends event streaming for new applications on compatible LangGraph versions; older examples use <code>stream_mode</code>. Version-pin and test the selected API.</p>
+</section><section id="reliability"><h2>9. Reliability and error handling</h2>
+<p>Choose recovery based on the type of error. Do not handle every failure by asking the model to try again.</p>
+<table><thead><tr><th>Failure</th><th>Approach</th><th>Evidence to capture</th></tr></thead><tbody>
+<tr><td>Temporary tool timeout</td><td>Bounded retry with backoff and timeout</td><td>Attempt count, tool ID, latency</td></tr>
+<tr><td>Invalid model output</td><td>Schema validation, bounded repair or reject</td><td>Invalid field and model version</td></tr>
+<tr><td>Missing input</td><td>Interrupt or return typed request for clarification</td><td>Pending question and thread ID</td></tr>
+<tr><td>Process restart</td><td>Persistent checkpoint plus safe resume</td><td>Checkpoint ID and restored state</td></tr>
+<tr><td>External write outcome unknown</td><td>Stable operation ID; reconcile provider state before retry</td><td>Operation ID and provider result</td></tr>
+<tr><td>Unauthorized tool request</td><td>Business-service authorization deny; no retry with greater rights</td><td>Policy decision and audit event</td></tr>
+</tbody></table>
+<h3>Business-effect safety</h3><pre class="diagram">+---------------------+
+| Agent proposes      |
++---------------------+
+          |
+          v
++---------------------+
+| Store draft + op ID |
++---------------------+
+          |
+          v
++---------------------+
+| Human approves      |
++---------------------+
+          |
+          v
++---------------------+
+| Backend checks AuthZ|
++---------------------+
+          |
+          v
++---------------------+
+| Idempotent operation|
++---------------------+
+          |
+          v
++---------------------+
+| Audit / reconcile   |
++---------------------+</pre>
+<p>This is a <em>production extension</em> of the local lab, not something the mock implements. For high-impact operations, store state transitions and operation IDs outside the graph in a transactional business store.</p>
+</section><section id="production"><h2>10. Production reference architecture</h2>
+<pre class="diagram">+---------------------------+
+| Operator / HTML console   |
++---------------------------+
+              |
+              v
++---------------------------+
+| Authenticated API         |
+| input validation, quotas  |
++---------------------------+
+              |
+              v
++---------------------------+       +---------------------+
+| LangGraph workflow runtime|------>| Persistent checkpoint|
+| typed state + routing     |       +---------------------+
++---------------------------+
+        |             |
+        |             +------------------+
+        v                                v
++-----------------------+      +-----------------------+
+| Approved read tools   |      | Approval/action API   |
+| metrics, logs, changes|      | policy + op ID        |
++-----------------------+      +-----------------------+
+        |                                |
+        v                                v
++-----------------------+      +-----------------------+
+| Monitoring system     |      | Business source      |
+| source of evidence    |      | of truth + audit     |
++-----------------------+      +-----------------------+</pre>
+<h3>Production decision table</h3><table><thead><tr><th>Requirement</th><th>Change to baseline</th><th>Trade-off</th></tr></thead><tbody>
+<tr><td>Recover after process restart</td><td>Persistent checkpointer + thread isolation</td><td>Storage and migration overhead</td></tr>
+<tr><td>Run safely for many users</td><td>Trusted user/tenant context and per-tool authorization</td><td>More policy and identity plumbing</td></tr>
+<tr><td>Prevent duplicate actions</td><td>Operation IDs and business idempotency ledger</td><td>Extra reconciliation work</td></tr>
+<tr><td>Live UI</td><td>Translate graph events into approved frontend events</td><td>Reconnect and state-version complexity</td></tr>
+<tr><td>Cost control</td><td>Step limits, model routing, tool budgets, caches where safe</td><td>Possible lower answer quality</td></tr>
+<tr><td>Evaluation</td><td>Fixture runs, routing accuracy, task success and trace reviews</td><td>Maintenance of test cases</td></tr>
+</tbody></table>
+<h3>Observability</h3><p>Capture one correlation ID across user request, graph run, model calls and tools; record latencies, bounded retries, step outcomes, total cost and human corrections. Redact sensitive payloads before exporting traces. Observe <strong>actual task quality</strong>, not just service uptime.</p>
+</section><section id="plan"><h2>11. Six-week detailed study plan</h2>
+<p>Suggested effort: 6–8 hours per week. Study official docs, then implement and document each architectural choice. The checkboxes save progress in this browser only.</p>
+<div class="weeks">
+<div class="week"><label><input type="checkbox" data-progress="w1"><span class="week-title">Week 1: Graph API & typed state</span></label><p>Learn START/END, StateGraph, nodes, normal and conditional edges, compile/invoke. Model one incident state schema.</p><p><strong>Deliverable:</strong> Run Lab 1 and document the happy path plus an unknown-severity path.</p></div><div class="week"><label><input type="checkbox" data-progress="w2"><span class="week-title">Week 2: Loops and orchestration</span></label><p>Add a bounded model/tool loop conceptually. Compare fixed workflow, router, planner-executor and supervisor-worker.</p><p><strong>Deliverable:</strong> Write architecture decision record (ADR): when does this incident system actually require an agent?</p></div><div class="week"><label><input type="checkbox" data-progress="w3"><span class="week-title">Week 3: Reducers, checkpoints and memory</span></label><p>Experiment with partial state updates, append reducers, thread IDs, get_state and a checkpointer.</p><p><strong>Deliverable:</strong> Add a second evidence branch, inspect checkpoints, and explain checkpoint vs business data.</p></div><div class="week"><label><input type="checkbox" data-progress="w4"><span class="week-title">Week 4: Interrupts and safe actions</span></label><p>Run Lab 2; add reject path, edits and restart considerations. Separate approval UI from service-side authorization.</p><p><strong>Deliverable:</strong> Document a legitimate approval sequence and one unauthorized approval rejection.</p></div><div class="week"><label><input type="checkbox" data-progress="w5"><span class="week-title">Week 5: Parallelism, subgraphs and streaming</span></label><p>Explore Send, subgraph interfaces and event streaming. Design fan-out/fan-in with deterministic aggregation.</p><p><strong>Deliverable:</strong> Build a three-source investigation pipeline and a simple progress timeline.</p></div><div class="week"><label><input type="checkbox" data-progress="w6"><span class="week-title">Week 6: Production architecture and operations</span></label><p>Add fault injection, retry budgets, idempotency, tracing, testing, context security and deployment choices.</p><p><strong>Deliverable:</strong> Produce production diagram, ADRs, risk table, sample event traces and a regression suite.</p></div>
+</div>
+<h3>Suggested study rhythm</h3><ul><li><strong>Day 1:</strong> read the official concept docs and draw one ASCII design.</li><li><strong>Day 2:</strong> build a small working slice with mock data.</li><li><strong>Day 3:</strong> introduce a failure and observe the recovery path.</li><li><strong>Day 4:</strong> document contracts, ownership, trade-offs and production gaps.</li></ul>
+</section><section id="decisions"><h2>12. Architecture decision guide</h2>
+<table><thead><tr><th>Question</th><th>Choose this when...</th></tr></thead><tbody>
+<tr><td>Plain Python or LangGraph?</td><td>Use plain Python for short, fixed operations without pause/resume/state-history needs. Use LangGraph when explicit graph control or durable workflow features matter.</td></tr>
+<tr><td>Graph API or Functional API?</td><td>Use Graph API for new explicit graphs. Functional API fits wrapping existing functions/frameworks into LangGraph runtime features.</td></tr>
+<tr><td>Graph node or tool?</td><td>Node defines workflow logic; tool defines a callable capability. A node may call a tool, but a tool should still validate inputs and authorize data/effects.</td></tr>
+<tr><td>Reducer or overwrite?</td><td>Reducer for intentional accumulation and concurrent writes; overwrite for single latest truth.</td></tr>
+<tr><td>Checkpoint or long-term store?</td><td>Checkpoint for thread execution continuity; store for cross-thread durable memory. Neither overrides business system authority.</td></tr>
+<tr><td>Single agent or multiple specialists?</td><td>Prefer single bounded agent until independent tools/skills and measured quality justify specialists.</td></tr>
+<tr><td>Direct API or MCP?</td><td>A direct typed API is often simplest for one internal integration. MCP is useful for reusable tool interoperability across host clients.</td></tr>
+<tr><td>Subgraph or A2A?</td><td>Subgraph for locally composed workflow units. A2A for independent remote agent service boundaries.</td></tr>
+<tr><td>LangGraph stream or AG-UI?</td><td>LangGraph emits runtime streams; AG-UI standardizes an agent-to-first-party-frontend protocol. An adapter may bridge them, but they are not the same thing.</td></tr>
+</tbody></table>
+<h3>Common mistakes to avoid</h3><ol><li>Using a graph only because AI is involved.</li><li>Putting secrets or authorization decisions in prompt/state instead of trusted services.</li><li>Assuming <code>thread_id</code> is proof of a user's identity.</li><li>Writing to external systems before an interrupt without replay protection.</li><li>Keeping huge raw documents or formatted prompts in state.</li><li>Using append reducers everywhere, leading to duplicated or unbounded state.</li><li>Running infinite agent loops without budgets or explicit stop conditions.</li><li>Using in-memory checkpoints as if they survive crashes.</li><li>Assuming a successful model response proves a business action succeeded.</li><li>Measuring only latency and tokens, not end-to-end task correctness.</li></ol>
+</section><section id="reference"><h2>13. API quick reference and official sources</h2>
+<table><thead><tr><th>API / concept</th><th>Remember</th></tr></thead><tbody>
+<tr><td><code>StateGraph(State)</code></td><td>Declare a typed state graph.</td></tr>
+<tr><td><code>add_node(name, fn)</code></td><td>Register a step.</td></tr>
+<tr><td><code>add_edge(a, b)</code></td><td>Static transition.</td></tr>
+<tr><td><code>add_conditional_edges(a, fn, map)</code></td><td>Dynamic routing after a node.</td></tr>
+<tr><td><code>compile(checkpointer=...)</code></td><td>Prepare graph and optional persistence.</td></tr>
+<tr><td><code>invoke(input, config=...)</code></td><td>Run until end or interrupt.</td></tr>
+<tr><td><code>get_state(config)</code></td><td>Read persisted thread state.</td></tr>
+<tr><td><code>interrupt(payload)</code></td><td>Pause for external decision.</td></tr>
+<tr><td><code>Command(resume=value)</code></td><td>Resume a paused thread.</td></tr>
+<tr><td><code>Command(update=..., goto=...)</code></td><td>Combine state update and destination.</td></tr>
+<tr><td><code>Send(node, input)</code></td><td>Dynamic fan-out to worker nodes.</td></tr>
+<tr><td><code>stream_events(..., version="v3")</code></td><td>Newer typed event stream API on compatible versions.</td></tr>
+</tbody></table>
+<p><strong>Source basis:</strong> This guide follows the user's project orchestration curriculum and LangGraph's official Python documentation. Examples use illustrative synthetic data. Python source files passed syntax compilation, but the LangGraph runtime was not available in the authoring environment, so runtime behavior has not been executed here.</p>
+<ul class="resources">
+<li><a href="https://docs.langchain.com/oss/python/langgraph/graph-api">Graph API and reducers</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/thinking-in-graph-api">Thinking in the Graph API</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/workflows-agents">Workflows vs agents and common patterns</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/persistence">Persistence: checkpoints and stores</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/checkpointers">Checkpointers and thread state</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/interrupts">Interrupts and human-in-the-loop</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/event-streaming">New event streaming model</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/streaming">Stream mode API</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/use-subgraphs">Subgraphs</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/fault-tolerance">Fault tolerance</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/functional-api">Functional API</a></li>
+</ul>
+</section><div class="footer">Prepared November 6, 2026 · Official LangGraph documentation + project curriculum · Runtime examples not executed in this environment</div></main></div>
+<script>(function(){const key='langgraph-study-guide-progress-v1';try{const old=JSON.parse(localStorage.getItem(key)||'{}');document.querySelectorAll('[data-progress]').forEach(el=>{el.checked=!!old[el.dataset.progress];el.addEventListener('change',()=>{old[el.dataset.progress]=el.checked;localStorage.setItem(key,JSON.stringify(old));});});}catch(e){/* Progress saving is optional */}})();</script>
+</body></html>

@@ -1,0 +1,1369 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Google ADK &amp; Vertex AI Agent Runtime — Study Guide</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f8fafc;color:#192a39;font:15px/1.68 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}a{color:#175c91;text-decoration:none}a:hover{text-decoration:underline}.layout{display:grid;grid-template-columns:285px minmax(0,1fr)}aside{height:100vh;overflow:auto;position:sticky;top:0;border-right:1px solid #dae4eb;background:#fff;padding:25px 16px 30px}.sidebar-kicker{font-size:11px;color:#60788d;font-weight:750;text-transform:uppercase;letter-spacing:.15em}.sidebar-title{font-size:19px;line-height:1.25;font-weight:800;margin:10px 0 16px}.nav-search{width:100%;border:1px solid #cbd6df;border-radius:8px;padding:9px;font:inherit;background:#fff;color:#182a38;margin-bottom:15px}.toc{display:flex;flex-direction:column;gap:1px}.toc a{font-size:12px;color:#456276;line-height:1.45;border-radius:6px;padding:5px 8px}.toc a.nav-l1{font-size:12px;font-weight:800;color:#163c57;padding-top:13px}.toc a.nav-l2{padding-left:14px}.toc a:hover,.toc a.active{background:#e9f2f8;color:#0d5a8d;text-decoration:none}.content-wrap{min-width:0;padding:36px 45px 90px}.sheet{max-width:1040px;margin:auto;background:#fff;padding:48px 58px;box-shadow:0 8px 40px rgba(31,65,89,.07);border:1px solid #e5ecf0;border-radius:12px}.kicker{font-size:12px;letter-spacing:.16em;color:#477b9b;font-weight:800;text-transform:uppercase}.controls{display:flex;justify-content:flex-end;gap:10px;margin:0 auto 16px;max-width:1040px}.controls button{background:#fff;border:1px solid #bfccd7;border-radius:8px;padding:8px 14px;font:inherit;font-size:12px;cursor:pointer;color:#214a67}.controls button:hover{background:#ebf4fa}h1{font-size:35px;line-height:1.13;color:#102f48;letter-spacing:-.035em;margin:0 0 22px;border-bottom:5px solid #d7e9f5;padding-bottom:17px}h2{font-size:25px;line-height:1.24;letter-spacing:-.02em;color:#123a55;margin:48px 0 19px;border-top:1px solid #e3ebf0;padding-top:26px}h3{font-size:19px;line-height:1.3;color:#1b5276;margin:28px 0 12px}h4{font-size:16px;color:#245c7f;margin:21px 0 9px}h1[id^="part-"]{break-before:page}h1:not(:first-child){margin-top:64px}h2,h3,h4{break-after:avoid}h1,h2,h3,h4{scroll-margin-top:25px}.heading-anchor{opacity:0;margin-left:10px;font-size:12px;vertical-align:middle;font-weight:400}.sheet h1:hover .heading-anchor,.sheet h2:hover .heading-anchor,.sheet h3:hover .heading-anchor{opacity:1}p{margin:12px 0 16px}strong{color:#163f59}blockquote{border-left:4px solid #71a2c0;background:#f2f8fb;padding:12px 20px;margin:18px 0;color:#264b61;break-inside:avoid}blockquote p{margin:6px 0 10px}ul,ol{padding-left:24px}li{margin:4px 0}hr{border:0;border-top:1px solid #d9e5ed;margin:40px 0 20px}table{border-collapse:collapse;width:100%;table-layout:auto;font-size:12px;line-height:1.48;margin:20px 0 25px;overflow-wrap:anywhere}th{background:#e8f2f8;color:#153f5e;text-align:left;font-weight:750}th,td{border:1px solid #d7e3eb;padding:8px 10px;vertical-align:top}tbody tr:nth-child(even){background:#f8fbfd}pre{background:#142b3b;color:#eef6fa;border:1px solid #2e4a5c;border-radius:9px;padding:16px 18px;overflow-x:auto;line-height:1.46;font-size:12px;margin:14px 0 21px;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4}pre code{background:transparent;color:inherit;padding:0;font-size:inherit}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;color:#9e3d42;background:#f3f5f7;border-radius:3px;padding:1px 4px;font-size:.9em}img{max-width:100%}.toplink{position:fixed;bottom:22px;right:28px;background:#174e70;color:#fff;padding:9px 13px;border-radius:30px;font-size:12px;box-shadow:0 4px 10px #0002}.toplink:hover{text-decoration:none;background:#23698d}.note{font-size:11px;color:#637b8b}::selection{background:#cde7f6}@media(max-width:1000px){.layout{grid-template-columns:1fr}aside{position:static;height:auto;border-right:0;border-bottom:1px solid #ddd;padding:18px 25px}.toc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:250px;overflow:auto}.content-wrap{padding:18px}.sheet{padding:28px 25px}.controls{margin-top:10px}}@media(max-width:600px){.toc{grid-template-columns:1fr}.sheet{border:0;padding:25px 18px}h1{font-size:27px}h2{font-size:22px}pre{font-size:10px}}@page{size:A4;margin:17mm 15mm 16mm 16mm;@bottom-right{content:"ADK / Agent Runtime guide · " counter(page);font-size:9px;color:#6a7d88}}@media print{html{scroll-behavior:auto}body{background:#fff;color:#111;font-size:10.2pt;line-height:1.48}.layout{display:block}aside,.controls,.toplink,.heading-anchor{display:none!important}.content-wrap{padding:0}.sheet{max-width:none;margin:0;padding:0;box-shadow:none;border:0;border-radius:0}h1{font-size:25pt;border-color:#c3dce8;margin-top:0}h1:not(:first-child){margin-top:24pt}h1[id^="part-"]{break-before:page}h2{font-size:16pt;margin-top:21pt;padding-top:13pt}h3{font-size:12.5pt;margin-top:14pt}h4{font-size:11pt}p,li{orphans:3;widows:3}pre{background:#f2f7fa;color:#1c3341;border:1px solid #c3d4df;padding:8pt 10pt;font-size:7.6pt;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:0;break-inside:avoid-page}pre code{color:#1c3341}blockquote{background:#f1f7fa;border-color:#8eb5ce}table{font-size:8.3pt;break-inside:auto}tr{break-inside:avoid;break-after:auto}th,td{padding:5pt;overflow-wrap:anywhere}a{color:#154e6e;text-decoration:none}a[href^="http"]::after{content:""}}</style></head><body><div class="layout" id="top"><aside><div class="sidebar-kicker">Architecture study documentation</div><div class="sidebar-title">Google ADK +<br>Agent Runtime</div><label class="note" for="tocSearch">Find a chapter</label><input class="nav-search" id="tocSearch" type="search" placeholder="Search contents..." aria-label="Search table of contents"><nav class="toc" id="toc" aria-label="Table of contents"><a class="nav-l1" href="#google-adk-and-vertex-ai-agent-runtime">Google ADK and Vertex AI Agent Runtime</a>
+<a class="nav-l2" href="#how-to-use-this-guide">How to use this guide</a>
+<a class="nav-l1" href="#part-i-foundation">Part I — Foundation</a>
+<a class="nav-l2" href="#1-begin-with-an-actual-business-problem">1. Begin with an actual business problem</a>
+<a class="nav-l2" href="#2-adk-what-it-is-and-what-it-is-not">2. ADK: what it is and what it is not</a>
+<a class="nav-l2" href="#3-install-adk-and-create-a-project">3. Install ADK and create a project</a>
+<a class="nav-l2" href="#4-first-working-read-only-adk-agent">4. First working read-only ADK agent</a>
+<a class="nav-l2" href="#5-how-an-adk-request-actually-runs">5. How an ADK request actually runs</a>
+<a class="nav-l2" href="#6-sessions-state-memory-artifacts-and-context">6. Sessions, state, memory, artifacts, and context</a>
+<a class="nav-l1" href="#part-ii-architecture-and-orchestration">Part II — Architecture and orchestration</a>
+<a class="nav-l2" href="#7-tool-architecture-the-most-important-adk-boundary">7. Tool architecture: the most important ADK boundary</a>
+<a class="nav-l2" href="#8-agent-orchestration-patterns">8. Agent orchestration patterns</a>
+<a class="nav-l2" href="#9-bounded-planning-and-human-approvals">9. Bounded planning and human approvals</a>
+<a class="nav-l2" href="#10-multi-agent-design-without-unnecessary-complexity">10. Multi-agent design without unnecessary complexity</a>
+<a class="nav-l2" href="#11-context-engineering-rag-and-memory">11. Context engineering, RAG, and memory</a>
+<a class="nav-l2" href="#12-generative-ui-mcp-apps-a2a-and-adk">12. Generative UI, MCP Apps, A2A, and ADK</a>
+<a class="nav-l1" href="#part-iii-managed-vertex-ai-agent-runtime">Part III — Managed Vertex AI / Agent Runtime</a>
+<a class="nav-l2" href="#13-two-different-meanings-of-runtime">13. Two different meanings of runtime</a>
+<a class="nav-l2" href="#14-deployment-prerequisites-and-architecture">14. Deployment prerequisites and architecture</a>
+<a class="nav-l2" href="#15-verified-agent-runtime-deployment-walkthrough">15. Verified Agent Runtime deployment walkthrough</a>
+<a class="nav-l2" href="#16-managed-agent-runtime-vs-cloud-run-vs-gke">16. Managed Agent Runtime vs Cloud Run vs GKE</a>
+<a class="nav-l1" href="#part-iv-production-ready-design">Part IV — Production-ready design</a>
+<a class="nav-l2" href="#17-security-and-trust-boundaries">17. Security and trust boundaries</a>
+<a class="nav-l2" href="#18-evaluation-testing-and-observability">18. Evaluation, testing, and observability</a>
+<a class="nav-l2" href="#19-reliability-scalability-and-cost-design">19. Reliability, scalability, and cost design</a>
+<a class="nav-l1" href="#part-v-use-case-blueprints">Part V — Use-case blueprints</a>
+<a class="nav-l2" href="#20-eight-real-world-adk-solution-architectures">20. Eight real-world ADK solution architectures</a>
+<a class="nav-l1" href="#part-vi-hands-on-path-and-design-decisions">Part VI — Hands-on path and design decisions</a>
+<a class="nav-l2" href="#21-progressive-project-labs-software-tests-not-learner-quizzes">21. Progressive project labs (software tests, not learner quizzes)</a>
+<a class="nav-l2" href="#22-production-architecture-package-adr-template">22. Production architecture package / ADR template</a>
+<a class="nav-l2" href="#23-final-decision-checklist">23. Final decision checklist</a>
+<a class="nav-l1" href="#glossary">Glossary</a>
+<a class="nav-l1" href="#official-source-library">Official source library</a></nav></aside><main class="content-wrap"><div class="controls"><button onclick="window.print()" aria-label="Print or save as PDF">Print / Save PDF</button><button onclick="window.scrollTo({top:0,behavior:'smooth'}">Top</button></div><article class="sheet"><h1 id="google-adk-and-vertex-ai-agent-runtime">Google ADK and Vertex AI Agent Runtime<a href="#google-adk-and-vertex-ai-agent-runtime" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<p><strong>A complete solution-architecture study guide — fundamentals, advanced design, and real-world use cases</strong><br>
+<strong>Updated:</strong> 6 November 2026<br>
+<strong>Implementation language:</strong> Python (Google ADK); cloud target: Google Cloud<br>
+<strong>Learning format:</strong> Problem → concepts → minimal working solution → production evolution → trade-offs</p>
+<blockquote>
+<p><strong>Terminology (important):</strong> Google's current managed agent hosting documentation calls the product <strong>Agent Runtime on Gemini Enterprise Agent Platform</strong>. Earlier material calls it <strong>Vertex AI Agent Engine</strong>. The Python package and resources still contain names such as <code>vertexai.agent_engines</code>, <code>AdkApp</code>, and <code>reasoningEngine</code>. In this guide, <strong>managed Agent Runtime</strong> refers to this Google Cloud hosting service, not the local ADK <code>Runner</code>. See official sources [G1], [G8], and [G9].</p>
+<p><strong>Source note:</strong> The Google-specific API facts are grounded in the linked Google documentation. Architecture recommendations, synthetic use cases, and failure patterns are explanatory design guidance, not statements of a Google service guarantee. Code is designed for study; the local ADK sample matches documented APIs but has not been executed against your Google Cloud account. Check versions and region/model availability before deployment.</p>
+</blockquote>
+<h2 id="how-to-use-this-guide">How to use this guide<a href="#how-to-use-this-guide" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>Start with <strong>Chapters 1–6</strong> to understand and build a working agent. Use <strong>Chapters 7–12</strong> to study architecture and complex workflows. Use <strong>Chapters 13–19</strong> for managed Agent Runtime, enterprise operations, security, and deployment. Finally, study the <strong>use-case blueprints</strong>, <strong>labs</strong>, and <strong>decision checklists</strong>. You do not need a Google Cloud project until the managed-deployment chapter; the initial agent can use a Gemini API key.</p>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Chapters</th>
+<th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foundation</td>
+<td>1–6</td>
+<td>Explain ADK, implement tools, and understand runner/session/event behavior</td>
+</tr>
+<tr>
+<td>Architecture</td>
+<td>7–12</td>
+<td>Design orchestration, state, MCP, approvals, RAG, and interoperability</td>
+</tr>
+<tr>
+<td>Cloud runtime</td>
+<td>13–16</td>
+<td>Distinguish local runtime from managed hosting; deploy and govern an agent</td>
+</tr>
+<tr>
+<td>Production</td>
+<td>17–19</td>
+<td>Secure, observe, evaluate, scale, and recover agent workloads</td>
+</tr>
+<tr>
+<td>Applied design</td>
+<td>20–23</td>
+<td>Compare use cases, complete labs, and document architecture decisions</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="part-i-foundation">Part I — Foundation<a href="#part-i-foundation" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<h2 id="1-begin-with-an-actual-business-problem">1. Begin with an actual business problem<a href="#1-begin-with-an-actual-business-problem" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p><strong>Scenario: IT incident investigation assistant.</strong> An operator asks: “Investigate incident INC-42. Show what changed, the service health, and your evidence. Do not perform remediation.” The ticket system owns incident records. Monitoring owns live service health. The approved runbook repository owns operational procedures. None of these facts should be invented by the LLM.</p>
+<p><strong>Actors and responsibilities</strong></p>
+<table>
+<thead>
+<tr>
+<th>Actor/component</th>
+<th>Responsibility and source of truth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operator</td>
+<td>Authenticated user requesting investigation; may later approve a proposed action</td>
+</tr>
+<tr>
+<td>Application backend</td>
+<td>Validates identity, scopes a request, enforces allowed tool use, tracks run IDs</td>
+</tr>
+<tr>
+<td>ADK agent</td>
+<td>Chooses among permitted read-only tools and summarizes evidence</td>
+</tr>
+<tr>
+<td>Ticket API</td>
+<td>Definitive incident status, owner, scope, timestamps</td>
+</tr>
+<tr>
+<td>Monitoring API</td>
+<td>Definitive measurements and alert events</td>
+</tr>
+<tr>
+<td>Runbook repository</td>
+<td>Approved operational instructions and versions</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ranked design constraints:</strong> (1) access control and evidence integrity; (2) bounded tool calls and no side effects; (3) clear failure/unknown states; (4) acceptable latency; (5) controlled token and tool cost. <strong>Out of scope initially:</strong> autonomous changes, multi-agent orchestration, MCP servers, cloud deployment, vector databases, and browser automation.</p>
+<p><strong>Minimal workflow:</strong> retrieve one incident; retrieve health for its known service; summarize supported findings. If both reads are deterministic, ordinary application code might be sufficient. ADK earns its place when the operator asks flexible questions that require choosing permitted tools or combining findings. This is a <strong>custom case</strong> aligned with the project's orchestration teaching module.</p>
+<pre><code class="language-text">+-----------------------------+
+|  Authenticated operator     |
++-----------------------------+
+               |
+               v
++-----------------------------+
+|  Application + ADK agent    |
+|  Read-only tool choices     |
++-----------------------------+
+        |              |
+        v              v
++---------------+  +---------------+
+| Incident API  |  | Monitoring API|
+| Source truth  |  | Source truth  |
++---------------+  +---------------+
+</code></pre>
+<p><strong>Good response shape (illustrative, not a specific SDK wire format):</strong></p>
+<pre><code class="language-json">{
+  &quot;incident_id&quot;: &quot;INC-42&quot;,
+  &quot;status&quot;: &quot;investigating&quot;,
+  &quot;hypothesis&quot;: &quot;A recent deployment may correlate with errors&quot;,
+  &quot;evidence_ids&quot;: [&quot;incident:INC-42&quot;, &quot;health:payments-api:2026-11-06T12:00Z&quot;],
+  &quot;confidence_note&quot;: &quot;Correlation is not proof of root cause&quot;,
+  &quot;proposed_action&quot;: null
+}
+</code></pre>
+<p><strong>Critical boundary:</strong> an agent recommendation is not an approved change. The business service must validate the operator and action independently before any real-world write.</p>
+<h2 id="2-adk-what-it-is-and-what-it-is-not">2. ADK: what it is and what it is not<a href="#2-adk-what-it-is-and-what-it-is-not" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p><strong>Google Agent Development Kit (ADK)</strong> is a code-first framework for building AI agents, tool integrations, structured workflows, and multi-agent systems. It supports local development and multiple deployment targets. ADK is <strong>not</strong> itself a language model, a business database, or an authorization system [G1].</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Plain meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>Generates text/structured output and may propose tool calls</td>
+<td>Gemini proposes <code>get_incident(&quot;INC-42&quot;)</code></td>
+</tr>
+<tr>
+<td>Agent</td>
+<td>Model plus instructions, tools, and execution behavior</td>
+<td>Incident investigator</td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>Callable capability with typed arguments and results</td>
+<td><code>get_incident(incident_id)</code></td>
+</tr>
+<tr>
+<td>Runner</td>
+<td>Executes an agent for a turn and produces events</td>
+<td>Local Python runner</td>
+</tr>
+<tr>
+<td>Session</td>
+<td>Conversation and associated state for a user</td>
+<td>Repeated incident questions</td>
+</tr>
+<tr>
+<td>State</td>
+<td>Typed/shared values needed by the workflow</td>
+<td>Incident ID, evidence IDs, approval status</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Information retrieved or retained across conversations where authorized</td>
+<td>Approved user preference, long-term notes</td>
+</tr>
+<tr>
+<td>Artifact</td>
+<td>Stored non-chat output</td>
+<td>CSV result, report, document</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>Explicit ordered/branched orchestration</td>
+<td>Retrieve → validate → summarize</td>
+</tr>
+<tr>
+<td>Managed Agent Runtime</td>
+<td>Cloud service that hosts deployed agent code</td>
+<td>Agent Platform endpoint</td>
+</tr>
+</tbody>
+</table>
+<h3 id="separate-the-software-layers">Separate the software layers<a href="#separate-the-software-layers" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<pre><code class="language-text">+------------------------------------------------------+
+| User interface / custom web service                  |
++------------------------------------------------------+
+                         |
+                         v
++------------------------------------------------------+
+| ADK application and execution                         |
+| Agent / Runner / workflow / tools / sessions          |
++------------------------------------------------------+
+          |                   |                  |
+          v                   v                  v
++----------------+ +----------------+ +----------------+
+| Model endpoint | | Business APIs  | | Storage/Memory |
++----------------+ +----------------+ +----------------+
+
+Managed deployment option:
++------------------------------------------------------+
+| Google Cloud Agent Runtime hosts agent application   |
+| Infrastructure and platform services are managed    |
++------------------------------------------------------+
+</code></pre>
+<p><strong>Important:</strong> an ADK agent can run locally, on Cloud Run, on GKE, or on the managed Agent Runtime. <strong>ADK framework ≠ Vertex AI model inference ≠ managed Agent Runtime hosting.</strong> Hosting does not automatically authorize a tool to retrieve private customer records [G1], [G8], [G10].</p>
+<h2 id="3-install-adk-and-create-a-project">3. Install ADK and create a project<a href="#3-install-adk-and-create-a-project" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>Official ADK Python quickstart [G2] describes the following workflow. Use an isolated Python environment, and avoid committing <code>.env</code> files or API keys.</p>
+<pre><code class="language-bash">python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python -m pip install --upgrade google-adk
+adk create incident_agent
+</code></pre>
+<p>Expected project layout:</p>
+<pre><code class="language-text">project_root/
+  incident_agent/
+    __init__.py
+    agent.py
+    .env                # local secrets; never commit
+</code></pre>
+<p>For the Gemini API-key quickstart, set <code>GOOGLE_API_KEY</code> in the project <code>.env</code> or an appropriate secret source. <strong>Do not hardcode an API key in <code>agent.py</code>.</strong> Use a currently supported Gemini model; the official local quickstart uses <code>gemini-flash-latest</code> as an example. Model names and availability change, so verify them in the Google model catalog [G2].</p>
+<pre><code class="language-bash"># From the parent directory containing incident_agent/
+adk run incident_agent
+# Or for local debugging only:
+adk web --port 8000
+</code></pre>
+<p><code>adk web</code> provides a <strong>development UI</strong>, not a production customer-facing application [G2]. For production, build your own user-facing service or use a supported managed integration.</p>
+<h2 id="4-first-working-read-only-adk-agent">4. First working read-only ADK agent<a href="#4-first-working-read-only-adk-agent" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>Replace <code>incident_agent/agent.py</code> with the following self-contained mock-tool example. Only the Gemini model call requires credentials/network; the two tool functions use synthetic data and can be tested in ordinary Python.</p>
+<pre><code class="language-python">from google.adk.agents import Agent
+
+INCIDENTS = {
+    &quot;INC-42&quot;: {
+        &quot;incident_id&quot;: &quot;INC-42&quot;,
+        &quot;service&quot;: &quot;payments-api&quot;,
+        &quot;status&quot;: &quot;investigating&quot;,
+        &quot;summary&quot;: &quot;Elevated 5xx errors after a deployment&quot;,
+        &quot;evidence_id&quot;: &quot;incident:INC-42&quot;,
+    }
+}
+
+HEALTH = {
+    &quot;payments-api&quot;: {
+        &quot;service&quot;: &quot;payments-api&quot;,
+        &quot;status&quot;: &quot;degraded&quot;,
+        &quot;error_rate_pct&quot;: 7.2,
+        &quot;evidence_id&quot;: &quot;health:payments-api:sample-1&quot;,
+    }
+}
+
+
+def get_incident(incident_id: str) -&gt; dict:
+    &quot;&quot;&quot;Look up one synthetic incident by its exact ID (read-only).&quot;&quot;&quot;
+    item = INCIDENTS.get(incident_id)
+    if item is None:
+        return {&quot;status&quot;: &quot;not_found&quot;, &quot;incident_id&quot;: incident_id}
+    return {&quot;status&quot;: &quot;success&quot;, &quot;incident&quot;: item}
+
+
+def get_service_health(service: str) -&gt; dict:
+    &quot;&quot;&quot;Return a synthetic service-health snapshot (read-only).&quot;&quot;&quot;
+    item = HEALTH.get(service)
+    if item is None:
+        return {&quot;status&quot;: &quot;not_found&quot;, &quot;service&quot;: service}
+    return {&quot;status&quot;: &quot;success&quot;, &quot;health&quot;: item}
+
+
+root_agent = Agent(
+    name=&quot;incident_agent&quot;,
+    model=&quot;gemini-flash-latest&quot;,  # confirm model availability
+    description=&quot;Read-only incident investigation assistant&quot;,
+    instruction=(
+        &quot;You investigate incidents using approved read-only tools. &quot;
+        &quot;Call get_incident for an incident ID. &quot;
+        &quot;Use only returned service names when calling get_service_health. &quot;
+        &quot;State evidence IDs in your answer. &quot;
+        &quot;Do not invent facts or claim root cause without evidence. &quot;
+        &quot;Never propose that you executed remediation. &quot;
+        &quot;If evidence is missing, say what you could not verify.&quot;
+    ),
+    tools=[get_incident, get_service_health],
+)
+</code></pre>
+<p>Run <code>adk run incident_agent</code>, then ask:</p>
+<blockquote>
+<p>Investigate INC-42. Report its status and latest health evidence. Do not change anything.</p>
+</blockquote>
+<p><strong>Expected behavior:</strong> the agent selects the incident tool, may use its returned service name to call the health tool, and explains the result with evidence identifiers. <strong>The exact wording and number/order of model calls are not deterministic.</strong></p>
+<p><strong>Negative cases to test:</strong> incident <code>INC-999</code> returns <code>not_found</code>; an unsupported service returns <code>not_found</code>; a user's request to delete a service has no matching tool and therefore cannot be executed by these tools. A prompt alone is not authorization—future write tools must enforce policy separately.</p>
+<h2 id="5-how-an-adk-request-actually-runs">5. How an ADK request actually runs<a href="#5-how-an-adk-request-actually-runs" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>A beginner often sees only “prompt in, answer out.” Architecture requires understanding the intermediate events and ownership.</p>
+<pre><code class="language-text">User request
+    |
+    v
+Application authenticates caller
+    |
+    v
+Runner retrieves/creates session
+    |
+    v
+Agent receives instruction + context + allowed tools
+    |
+    v
+Model suggests tool call --------------+
+    |                                   |
+    v                                   |
+Tool dispatcher validates and invokes  |
+    |                                   |
+    v                                   |
+Tool result becomes an event -----------+
+    |
+    v
+Model synthesizes response
+    |
+    v
+Runner emits final event / persists session
+</code></pre>
+<p>The <strong>Runner</strong> orchestrates the agent execution lifecycle. The <strong>SessionService</strong> manages conversation records/state. <strong>Events</strong> represent output, model/tool activity, and state changes. A session ID identifies a conversation but must not be treated as authorization. ADK's runtime event-loop and session documentation explain these components [G3], [G4].</p>
+<p>A commonly documented programmatic runner pattern uses <code>Runner</code>, <code>InMemorySessionService</code>, and <code>google.genai.types</code>. For durable applications, replace the in-memory service with a supported persistent service appropriate to the deployment. Refer to the exact SDK-version example before integrating this into a server.</p>
+<pre><code class="language-python"># Illustrative Runner integration pattern — check against pinned ADK version.
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
+from incident_agent.agent import root_agent
+
+APP_NAME = &quot;incident_study&quot;
+USER_ID = &quot;mock-operator&quot;
+SESSION_ID = &quot;local-session-1&quot;
+
+session_service = InMemorySessionService()
+runner = Runner(
+    agent=root_agent,
+    app_name=APP_NAME,
+    session_service=session_service,
+)
+
+# Create a session before running (asynchronous):
+# await session_service.create_session(
+#     app_name=APP_NAME, user_id=USER_ID, session_id=SESSION_ID
+# )
+# user_message = types.Content(
+#     role=&quot;user&quot;, parts=[types.Part(text=&quot;Investigate INC-42&quot;)]
+# )
+# async for event in runner.run_async(
+#     user_id=USER_ID, session_id=SESSION_ID,
+#     new_message=user_message,
+# ):
+#     print(event)
+</code></pre>
+<p><strong>Design rule:</strong> do not assume a tool ran successfully just because text says so. Use actual tool results, events, or authoritative business records as evidence.</p>
+<h2 id="6-sessions-state-memory-artifacts-and-context">6. Sessions, state, memory, artifacts, and context<a href="#6-sessions-state-memory-artifacts-and-context" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>These five ideas solve different problems. Treating them as one storage bucket causes privacy leaks and unreliable workflows.</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Scope</th>
+<th>What belongs there</th>
+<th>What does not belong there</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session</td>
+<td>Conversation timeline</td>
+<td>Turns, event history, session metadata</td>
+<td>Permanent business source of truth</td>
+</tr>
+<tr>
+<td>State</td>
+<td>Working values for steps/turns</td>
+<td>Approved workflow stage, evidence references</td>
+<td>Unlimited raw documents or unreviewed secrets</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Authorized longer-lived knowledge</td>
+<td>Reviewed preferences or useful history</td>
+<td>Arbitrary private facts without consent/retention policy</td>
+</tr>
+<tr>
+<td>Artifact</td>
+<td>Larger typed/binary output</td>
+<td>Investigation report, CSV, generated file</td>
+<td>A substitute for business approval or database record</td>
+</tr>
+<tr>
+<td>Model context</td>
+<td>Tokens sent to model this turn</td>
+<td>Relevant instructions, tool data, summarized history</td>
+<td>Entire enterprise dataset</td>
+</tr>
+</tbody>
+</table>
+<p>ADK documents scoped state prefixes such as <code>user:</code>, <code>app:</code>, and <code>temp:</code>. <strong>Temporary invocation state is not durable business state.</strong> ADK also exposes session/memory/artifact services and context-compression features [G4], [G5].</p>
+<p><strong>Example state contract (application-owned proposal, not official ADK wire schema):</strong></p>
+<pre><code class="language-json">{
+  &quot;session_id&quot;: &quot;sess-42&quot;,
+  &quot;incident_id&quot;: &quot;INC-42&quot;,
+  &quot;workflow_status&quot;: &quot;investigating&quot;,
+  &quot;evidence_ids&quot;: [&quot;incident:INC-42&quot;],
+  &quot;pending_action_id&quot;: null,
+  &quot;last_tool_status&quot;: &quot;success&quot;
+}
+</code></pre>
+<p><strong>Security requirements:</strong> derive user/tenant from verified server identity; keep state scoped by tenant and user; expire it according to policy; never trust <code>user_id</code> or <code>tenant_id</code> supplied by model-generated text. Memory should support correction and deletion. A search index is a derived copy of data, not the source of truth.</p>
+<hr>
+<h1 id="part-ii-architecture-and-orchestration">Part II — Architecture and orchestration<a href="#part-ii-architecture-and-orchestration" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<h2 id="7-tool-architecture-the-most-important-adk-boundary">7. Tool architecture: the most important ADK boundary<a href="#7-tool-architecture-the-most-important-adk-boundary" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>Agents become useful when they access real capabilities. The tool boundary is where untrusted model suggestions meet business systems.</p>
+<h3 id="four-common-integration-choices">Four common integration choices<a href="#four-common-integration-choices" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>When it fits</th>
+<th>What to watch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python function tool</td>
+<td>Small app, direct API wrapper, simple local development</td>
+<td>Model input validation, auth, timeout</td>
+</tr>
+<tr>
+<td>MCP toolset</td>
+<td>Reusable tools shared across AI clients</td>
+<td>Server trust, transport, credentials, version support</td>
+</tr>
+<tr>
+<td>OpenAPI-based tools</td>
+<td>Existing well-described REST API</td>
+<td>Schema quality, server-side authorization</td>
+</tr>
+<tr>
+<td>Agent as tool/sub-agent</td>
+<td>Specialist reasoning within a controlled agent system</td>
+<td>Limits, state sharing, cost, ambiguous ownership</td>
+</tr>
+</tbody>
+</table>
+<p>Google ADK documents function tools, <code>McpToolset</code>, OpenAPI tools, authentication integration, and tool confirmations [G6].</p>
+<p><strong>Tool contract proposal:</strong></p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;get_incident&quot;,
+  &quot;input&quot;: {&quot;incident_id&quot;: &quot;INC-42&quot;},
+  &quot;output&quot;: {
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;incident&quot;: {&quot;incident_id&quot;: &quot;INC-42&quot;, &quot;service&quot;: &quot;payments-api&quot;}
+  },
+  &quot;errors&quot;: [&quot;not_found&quot;, &quot;forbidden&quot;, &quot;timeout&quot;, &quot;upstream_error&quot;]
+}
+</code></pre>
+<p><strong>Strong design patterns:</strong> use typed inputs; constrain IDs and enum values; return explicit error status; bound duration/response size; log a correlation ID; reauthorize each record/tool call; write only through an auditable service. A <code>description</code> or tool schema helps the model choose a tool, but it does not grant access to data.</p>
+<h3 id="mcp-with-adk">MCP with ADK<a href="#mcp-with-adk" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p>ADK's documented Python MCP integration uses <code>McpToolset</code> and connection parameters such as <code>StreamableHTTPConnectionParams</code> for a remote MCP server [G6]. A conceptual structure is:</p>
+<pre><code class="language-python"># Framework shape based on Google's MCP integration documentation.
+# Supply a real, authorized MCP server URL and authentication strategy.
+import os
+from google.adk.tools.mcp_tool import McpToolset
+from google.adk.tools.mcp_tool.mcp_session_manager import (
+    StreamableHTTPConnectionParams,
+)
+
+mcp_tools = McpToolset(
+    connection_params=StreamableHTTPConnectionParams(
+        url=os.environ[&quot;REMOTE_MCP_URL&quot;],
+        timeout=5,
+        sse_read_timeout=300,
+    )
+)
+# Then include mcp_tools in the agent's tools list.
+</code></pre>
+<p>For multi-user enterprise traffic, dynamic per-user identity forwarding and server-side policy matter more than a hardcoded service token. Google documents header providers and confirmation options for the toolset; verify current API and auth compatibility before implementing [G6a].</p>
+<p><strong>MCP is not required</strong> if one agent calls one private Python function. Introduce it when independent clients benefit from a reusable protocol boundary.</p>
+<h2 id="8-agent-orchestration-patterns">8. Agent orchestration patterns<a href="#8-agent-orchestration-patterns" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>There are two separate questions: <strong>who decides the next step?</strong> and <strong>who owns durable progress?</strong> An LLM can suggest an action; application/workflow code should retain control of requirements and permissions.</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>What decides routing?</th>
+<th>Appropriate scenario</th>
+<th>Main drawback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single LLM agent with tools</td>
+<td>Model within supplied tool set</td>
+<td>Flexible read-only Q&amp;A</td>
+<td>May over-call tools or misroute</td>
+</tr>
+<tr>
+<td>Sequential workflow</td>
+<td>Code-specified order</td>
+<td>Extract → validate → report</td>
+<td>Less adaptive</td>
+</tr>
+<tr>
+<td>Parallel workflow</td>
+<td>Code-specified fan-out</td>
+<td>Independent document analyses</td>
+<td>Costs and merge conflicts</td>
+</tr>
+<tr>
+<td>Loop workflow</td>
+<td>Code-specified repetition/exit</td>
+<td>Bounded revisions</td>
+<td>Runaway loop without caps</td>
+</tr>
+<tr>
+<td>Supervisor/specialists</td>
+<td>Parent agent or code routing</td>
+<td>Distinct specialist expertise</td>
+<td>More latency and tracing complexity</td>
+</tr>
+<tr>
+<td>Graph workflow (ADK 2.0)</td>
+<td>Explicit nodes/edges/branches</td>
+<td>Typed business workflow</td>
+<td>More initial modeling</td>
+</tr>
+<tr>
+<td>A2A delegation</td>
+<td>External service contract</td>
+<td>Independent remote agent</td>
+<td>Remote identity and task failure</td>
+</tr>
+</tbody>
+</table>
+<p>Google documents <code>SequentialAgent</code>, <code>ParallelAgent</code>, and <code>LoopAgent</code> as template workflows, plus <strong>ADK 2.0 graph workflows</strong>. The official sequential-workflow page says graph and dynamic workflows are more flexible starting with ADK 2.0 for supported languages [G7], [G7a].</p>
+<h3 id="example-deterministic-sequential-pipeline">Example: deterministic sequential pipeline<a href="#example-deterministic-sequential-pipeline" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<pre><code class="language-python">from google.adk.agents import LlmAgent, SequentialAgent
+
+MODEL = &quot;gemini-flash-latest&quot;  # confirm availability
+
+extractor = LlmAgent(
+    name=&quot;extractor&quot;,
+    model=MODEL,
+    instruction=&quot;Extract the incident ID and service. Output only verified fields.&quot;,
+    output_key=&quot;extracted_fields&quot;,
+)
+
+reporter = LlmAgent(
+    name=&quot;reporter&quot;,
+    model=MODEL,
+    instruction=(
+        &quot;Use extracted fields: {extracted_fields}. &quot;
+        &quot;Write a cautious summary. Do not invent live evidence.&quot;
+    ),
+)
+
+root_agent = SequentialAgent(
+    name=&quot;incident_pipeline&quot;,
+    sub_agents=[extractor, reporter],
+)
+</code></pre>
+<p><strong>Limitation:</strong> this is a control-flow example; the reporter has no verified live incident API in this snippet, so it must not claim to have investigated production telemetry. Add an actual tool step only if necessary.</p>
+<h3 id="graphs-adk-2-0-mental-model">Graphs: ADK 2.0 mental model<a href="#graphs-adk-2-0-mental-model" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p>A graph has nodes for function logic, agents, and human input; edges determine transitions. Google documents a <code>Workflow</code> with explicit <code>edges</code>, including conditional routes [G7a]:</p>
+<pre><code class="language-python"># Pseudocode for graph structure, not a complete runnable ADK graph.
+# Define and type-check process, route, and result nodes first.
+# root_agent = Workflow(
+#     name=&quot;incident_graph&quot;,
+#     edges=[
+#         (&quot;START&quot;, load_incident_node, route_severity_node),
+#         (route_severity_node, {
+#             &quot;LOW&quot;: summary_node,
+#             &quot;HIGH&quot;: request_review_node,
+#         }),
+#     ],
+# )
+</code></pre>
+<p>The graph must define what data each node receives/emits, stop conditions, retries, and how an interrupted run resumes. Do not confuse <strong>a graph drawing</strong> with <strong>durable execution</strong>: persistence and recovery configuration still matter.</p>
+<h2 id="9-bounded-planning-and-human-approvals">9. Bounded planning and human approvals<a href="#9-bounded-planning-and-human-approvals" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>A common progression:</p>
+<pre><code class="language-text">+--------------------+
+| User asks for task |
++--------------------+
+          |
+          v
++--------------------+
+| Agent creates plan |
++--------------------+
+          |
+          v
++--------------------+
+| Validate allowed   |
+| steps and budgets  |
++--------------------+
+          |
+          v
++--------------------+
+| Run read-only tools|
++--------------------+
+          |
+          v
++--------------------+
+| Proposed change?   |
++--------------------+
+          |
+        yes
+          v
++--------------------+
+| Durable approval   |
+| pending record     |
++--------------------+
+          |
+          v
++--------------------+
+| Service-side AuthZ |
+| + idempotent effect|
++--------------------+
+</code></pre>
+<p><strong>State transitions for an actual write:</strong> <code>proposed → pending_approval → approved → executing → completed</code>, with separate <code>rejected</code>, <code>expired</code>, <code>failed</code>, and <code>unknown</code> states. An <code>unknown</code> outcome means the external provider might have executed the action even when the caller timed out. Reconcile by operation ID before retrying.</p>
+<p><strong>Human confirmation in ADK</strong> can assist the user experience; Google documents tool confirmations and graph human-input patterns [G6a], [G7b]. But a “Confirm” button, agent message, or resume signal <strong>must not replace</strong> an independent backend authorization check on the frozen request payload.</p>
+<p><strong>Example draft record:</strong></p>
+<pre><code class="language-json">{
+  &quot;operation_id&quot;: &quot;restart-INC-42-1&quot;,
+  &quot;incident_id&quot;: &quot;INC-42&quot;,
+  &quot;service&quot;: &quot;payments-api&quot;,
+  &quot;proposed_action&quot;: &quot;restart_service&quot;,
+  &quot;proposal_hash&quot;: &quot;computed-by-server&quot;,
+  &quot;status&quot;: &quot;pending_approval&quot;,
+  &quot;expires_at&quot;: &quot;server-controlled-timestamp&quot;,
+  &quot;approval_principal&quot;: null
+}
+</code></pre>
+<p><strong>Guardrails:</strong> whitelist permissible remediation; require appropriate role; bind reviewer and resource; reject expired/modified proposals; deduplicate retry; record audit and final provider status. Never grant a tool access because the model says “approved.”</p>
+<h2 id="10-multi-agent-design-without-unnecessary-complexity">10. Multi-agent design without unnecessary complexity<a href="#10-multi-agent-design-without-unnecessary-complexity" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p><strong>Start single-agent.</strong> Add specialists only for meaningful separation: distinct contexts, independent tools, ownership, or evaluation. A supervisor plus three specialists is not automatically better than one agent with three tools.</p>
+<pre><code class="language-text">+-----------------------------+
+| Investigator coordinator    |
++-----------------------------+
+               |
+       +-------+-------+
+       |               |
+       v               v
++--------------+ +--------------+
+| Metrics      | | Change       |
+| specialist   | | specialist   |
++--------------+ +--------------+
+       |               |
+       +-------+-------+
+               |
+               v
++-----------------------------+
+| Evidence merge + reporting  |
++-----------------------------+
+</code></pre>
+<p><strong>Data flow contract for each specialist:</strong></p>
+<pre><code class="language-json">{
+  &quot;specialist&quot;: &quot;metrics&quot;,
+  &quot;incident_id&quot;: &quot;INC-42&quot;,
+  &quot;finding&quot;: &quot;Error rate exceeded mock threshold&quot;,
+  &quot;evidence_ids&quot;: [&quot;health:payments-api:sample-1&quot;],
+  &quot;status&quot;: &quot;completed&quot;
+}
+</code></pre>
+<p>A coordinator should detect missing or contradictory evidence and explicitly label unresolved findings. It should not average unsupported model confidence percentages into a fake probability.</p>
+<p><strong>A2A</strong> is justified when a specialist is an independent remote agent with its own deployment/task lifecycle. For specialists in the same process, ADK sub-agents or plain functions are simpler. ADK has official A2A documentation [G12].</p>
+<h2 id="11-context-engineering-rag-and-memory">11. Context engineering, RAG, and memory<a href="#11-context-engineering-rag-and-memory" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>A grounded enterprise agent should answer from authorized and fresh evidence, not accumulated chat history alone.</p>
+<p><strong>Retrieval flow:</strong> approved documents → ingestion/index → permission-aware search → evidence passages → model synthesis → citation validation. Keep ACL checks before private text enters the model. Record source IDs, versions, and freshness timestamps.</p>
+<table>
+<thead>
+<tr>
+<th>Choice</th>
+<th>Use when</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direct context</td>
+<td>Small, stable source set</td>
+<td>Simple but token heavy</td>
+</tr>
+<tr>
+<td>Keyword search</td>
+<td>Exact ticket IDs and names</td>
+<td>Weak semantic recall</td>
+</tr>
+<tr>
+<td>Vector retrieval</td>
+<td>Semantic questions over larger corpus</td>
+<td>Can miss identifiers</td>
+</tr>
+<tr>
+<td>Hybrid + rerank</td>
+<td>Both exact and conceptual queries</td>
+<td>More components/latency</td>
+</tr>
+<tr>
+<td>Long-term memory</td>
+<td>User-approved recurring context</td>
+<td>Privacy, staleness and consent</td>
+</tr>
+</tbody>
+</table>
+<p>Google's ADK context documentation includes session state, memory, context compression, and model context caching [G4], [G5]. Those features help manage context; they are <strong>not a substitute for data access control</strong>.</p>
+<p><strong>Failure example:</strong> the runbook index contains last month's policy. The model must not present its answer as current without a version check. Solutions include fresh indexing, effective-date metadata, evidence IDs, and abstention when sources conflict.</p>
+<h2 id="12-generative-ui-mcp-apps-a2a-and-adk">12. Generative UI, MCP Apps, A2A, and ADK<a href="#12-generative-ui-mcp-apps-a2a-and-adk" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>ADK is an <strong>agent runtime/framework</strong>, while MCP, MCP Apps, AG-UI, and A2A address different interfaces. Do not treat them as interchangeable.</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Recommended boundary</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADK calls shared external tools</td>
+<td>MCP client/server</td>
+<td>Standardized tool/data integration</td>
+</tr>
+<tr>
+<td>Chat host embeds interactive tool UI</td>
+<td>MCP Apps <em>when host supports it</em></td>
+<td>Sandboxed in-chat HTML view</td>
+</tr>
+<tr>
+<td>Your own web UI shows live agent progress</td>
+<td>AG-UI or custom server stream</td>
+<td>Frontend event/state channel</td>
+</tr>
+<tr>
+<td>Independent deployed agent handles a task</td>
+<td>A2A</td>
+<td>Agent discovery and task/artifact lifecycle</td>
+</tr>
+<tr>
+<td>Only need fixed application dashboard</td>
+<td>Ordinary typed JSON + HTML</td>
+<td>Avoids extra protocols</td>
+</tr>
+</tbody>
+</table>
+<p>A realistic ADK deployment can use MCP for tools, A2A for a remote specialist, and a normal web frontend. <strong>MCP Apps is optional</strong> and lives in a compatible host; you do not need it to use ADK or managed Agent Runtime. See [G6], [G12], and [P1]–[P4].</p>
+<hr>
+<h1 id="part-iii-managed-vertex-ai-agent-runtime">Part III — Managed Vertex AI / Agent Runtime<a href="#part-iii-managed-vertex-ai-agent-runtime" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<h2 id="13-two-different-meanings-of-runtime">13. Two different meanings of runtime<a href="#13-two-different-meanings-of-runtime" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>This distinction prevents many architecture mistakes:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>What it does</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ADK local execution runtime</strong></td>
+<td>Executes agent logic and events in an app process</td>
+<td><code>Runner</code>, <code>adk run</code>, <code>adk web</code></td>
+</tr>
+<tr>
+<td><strong>Google Cloud managed Agent Runtime</strong></td>
+<td>Hosts deployed agent code behind managed infrastructure</td>
+<td><code>AdkApp</code>, <code>client.agent_engines.create(...)</code></td>
+</tr>
+<tr>
+<td><strong>Vertex AI / Gemini model API</strong></td>
+<td>Generates model outputs</td>
+<td><code>model=&quot;gemini-flash-latest&quot;</code> in ADK</td>
+</tr>
+<tr>
+<td><strong>Session / memory services</strong></td>
+<td>Store and retrieve conversation/approved persistent data</td>
+<td>ADK or managed services</td>
+</tr>
+<tr>
+<td><strong>Business backend</strong></td>
+<td>Enforces identity, permissions and write transactions</td>
+<td>Ticket, CRM, finance, monitoring APIs</td>
+</tr>
+</tbody>
+</table>
+<p>The current Google Cloud quickstart describes the managed host as <strong>Agent Runtime</strong> and deploys a <code>reasoningEngine</code> resource using <code>vertexai</code> SDK names [G8]. Agent Runtime is part of a broader platform. Do not assume all platform capabilities are enabled, supported in all regions, or included without extra setup.</p>
+<h3 id="local-cloud-progression">Local → cloud progression<a href="#local-cloud-progression" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<pre><code class="language-text">DEVELOPMENT                              PRODUCTION OPTION
++-----------------------+                +-----------------------+
+| Local ADK agent       |                | Agent Platform        |
+| + in-memory sessions  |  deploy app    | managed Agent Runtime |
++-----------------------+  -----------&gt; +-----------------------+
+           |                                        |
+           v                                        v
++-----------------------+                +-----------------------+
+| Gemini API and local  |                | Model APIs, managed   |
+| mock tool functions   |                | sessions, business APIs|
++-----------------------+                +-----------------------+
+</code></pre>
+<p><strong>Portability caveat:</strong> code using local files, subprocesses, global dictionaries, or local session objects can behave differently once hosted remotely. Evaluate packaging, networking, credentials, dependencies, and state service configuration before deployment.</p>
+<h2 id="14-deployment-prerequisites-and-architecture">14. Deployment prerequisites and architecture<a href="#14-deployment-prerequisites-and-architecture" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>The official Google quickstart requires a billable Google Cloud project, enabled APIs, adequate IAM roles, SDK credentials, and a Cloud Storage staging bucket for the example path [G8]. <strong>Do not assume every user can deploy with their default identity.</strong> Grant only the permissions required for building/deploying and runtime execution.</p>
+<p><strong>Typical logical production layout:</strong></p>
+<pre><code class="language-text">+----------------------------+
+| Employee web app / chat UI |
++----------------------------+
+               |
+               v
++----------------------------+
+| Authenticated application  |
+| API / identity checks      |
++----------------------------+
+               |
+               v
++----------------------------+
+| Managed Agent Runtime      |
+| ADK app + session handling |
++----------------------------+
+         |              |
+         v              v
++----------------+ +-----------------------+
+| Gemini model   | | Private tool/API path |
+| endpoint       | | + service-side AuthZ  |
++----------------+ +-----------------------+
+                          |
+                          v
+                 +-----------------------+
+                 | Business system       |
+                 | Source of truth       |
+                 +-----------------------+
+
+Cross-cutting: IAM, secrets, network, logging, tracing,
+              budgets, evaluation and audit records.
+</code></pre>
+<p><strong>Trust boundaries:</strong> frontend credentials are not agent service credentials; a platform-managed agent identity is not the identity of the human user; authenticated service access still may require per-record authorization; UI presentation is never the approval authority. Inspect current Agent Identity and auth-manager docs for implementation details [G8], [G11].</p>
+<h2 id="15-verified-agent-runtime-deployment-walkthrough">15. Verified Agent Runtime deployment walkthrough<a href="#15-verified-agent-runtime-deployment-walkthrough" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>This walkthrough follows the shape of Google's official managed ADK quickstart [G8]. It provisions billable resources. Run only in a controlled Google Cloud project with permissions, quota, and billing oversight. Some SDK/API names remain historically branded <code>vertexai</code>.</p>
+<h3 id="15-1-install-and-authenticate">15.1 Install and authenticate<a href="#15-1-install-and-authenticate" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<pre><code class="language-bash">python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade 'google-cloud-aiplatform[agent_engines,adk]&gt;=1.112'
+gcloud auth application-default login
+</code></pre>
+<p>Prerequisites to configure outside Python: <code>PROJECT_ID</code>, a currently supported <code>LOCATION</code>, required Google Cloud APIs/permissions, and <code>STAGING_BUCKET=gs://YOUR_STAGING_BUCKET</code>. Verify region support and account policies in current docs. This is <strong>not a zero-cost local command</strong>.</p>
+<h3 id="15-2-wrap-and-test-the-adk-agent">15.2 Wrap and test the ADK agent<a href="#15-2-wrap-and-test-the-adk-agent" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<pre><code class="language-python"># deploy_agent.py — based on Google's managed ADK quickstart.
+# Run from the project directory and adjust import path as needed.
+import os
+import vertexai
+from vertexai import agent_engines, types
+from incident_agent.agent import root_agent
+
+client = vertexai.Client(
+    project=os.environ[&quot;PROJECT_ID&quot;],
+    location=os.environ[&quot;LOCATION&quot;],
+)
+
+app = agent_engines.AdkApp(agent=root_agent)
+
+# For an optional local test inside an async function:
+# async for event in app.async_stream_query(
+#     user_id=&quot;sample-operator&quot;,
+#     message=&quot;Investigate INC-42&quot;,
+# ):
+#     print(event)
+</code></pre>
+<h3 id="15-3-deploy-and-query">15.3 Deploy and query<a href="#15-3-deploy-and-query" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<pre><code class="language-python"># Continue the same deploy_agent.py after creating client and app.
+remote_agent = client.agent_engines.create(
+    agent=app,
+    config={
+        &quot;requirements&quot;: [&quot;google-cloud-aiplatform[agent_engines,adk]&quot;],
+        &quot;staging_bucket&quot;: os.environ[&quot;STAGING_BUCKET&quot;],
+        &quot;identity_type&quot;: types.IdentityType.AGENT_IDENTITY,
+    },
+)
+
+print(&quot;Deployed agent resource:&quot;, remote_agent)
+
+# In an async function, you can use:
+# async for event in remote_agent.async_stream_query(
+#     user_id=&quot;sample-operator&quot;,
+#     message=&quot;Investigate INC-42&quot;,
+# ):
+#     print(event)
+</code></pre>
+<p><strong>Important deployment note:</strong> these are the SDK calls from the current Google quickstart, but the sample <code>incident_agent</code> relies on in-process synthetic dictionaries. They are suitable for an isolated demonstration, <strong>not real multi-replica production data</strong>. For production, replace them with authorized remote APIs and configure persistent state.</p>
+<h3 id="15-4-cleanup">15.4 Cleanup<a href="#15-4-cleanup" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p>Google's quickstart provides <code>remote_agent.delete(force=True)</code> for removal of the test agent. Do not run cleanup on a shared/production resource, and review any other associated resources and charges [G8].</p>
+<h3 id="15-5-why-staging-matters">15.5 Why staging matters<a href="#15-5-why-staging-matters" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p>The staging bucket is an artifact handoff during deployment, not the source of truth for runtime business data. Do not put API keys or customer exports in deployment artifacts. Use approved secrets/identity services for credentials and grant runtime access only to required destinations.</p>
+<h2 id="16-managed-agent-runtime-vs-cloud-run-vs-gke">16. Managed Agent Runtime vs Cloud Run vs GKE<a href="#16-managed-agent-runtime-vs-cloud-run-vs-gke" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>Google documents all three as deployment options for ADK [G1], [G10]. This is an architectural decision, not a universally correct ranking.</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Managed Agent Runtime</th>
+<th>Cloud Run</th>
+<th>GKE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary motivation</td>
+<td>Agent-focused managed hosting/integration</td>
+<td>Flexible HTTP/container serverless hosting</td>
+<td>Kubernetes control and advanced workload customization</td>
+</tr>
+<tr>
+<td>Ops burden</td>
+<td>Platform-managed runtime; still own agent quality/policy</td>
+<td>Own app/container contracts and operations</td>
+<td>Own cluster/workload architecture</td>
+</tr>
+<tr>
+<td>App packaging</td>
+<td>Agent Platform packaging and deployment API</td>
+<td>Container/service deployment</td>
+<td>Kubernetes workload/image/deployment</td>
+</tr>
+<tr>
+<td>Session integration</td>
+<td>Review managed session/runtime features</td>
+<td>You select session store</td>
+<td>You select session store</td>
+</tr>
+<tr>
+<td>Networking</td>
+<td>Verify supported managed connectivity</td>
+<td>Configure Cloud Run networking</td>
+<td>Configure Kubernetes networking</td>
+</tr>
+<tr>
+<td>Portability</td>
+<td>May use platform-specific services</td>
+<td>Container application portable with effort</td>
+<td>Kubernetes abstractions portable with effort</td>
+</tr>
+<tr>
+<td>Good use case</td>
+<td>Managed, ADK-native enterprise agents</td>
+<td>Custom web API and bespoke agent gateway</td>
+<td>Strong platform team and complex enterprise topology</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Select a runtime only after identifying</strong> identity model, networking, session durability, integration needs, response streaming, region availability, operational controls, budgets, and incident ownership. No deployment choice makes the business data automatically safe.</p>
+<hr>
+<h1 id="part-iv-production-ready-design">Part IV — Production-ready design<a href="#part-iv-production-ready-design" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<h2 id="17-security-and-trust-boundaries">17. Security and trust boundaries<a href="#17-security-and-trust-boundaries" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>A production agent must obey the same security principles as any enterprise application: authenticated identity, explicit policy, least privilege, server-side validation, audit, and secure recovery. LLM instructions are not enforcement.</p>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>What can go wrong</th>
+<th>Architectural control</th>
+<th>Evidence/test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IDOR / cross-record read</td>
+<td>Model guesses another user's incident ID</td>
+<td>Per-record policy at ticket API</td>
+<td>Cross-user read denied</td>
+</tr>
+<tr>
+<td>Prompt injection</td>
+<td>Retrieved runbook says “ignore previous rules”</td>
+<td>Treat source as data, not instructions; restricted tools</td>
+<td>Hostile passage cannot trigger write</td>
+</tr>
+<tr>
+<td>Insecure write</td>
+<td>Generated UI approves service restart</td>
+<td>Frozen draft + backend AuthZ + operation ID</td>
+<td>Unauthorized action rejected</td>
+</tr>
+<tr>
+<td>Duplicate side effect</td>
+<td>Timeout followed by retry restarts twice</td>
+<td>Idempotency key + reconciliation</td>
+<td>One logical action after replay</td>
+</tr>
+<tr>
+<td>Secrets leakage</td>
+<td>Tool/token appears in traces</td>
+<td>Managed secret sources, log redaction, scoped identity</td>
+<td>No credentials in model/log output</td>
+</tr>
+<tr>
+<td>Tenant leakage</td>
+<td>Shared cache/session mixes customers</td>
+<td>Tenant isolation in state, caches and APIs</td>
+<td>Cross-tenant negative test</td>
+</tr>
+<tr>
+<td>Untrusted MCP endpoint</td>
+<td>Agent calls malicious advertised server</td>
+<td>Approved endpoint registry and auth policy</td>
+<td>Unapproved server blocked</td>
+</tr>
+<tr>
+<td>Stale evidence</td>
+<td>Old runbook used as current policy</td>
+<td>Freshness and version checks</td>
+<td>Stale source is labelled/refused</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Authentication vs authorization:</strong> Google Cloud IAM can decide which service may invoke resources. It does not by itself prove a user can access <code>INC-42</code>. The <strong>business API</strong> must still check the caller's actual rights. If the agent runs under a platform identity, design how user identity/entitlement is propagated or rechecked.</p>
+<p><strong>Recommended controlled action sequence:</strong> propose → persist immutable draft → explicit approval → backend policy decision → idempotent business operation → audit/reconciliation. Never ask the model to determine whether it has permission to do a write.</p>
+<p>Google's ADK docs cover tool authentication/confirmations and Cloud Agent Identity. For broader principles see [G6a], [G11], [S1], [S2].</p>
+<h2 id="18-evaluation-testing-and-observability">18. Evaluation, testing, and observability<a href="#18-evaluation-testing-and-observability" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>A service can have 99.9% HTTP uptime and still give wrong answers. <strong>Agent quality is not service availability.</strong> Evaluate both.</p>
+<h3 id="evaluation-layers">Evaluation layers<a href="#evaluation-layers" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Example automated check</th>
+<th>Success criterion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tool unit test</td>
+<td><code>get_incident(&quot;INC-999&quot;)</code></td>
+<td>Returns <code>not_found</code>, no exception</td>
+</tr>
+<tr>
+<td>Auth test</td>
+<td>Operator A reads operator B's private record</td>
+<td><code>forbidden</code> before model sees data</td>
+</tr>
+<tr>
+<td>Integration</td>
+<td>Incident API times out</td>
+<td>Clear error event, no invented health result</td>
+</tr>
+<tr>
+<td>Trajectory</td>
+<td>Question about one ticket chooses intended tool</td>
+<td>Correct tool and parameters</td>
+</tr>
+<tr>
+<td>Grounding</td>
+<td>Incident report cites evidence IDs</td>
+<td>Every cited ID exists in tool result</td>
+</tr>
+<tr>
+<td>Task outcome</td>
+<td>Investigation report covers known test scenario</td>
+<td>Meets rubric and policy</td>
+</tr>
+<tr>
+<td>Nonfunctional</td>
+<td>Model/tool latency and token usage</td>
+<td>Within chosen SLO and budget</td>
+</tr>
+<tr>
+<td>Reliability</td>
+<td>Retry after ambiguous write</td>
+<td>No duplicate logical effect</td>
+</tr>
+</tbody>
+</table>
+<p>Google ADK documents agent evaluation criteria and trace/metric instrumentation. Current Agents CLI documentation also covers dataset-driven <code>eval run</code>, <code>eval grade</code>, <code>eval compare</code>, and <code>eval analyze</code> workflows. Pin a tool version and inspect its current dataset schema before using generated eval files [G13], [G14].</p>
+<p><strong>Observability fields:</strong> request ID, run ID, session ID (redacted/hashed as necessary), user/tenant pseudonymous identifier, agent version, model, tool name, tool latency, token usage, endpoint, error class, evidence IDs, and final task outcome. Do not log raw secrets or entire sensitive prompts by default.</p>
+<p><strong>Useful metrics:</strong> task-success rate, supported-claim rate, human-correction rate, tool errors, p50/p95 user-visible latency, timeout rate, cost per successful task, unauthorized requests blocked, and stale-evidence rate. Instrument each hop so a reviewer can explain a failure timeline.</p>
+<h3 id="release-management">Release management<a href="#release-management" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<ol>
+<li>Freeze a version of agent instructions, model choice, tools and dependencies.</li>
+<li>Run golden evaluation scenarios and negative authorization tests.</li>
+<li>Deploy candidate to a non-production environment.</li>
+<li>Use a controlled canary/traffic split when supported.</li>
+<li>Roll back on task-quality, security, cost or latency regression.</li>
+<li>Treat schema/state migration separately from prompt-only updates.</li>
+</ol>
+<h2 id="19-reliability-scalability-and-cost-design">19. Reliability, scalability, and cost design<a href="#19-reliability-scalability-and-cost-design" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>Agent systems fail in more ways than standard REST servers: model refusal/error, malformed tool arguments, upstream timeout, duplicate writes, stale context, infinite loops, token costs, and disconnected clients.</p>
+<h3 id="failure-recovery-matrix">Failure/recovery matrix<a href="#failure-recovery-matrix" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>Detect</th>
+<th>Safe response</th>
+<th>Design change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model cannot choose a tool</td>
+<td>Step limit/trace</td>
+<td>Ask for clarification or return bounded failure</td>
+<td>Simplify tool catalog; evaluate routing</td>
+</tr>
+<tr>
+<td>Tool returns <code>forbidden</code></td>
+<td>Service error code</td>
+<td>Do not retry with broader privileges</td>
+<td>Validate authorization path</td>
+</tr>
+<tr>
+<td>Ticket API times out</td>
+<td>Timeout budget</td>
+<td>Label upstream unavailable, no invented status</td>
+<td>Bounded retries/circuit breaker</td>
+</tr>
+<tr>
+<td>Run crashes before summary</td>
+<td>Missing completed checkpoint</td>
+<td>Resume from persisted state or restart read-only task</td>
+<td>Durable state/checkpoints</td>
+</tr>
+<tr>
+<td>Write times out after provider accepted it</td>
+<td>Operation state <code>unknown</code></td>
+<td>Reconcile provider by operation ID</td>
+<td>Idempotency ledger</td>
+</tr>
+<tr>
+<td>Prompt injection in retrieved text</td>
+<td>Policy/review signal</td>
+<td>Ignore instructions in source content</td>
+<td>Sandbox, tool constraints</td>
+</tr>
+<tr>
+<td>UI stream disconnects</td>
+<td>Client sequence gap</td>
+<td>Show reconnecting/unknown status</td>
+<td>Reconnect with event cursor/snapshot</td>
+</tr>
+<tr>
+<td>Traffic spike</td>
+<td>Queue depth and throttles</td>
+<td>Apply admission control and fair limits</td>
+<td>Concurrency, quotas, budgets</td>
+</tr>
+</tbody>
+</table>
+<h3 id="performance-and-budget-levers">Performance and budget levers<a href="#performance-and-budget-levers" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<ul>
+<li>Keep tool catalogs small and task-relevant; large schemas consume context.</li>
+<li>Prefer deterministic code for routing where possible.</li>
+<li>Run independent read-only retrieval in parallel when it meaningfully reduces total latency.</li>
+<li>Keep tool timeouts shorter than the total user-request budget.</li>
+<li>Cache only authorized, versioned, non-sensitive answers when appropriate.</li>
+<li>Measure cost <strong>per successful task</strong>, not just cost per model call.</li>
+<li>Keep tokens bounded: concise tool results, summarized history, evidence selection, explicit step/loop limits.</li>
+<li>A more capable model may reduce retries; benchmark total task outcome instead of comparing input-token price alone.</li>
+<li>For long-running work, use a durable job/approval mechanism rather than an unbounded browser request.</li>
+</ul>
+<p><strong>Do not invent cloud SLAs, quotas, region availability, or prices.</strong> They are version-, region-, and account-specific. Confirm current figures in Google Cloud's official pricing/limits pages before committing an architecture.</p>
+<hr>
+<h1 id="part-v-use-case-blueprints">Part V — Use-case blueprints<a href="#part-v-use-case-blueprints" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<h2 id="20-eight-real-world-adk-solution-architectures">20. Eight real-world ADK solution architectures<a href="#20-eight-real-world-adk-solution-architectures" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<h3 id="uc1-it-incident-investigator-foundation-advanced">UC1 — IT incident investigator (foundation → advanced)<a href="#uc1-it-incident-investigator-foundation-advanced" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Business goal:</strong> summarize an incident using monitoring and tickets. <strong>Initial design:</strong> one ADK agent and two read-only tools; no persistent memory or multi-agent system. <strong>Advanced design:</strong> add a workflow for evidence ordering, optional MCP monitoring adapter, approved runbooks, evaluation and external audit. <strong>Source of truth:</strong> ticket/monitoring systems. <strong>Risks:</strong> stale evidence, hallucinated root cause, unauthorized remediation. <strong>Deliverable:</strong> cited report with <code>unverified</code> and <code>inconclusive</code> states.</p>
+<h3 id="uc2-customer-support-order-status">UC2 — Customer support / order status<a href="#uc2-customer-support-order-status" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Business goal:</strong> answer a customer's order status without leaking another customer's details. <strong>Initial design:</strong> deterministic identity/ownership check plus a read-only order tool. <strong>Advanced design:</strong> RAG for approved shipping policy, isolated sessions, customer-intent routing. <strong>Do not:</strong> let an LLM-provided <code>order_id</code> bypass order-owner authorization. <strong>Architecture choice:</strong> a plain API/LLM combination may be better than a large workflow.</p>
+<h3 id="uc3-enterprise-document-q-amp-a">UC3 — Enterprise document Q&amp;A<a href="#uc3-enterprise-document-q-amp-a" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Business goal:</strong> answer questions from permissioned policy documents. <strong>Initial design:</strong> retrieval with source IDs + one synthesizing agent. <strong>Advanced design:</strong> tenant-aware hybrid search, version/freshness enforcement, citation validation, corpus evaluation. <strong>Source of truth:</strong> document management system; search index is derived. <strong>Risks:</strong> outdated policy, forbidden text in model context, fake citations.</p>
+<h3 id="uc4-refund-or-expense-approval-assistant">UC4 — Refund or expense approval assistant<a href="#uc4-refund-or-expense-approval-assistant" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Business goal:</strong> propose a financial adjustment and obtain human approval. <strong>Initial design:</strong> an agent drafts; deterministic service enforces policy. <strong>Advanced design:</strong> durable graph, immutable approval payload, reviewer role and expiry, idempotency ledger and unknown-outcome reconciliation. <strong>Never:</strong> let a generated approval button be the final authority. <strong>Good fit:</strong> ADK agent + workflow API/business state machine.</p>
+<h3 id="uc5-supplier-onboarding-workflow">UC5 — Supplier onboarding workflow<a href="#uc5-supplier-onboarding-workflow" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Business goal:</strong> coordinate document collection, compliance review and approvals over days. <strong>Initial design:</strong> deterministic status tracker plus agent-generated summaries. <strong>Advanced design:</strong> human-input graph, durable checkpoints, asynchronous callbacks, cancellation, audit, event-triggered resumption. <strong>Risk:</strong> lost progress when an agent process restarts. <strong>Good fit:</strong> workflow engine plus ADK for bounded reasoning steps.</p>
+<h3 id="uc6-research-and-report-generator">UC6 — Research and report generator<a href="#uc6-research-and-report-generator" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Business goal:</strong> retrieve evidence, compare sources, and produce a cited report. <strong>Initial design:</strong> fixed retrieve → summarize pipeline. <strong>Advanced design:</strong> parallel evidence gathering, independent claim verification, source freshness, budgets and evaluation. <strong>Risk:</strong> two agents agreeing on the same unsupported fact. <strong>Good fit:</strong> ADK graph/sequential or parallel template, not unrestricted free-form research loops.</p>
+<h3 id="uc7-multi-agent-soc-fraud-review-coordination">UC7 — Multi-agent SOC / fraud-review coordination<a href="#uc7-multi-agent-soc-fraud-review-coordination" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Business goal:</strong> coordinate an internal case with a separately operated specialist. <strong>Initial design:</strong> in-process specialist function or sub-agent. <strong>Advanced design:</strong> external specialist via A2A, signed/trusted endpoint policy, task ID, status tracking, artifact schema validation. <strong>Risk:</strong> spoofed agent capabilities, disclosure of sensitive case information. <strong>Good fit:</strong> A2A only across independently deployed service boundaries.</p>
+<h3 id="uc8-agent-powered-operations-dashboard">UC8 — Agent-powered operations dashboard<a href="#uc8-agent-powered-operations-dashboard" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Business goal:</strong> present live progress, evidence, and an interactive reviewer queue. <strong>Initial design:</strong> ADK backend returns typed JSON to plain HTML. <strong>Advanced design:</strong> frontend streaming using AG-UI or a supported event channel; host-embedded MCP App if using a compatible conversational host. <strong>Risk:</strong> frontend showing action completed when backend status is unknown. <strong>Good fit:</strong> regular HTML UI + explicit state protocol; MCP Apps only for host embedding.</p>
+<h3 id="which-use-case-should-drive-the-capstone">Which use case should drive the capstone?<a href="#which-use-case-should-drive-the-capstone" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p>Use <strong>UC1 IT incident investigator</strong> as the central project because it progresses naturally from one safe read-only agent to a full managed Agent Runtime solution. Add UC4's approval workflow only after the initial read-only design is reliable. Add MCP/A2A/GenUI only at the point where a real integration requirement demands them.</p>
+<hr>
+<h1 id="part-vi-hands-on-path-and-design-decisions">Part VI — Hands-on path and design decisions<a href="#part-vi-hands-on-path-and-design-decisions" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<h2 id="21-progressive-project-labs-software-tests-not-learner-quizzes">21. Progressive project labs (software tests, not learner quizzes)<a href="#21-progressive-project-labs-software-tests-not-learner-quizzes" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>Each lab has visible outputs and meaningful failure behavior. Use only synthetic records.</p>
+<table>
+<thead>
+<tr>
+<th>Lab</th>
+<th>Build</th>
+<th>Input</th>
+<th>Observable result</th>
+<th>Important negative test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Local single ADK agent</td>
+<td><code>Investigate INC-42</code></td>
+<td>Answer cites mock incident and health IDs</td>
+<td><code>INC-999</code> reports not found</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Programmatic Runner/session</td>
+<td>Two turns about same incident</td>
+<td>Session events/state visible</td>
+<td>New session has no prior private context</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Typed tool wrapper</td>
+<td>Valid incident ID</td>
+<td>Schema-valid result with error status</td>
+<td>Malformed ID rejected</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Deterministic sequential workflow</td>
+<td>Evidence + report request</td>
+<td>Fixed order and bounded steps</td>
+<td>Missing evidence prevents unsupported claim</td>
+</tr>
+<tr>
+<td>5</td>
+<td>ADK 2.0 graph with human-input step</td>
+<td>Proposed mock restart</td>
+<td>Durable <code>pending_approval</code> state</td>
+<td>Modified/expired approval rejected</td>
+</tr>
+<tr>
+<td>6</td>
+<td>MCP tool integration</td>
+<td>Authorized remote ticket query</td>
+<td>Typed tool call across client/server boundary</td>
+<td>Unauthorized record denied by server</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Agent Runtime deployment</td>
+<td>Managed run of incident tool example</td>
+<td>Remote events and resource ID</td>
+<td>Wrong IAM role / missing bucket fails clearly</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Production evaluation/trace</td>
+<td>Golden incident set</td>
+<td>Tool + task results traceable</td>
+<td>Injected runbook text cannot trigger write</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Minimal deterministic mock test file:</strong> place this alongside the agent package and use Python standard library for the function tests.</p>
+<pre><code class="language-python"># test_mock_tools.py — run: python test_mock_tools.py
+from incident_agent.agent import get_incident, get_service_health
+
+assert get_incident(&quot;INC-42&quot;)[&quot;status&quot;] == &quot;success&quot;
+assert get_incident(&quot;INC-999&quot;)[&quot;status&quot;] == &quot;not_found&quot;
+assert get_service_health(&quot;payments-api&quot;)[&quot;health&quot;][&quot;status&quot;] == &quot;degraded&quot;
+assert get_service_health(&quot;missing-service&quot;)[&quot;status&quot;] == &quot;not_found&quot;
+print(&quot;Mock tool checks passed&quot;)
+</code></pre>
+<p><strong>Practical sequence:</strong> run Labs 1–4 without cloud deployment. For Lab 5, use the official ADK 2.0 human-input and graph API documentation. For Lab 6, use a separate synthetic MCP server with real server-side ACL tests. For Lab 7, isolate charges in a test project. Lab 8 must check both positive task outcomes and negative security paths.</p>
+<h2 id="22-production-architecture-package-adr-template">22. Production architecture package / ADR template<a href="#22-production-architecture-package-adr-template" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p>Use the following headings for every professional architecture review:</p>
+<ol>
+<li><strong>Problem and source of truth:</strong> who requests the outcome; what business systems own the facts.</li>
+<li><strong>Requirements:</strong> capabilities, excluded scope and ranked qualities.</li>
+<li><strong>Proposed boundary diagram:</strong> who hosts the agent; which calls cross services.</li>
+<li><strong>Agent/tool contracts:</strong> typed inputs, results, expected errors.</li>
+<li><strong>Identity and authorization:</strong> user → app → agent → data/tool path.</li>
+<li><strong>State and durability:</strong> session owner, workflow record, checkpoint/recovery strategy.</li>
+<li><strong>Failure behavior:</strong> timeout, lost response, retries, cancellation, <code>unknown</code> outcomes.</li>
+<li><strong>Observability and evaluation:</strong> trace IDs, success metrics, negative tests.</li>
+<li><strong>Operations:</strong> environments, IAM, secrets, rollout, rollback, budgets, cleanup.</li>
+<li><strong>Alternatives and trade-offs:</strong> why ADK versus plain API; why managed runtime versus Cloud Run; whether MCP/A2A adds value.</li>
+</ol>
+<h3 id="example-architecture-decision-record">Example architecture decision record<a href="#example-architecture-decision-record" class="heading-anchor" aria-label="Link to section">#</a></h3>
+<p><strong>Decision:</strong> Host a read-only incident investigation agent in managed Agent Runtime when the organization needs platform-managed deployment and integration. <strong>Alternative:</strong> Cloud Run with the ADK app packaged as a service. <strong>Reason:</strong> choose based on runtime integration and operational requirements rather than the ADK framework itself. <strong>Trade-offs:</strong> platform-specific deployment coupling, IAM and network setup, billable resources, service compatibility. <strong>Revisit if:</strong> custom server lifecycle or networking constraints make Cloud Run/GKE a better fit.</p>
+<h2 id="23-final-decision-checklist">23. Final decision checklist<a href="#23-final-decision-checklist" class="heading-anchor" aria-label="Link to section">#</a></h2>
+<p><strong>Use a single agent when:</strong> tool set is small, the problem is one bounded reasoning task, one team owns all APIs, and there is no need to resume a complex workflow.</p>
+<p><strong>Use an explicit ADK workflow when:</strong> steps must execute in order, approvals are required, failures must resume predictably, or parallel analysis needs controlled aggregation. For ADK 2.0, review graph workflow APIs first.</p>
+<p><strong>Use managed Agent Runtime when:</strong> managed hosting is a justified organizational requirement and its current connectivity, security, region and runtime contract meet your needs.</p>
+<p><strong>Use Cloud Run/GKE instead when:</strong> custom HTTP/service control, container operations, platform constraints, or environment policies make general-purpose hosting a better fit.</p>
+<p><strong>Use MCP when:</strong> tool interoperability across hosts/agents matters; not automatically for every Python function. <strong>Use A2A when:</strong> independent remote agents require task contracts. <strong>Use MCP Apps when:</strong> a compatible AI host must display an embedded interactive view. <strong>Use AG-UI when:</strong> an owned frontend needs a standardized agent event stream.</p>
+<p><strong>Before any high-impact operation:</strong> persist proposal, enforce policy outside the model, require valid authorization, assign stable operation ID, check current business state, execute idempotently, and reconcile unknown outcomes.</p>
+<hr>
+<h1 id="glossary">Glossary<a href="#glossary" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<ul>
+<li><strong>ADK:</strong> Google Agent Development Kit, an agent development/orchestration framework.</li>
+<li><strong>Agent:</strong> application object combining model behavior, instructions and tools.</li>
+<li><strong>A2A:</strong> Agent2Agent protocol for independently operated agent systems.</li>
+<li><strong>Agent Runtime:</strong> managed Google Cloud host for agent applications (current platform naming).</li>
+<li><strong>Artifact:</strong> non-chat output such as a report or file.</li>
+<li><strong>Callback:</strong> lifecycle hook for observing/customizing/controlling supported agent stages.</li>
+<li><strong>Context:</strong> information supplied to the model for the current generation step.</li>
+<li><strong>Event:</strong> execution/response/state record emitted by agent runtime.</li>
+<li><strong>Idempotency:</strong> a retry of the same logical operation does not duplicate its effect.</li>
+<li><strong>MCP:</strong> Model Context Protocol for host/client ↔ tool/data server integration.</li>
+<li><strong>MCP Apps:</strong> optional extension for host-embedded interactive HTML views.</li>
+<li><strong>Memory:</strong> authorized reusable information beyond a single turn/session.</li>
+<li><strong>OpenAPI tool:</strong> tool generated or configured from REST API description.</li>
+<li><strong>Runner:</strong> component invoking ADK agent execution and yielding events.</li>
+<li><strong>Session:</strong> persistent or temporary conversation/agent state scope.</li>
+<li><strong>Source of truth:</strong> authoritative business system for a fact/transaction.</li>
+<li><strong>State:</strong> workflow/session values used across steps.</li>
+<li><strong>Tool:</strong> callable function/service available to an agent within bounds.</li>
+<li><strong>Vertex AI Agent Engine:</strong> earlier name for the managed agent hosting capability now documented as Agent Runtime in Gemini Enterprise Agent Platform.</li>
+<li><strong>Workflow graph:</strong> explicit nodes/edges that constrain execution order and transitions.</li>
+</ul>
+<h1 id="official-source-library">Official source library<a href="#official-source-library" class="heading-anchor" aria-label="Link to section">#</a></h1>
+<p><strong>Google and Google Cloud (primary references)</strong></p>
+<ul>
+<li><strong>[G1]</strong> Google ADK documentation and framework overview — <a href="https://adk.dev/">https://adk.dev/</a></li>
+<li><strong>[G2]</strong> ADK Python quickstart (<code>pip install</code>, <code>adk create</code>, <code>adk run</code>, <code>adk web</code>) — <a href="https://adk.dev/get-started/python/">https://adk.dev/get-started/python/</a></li>
+<li><strong>[G3]</strong> ADK event loop / local execution — <a href="https://adk.dev/runtime/event-loop/">https://adk.dev/runtime/event-loop/</a></li>
+<li><strong>[G4]</strong> ADK state scopes — <a href="https://adk.dev/sessions/state/">https://adk.dev/sessions/state/</a></li>
+<li><strong>[G5]</strong> ADK memory — <a href="https://adk.dev/sessions/memory/">https://adk.dev/sessions/memory/</a></li>
+<li><strong>[G6]</strong> MCP tools with ADK — <a href="https://adk.dev/tools-custom/mcp-tools/">https://adk.dev/tools-custom/mcp-tools/</a></li>
+<li><strong>[G6a]</strong> Advanced MCP configuration (auth, confirmations) — <a href="https://adk.dev/tools-custom/mcp-tools/advanced/">https://adk.dev/tools-custom/mcp-tools/advanced/</a></li>
+<li><strong>[G7]</strong> Sequential workflow agents — <a href="https://adk.dev/agents/workflow-agents/sequential-agents/">https://adk.dev/agents/workflow-agents/sequential-agents/</a></li>
+<li><strong>[G7a]</strong> ADK 2.0 graph routes — <a href="https://adk.dev/graphs/routes/">https://adk.dev/graphs/routes/</a></li>
+<li><strong>[G7b]</strong> ADK graph human input — <a href="https://adk.dev/graphs/human-input/">https://adk.dev/graphs/human-input/</a></li>
+<li><strong>[G8]</strong> Google Cloud: develop and deploy ADK to Agent Runtime — <a href="https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk">https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk</a></li>
+<li><strong>[G9]</strong> ADK deploy to Agent Runtime — <a href="https://adk.dev/deploy/agent-engine/">https://adk.dev/deploy/agent-engine/</a></li>
+<li><strong>[G10]</strong> Google Cloud architecture: ADK on Cloud Run — <a href="https://docs.cloud.google.com/architecture/single-agent-ai-system-adk-cloud-run">https://docs.cloud.google.com/architecture/single-agent-ai-system-adk-cloud-run</a></li>
+<li><strong>[G11]</strong> Gemini Enterprise Agent Platform overview / cloud documentation — <a href="https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/adk">https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/adk</a></li>
+<li><strong>[G12]</strong> ADK A2A introduction — <a href="https://adk.dev/a2a/intro/">https://adk.dev/a2a/intro/</a></li>
+<li><strong>[G13]</strong> ADK evaluation — <a href="https://adk.dev/evaluate/">https://adk.dev/evaluate/</a></li>
+<li><strong>[G14]</strong> Google Agents CLI evaluation guide — <a href="https://google.github.io/agents-cli/guide/evaluation/">https://google.github.io/agents-cli/guide/evaluation/</a></li>
+<li><strong>[G15]</strong> ADK callbacks — <a href="https://adk.dev/callbacks/">https://adk.dev/callbacks/</a></li>
+<li><strong>[G16]</strong> ADK metrics — <a href="https://adk.dev/observability/metrics/">https://adk.dev/observability/metrics/</a></li>
+</ul>
+<p><strong>Protocol, security and operational references</strong></p>
+<ul>
+<li><strong>[P1]</strong> MCP specification — <a href="https://modelcontextprotocol.io/specification">https://modelcontextprotocol.io/specification</a></li>
+<li><strong>[P2]</strong> MCP Apps — <a href="https://github.com/modelcontextprotocol/ext-apps">https://github.com/modelcontextprotocol/ext-apps</a></li>
+<li><strong>[P3]</strong> AG-UI protocol — <a href="https://github.com/ag-ui-protocol/ag-ui">https://github.com/ag-ui-protocol/ag-ui</a></li>
+<li><strong>[P4]</strong> A2A protocol — <a href="https://a2a-protocol.org/">https://a2a-protocol.org/</a></li>
+<li><strong>[S1]</strong> OWASP GenAI security project — <a href="https://genai.owasp.org/">https://genai.owasp.org/</a></li>
+<li><strong>[S2]</strong> OpenTelemetry GenAI conventions — <a href="https://opentelemetry.io/docs/specs/semconv/gen-ai/">https://opentelemetry.io/docs/specs/semconv/gen-ai/</a></li>
+</ul>
+<p><strong>Version practice:</strong> pin ADK, Python and Google Cloud SDK versions for a project; revisit the relevant official page when a class, package, model identifier, IAM role, region or service name changes. No pricing, quota or SLA figure is asserted in this guide.</p>
+</article></main></div><a class="toplink" href="#top">Back to top</a><script>document.querySelector('#tocSearch').addEventListener('input',function(){const q=this.value.trim().toLowerCase();document.querySelectorAll('#toc a').forEach(a=>{a.style.display=(!q||a.textContent.toLowerCase().includes(q))?'':'none';});});
+const observer=new IntersectionObserver(entries=>{for(const e of entries){if(e.isIntersecting){const id=e.target.id;document.querySelectorAll('#toc a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));}}},{rootMargin:'-8% 0px -78% 0px'});document.querySelectorAll('article h1,article h2').forEach(h=>observer.observe(h));</script></body></html>
