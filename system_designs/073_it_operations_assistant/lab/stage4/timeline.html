@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INC-42 — Local Investigation Timeline</title>
+<style>
+  :root {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #17232f; background: #f5f7fa;}
+  * {box-sizing:border-box;}
+  body {margin:0;}
+  main {max-width: 940px; margin: 0 auto; padding: 28px 24px 56px;}
+  h1 {font-size: 1.7rem; line-height:1.2; margin:.35rem 0 .5rem;}
+  h2 {font-size:1.05rem; margin:0 0 12px;}
+  p {line-height:1.5;}
+  .eyebrow {font-size:.8rem; letter-spacing:.09em; text-transform:uppercase; color:#59697b; font-weight:700;}
+  .note {color:#556577; margin: 0 0 22px;}
+  .panel {border:1px solid #d7e0e8; border-radius:12px; background:#fff; padding:19px 21px; margin:15px 0; box-shadow: 0 2px 6px #182f4210;}
+  .toolbar {display:flex; align-items:center; flex-wrap:wrap; gap:12px;}
+  label {font-weight:700;}
+  select {max-width:100%; font:inherit; padding:9px 12px; background:white; border:1px solid #91a3b4; border-radius:7px;}
+  .pill {display:inline-block; border-radius:30px; font-weight:700; font-size:.82rem; padding:5px 10px; color:#344458; background:#e9eef2;}
+  .needs_review {color:#765006; background:#fff0c4;}
+  .insufficient_evidence {color:#8d4d12; background:#fff0dc;}
+  .error {color:#9b2323; background:#ffe6e6;}
+  .steps {display:grid; grid-template-columns: repeat(auto-fit,minmax(158px,1fr)); gap:10px; padding:0; margin:0; list-style:none;}
+  .step {border:1px solid #dce3ea; border-left:4px solid #64778b; border-radius:8px; padding:12px; background:#fcfdff; min-height:75px; overflow-wrap:anywhere;}
+  .step.ok,.step.allowed {border-left-color:#248354;}
+  .step.unavailable,.step.rejected {border-left-color:#b66323;}
+  .step-title {font-size:.86rem; font-weight:700;}
+  .step-status {font-size:.83rem; color:#536273; margin-top:8px;}
+  .facts {display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:10px;}
+  .fact {padding:13px 15px; background:#f2f5f8; border-radius:8px;}
+  .fact small {display:block; font-size:.78rem; color:#5c6a78; font-weight:700; margin-bottom:6px;}
+  .fact div {line-height:1.4; overflow-wrap:anywhere;}
+  code {background:#f1f4f6; border-radius:4px; padding:2px 5px;}
+  .observation {padding:9px 0; border-bottom:1px solid #e3e9ef;}
+  .observation:last-child {border-bottom:0;}
+  .ids {display:block; font-size:.78rem; color:#526679; margin-top:5px;}
+  .footer {color:#637181; font-size:.85rem; padding:10px 2px;}
+  @media print {
+    :root {background:#fff; color:#111;}
+    main {max-width:none; padding:0;}
+    .panel {box-shadow:none; page-break-inside:avoid;}
+    .toolbar select {display:none;}
+    .step {break-inside:avoid;}
+    .footer {margin-top:8px;}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">AI Design #73 / Stage 4 / Synthetic Preview</div>
+  <h1>Checkout API — INC-42</h1>
+  <p class="note">Read-only investigation timeline from the tested Python mock. This page plays back recorded output; it does not call production systems or execute Python code.</p>
+  <section class="panel toolbar" aria-label="Scenario selector">
+    <label for="scenario">Scenario</label>
+    <select id="scenario">
+      <option value="happy">Successful investigation</option>
+      <option value="partial">Monitoring timeout</option>
+      <option value="denied">Unauthorized engineer</option>
+      <option value="specialist">Optional mock remote specialist</option>
+    </select>
+    <span id="status" class="pill"></span>
+  </section>
+  <section class="panel">
+    <h2>Execution timeline</h2>
+    <ol id="timeline" class="steps"></ol>
+  </section>
+  <section class="panel">
+    <h2>Run details</h2>
+    <div class="facts" id="details"></div>
+  </section>
+  <section class="panel">
+    <h2>Evidence-backed observations</h2>
+    <div id="observations"></div>
+  </section>
+  <section class="panel">
+    <h2>Interpretation and next step</h2>
+    <div class="facts" id="interpretation"></div>
+  </section>
+  <div class="footer">All data is synthetic. Analysis uses deterministic mock logic, not a live language model. The remote specialist is plain local HTTP/JSON, not A2A.</div>
+</main>
+<script id="samples" type="application/json">{"happy": {"run_id": "RUN-INC-42", "incident_id": "INC-42", "service": "checkout-api", "status": "needs_review", "analysis_mode": "deterministic_mock_not_llm", "observations": [{"text": "p95 latency is 1800 ms (baseline 240 ms).", "evidence_ids": ["METRIC-07"]}, {"text": "Version v2.7.4 deployed at 2026-11-06T09:55:00Z.", "evidence_ids": ["CHANGE-03"]}], "hypothesis": {"text": "The recent deployment may be related; causation is unverified.", "evidence_ids": ["METRIC-07", "CHANGE-03"]}, "next_step": "Compare request and database connection metrics before and after deployment.", "evidence_ids": ["METRIC-07", "CHANGE-03"], "missing_evidence": [], "specialist_suggestion": null, "warnings": [], "events": [{"step": "incident_access", "status": "allowed"}, {"step": "get_metrics", "status": "ok"}, {"step": "get_deployments", "status": "ok"}, {"step": "analyze_and_validate", "status": "ok"}], "action_executed": false}, "partial": {"run_id": "RUN-INC-42", "incident_id": "INC-42", "service": "checkout-api", "status": "insufficient_evidence", "analysis_mode": "deterministic_mock_not_llm", "observations": [{"text": "Version v2.7.4 deployed at 2026-11-06T09:55:00Z.", "evidence_ids": ["CHANGE-03"]}], "hypothesis": null, "next_step": "Restore missing evidence before diagnosing root cause.", "evidence_ids": ["CHANGE-03"], "missing_evidence": ["metrics"], "specialist_suggestion": null, "warnings": [], "events": [{"step": "incident_access", "status": "allowed"}, {"step": "get_metrics", "status": "unavailable"}, {"step": "get_deployments", "status": "ok"}, {"step": "analyze_and_validate", "status": "ok"}], "action_executed": false}, "denied": {"status": "error", "code": "ACCESS_DENIED"}, "specialist": {"run_id": "RUN-INC-42", "incident_id": "INC-42", "service": "checkout-api", "status": "needs_review", "analysis_mode": "deterministic_mock_not_llm", "observations": [{"text": "p95 latency is 1800 ms (baseline 240 ms).", "evidence_ids": ["METRIC-07"]}, {"text": "Version v2.7.4 deployed at 2026-11-06T09:55:00Z.", "evidence_ids": ["CHANGE-03"]}], "hypothesis": {"text": "The recent deployment may be related; causation is unverified.", "evidence_ids": ["METRIC-07", "CHANGE-03"]}, "next_step": "Compare request and database connection metrics before and after deployment.", "evidence_ids": ["METRIC-07", "CHANGE-03"], "missing_evidence": [], "specialist_suggestion": {"status": "hypothesis_only", "specialist": "mock-database-specialist", "suggestion": "Inspect database connection saturation; no database metrics were supplied.", "evidence_ids": ["METRIC-07"]}, "warnings": [], "events": [{"step": "incident_access", "status": "allowed"}, {"step": "get_metrics", "status": "ok"}, {"step": "get_deployments", "status": "ok"}, {"step": "analyze_and_validate", "status": "ok"}, {"step": "optional_specialist_http", "status": "ok"}], "action_executed": false}}</script>
+<script>
+(() => {
+  const cases = JSON.parse(document.getElementById('samples').textContent);
+  const select = document.getElementById('scenario');
+  const status = document.getElementById('status');
+  const timeline = document.getElementById('timeline');
+  const details = document.getElementById('details');
+  const observations = document.getElementById('observations');
+  const interpretation = document.getElementById('interpretation');
+  function make(tag, cls, message) {
+    const el = document.createElement(tag);
+    if (cls) el.className=cls;
+    if (message != null) el.textContent=String(message);
+    return el;
+  }
+  function fact(parent, name, value) {
+    const node = make('div', 'fact');
+    node.appendChild(make('small', '', name));
+    node.appendChild(make('div', '', value == null ? '—' : value));
+    parent.appendChild(node);
+  }
+  function render() {
+    const data = cases[select.value];
+    status.className='pill '+data.status;
+    status.textContent=data.status.replaceAll('_',' ');
+    timeline.replaceChildren(); details.replaceChildren(); observations.replaceChildren(); interpretation.replaceChildren();
+    const steps = data.events || [];
+    if (!steps.length) {
+      const el=make('li', 'step rejected');
+      el.appendChild(make('div','step-title','Access rejected before tool calls'));
+      el.appendChild(make('div','step-status',data.code || 'Error'));
+      timeline.appendChild(el);
+    }
+    for (const event of steps) {
+      const el=make('li','step '+event.status);
+      el.appendChild(make('div','step-title',event.step));
+      el.appendChild(make('div','step-status',event.status));
+      timeline.appendChild(el);
+    }
+    fact(details,'Incident',data.incident_id || 'Not disclosed');
+    fact(details,'Evidence IDs',(data.evidence_ids || []).join(', ') || 'None');
+    fact(details,'Missing sources',(data.missing_evidence || []).join(', ') || 'None');
+    fact(details,'Production action executed',data.action_executed === false ? 'No' : 'Not applicable');
+    for (const item of data.observations || []) {
+      const el=make('div','observation');
+      el.appendChild(make('div','',item.text));
+      el.appendChild(make('span','ids','Sources: '+item.evidence_ids.join(', ')));
+      observations.appendChild(el);
+    }
+    if (!observations.childNodes.length) observations.appendChild(make('p','note', 'No authorized observations available.'));
+    fact(interpretation,'Hypothesis',data.hypothesis?.text || 'Not established');
+    fact(interpretation,'Recommended next step',data.next_step || 'No recommendation');
+    if (data.specialist_suggestion) fact(interpretation, 'Optional specialist suggestion (not evidence)',data.specialist_suggestion.suggestion);
+    if (data.warnings?.length) fact(interpretation, 'Warnings', data.warnings.join('; '));
+  }
+  select.addEventListener('change',render);
+  render();
+})();
+</script>
+</body>
+</html>

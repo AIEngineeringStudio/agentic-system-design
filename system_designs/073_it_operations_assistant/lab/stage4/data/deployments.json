@@ -1,0 +1,10 @@
+[
+  {
+    "evidence_id": "CHANGE-03",
+    "source": "deployment",
+    "tenant_id": "company-A",
+    "service": "checkout-api",
+    "version": "v2.7.4",
+    "deployed_at": "2026-11-06T09:55:00Z"
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "run_id": "RUN-INC-42",
+  "incident_id": "INC-42",
+  "service": "checkout-api",
+  "status": "needs_review",
+  "analysis_mode": "deterministic_mock_not_llm",
+  "observations": [
+    {
+      "text": "p95 latency is 1800 ms (baseline 240 ms).",
+      "evidence_ids": [
+        "METRIC-07"
+      ]
+    },
+    {
+      "text": "Version v2.7.4 deployed at 2026-11-06T09:55:00Z.",
+      "evidence_ids": [
+        "CHANGE-03"
+      ]
+    }
+  ],
+  "hypothesis": {
+    "text": "The recent deployment may be related; causation is unverified.",
+    "evidence_ids": [
+      "METRIC-07",
+      "CHANGE-03"
+    ]
+  },
+  "next_step": "Compare request and database connection metrics before and after deployment.",
+  "evidence_ids": [
+    "METRIC-07",
+    "CHANGE-03"
+  ],
+  "missing_evidence": [],
+  "specialist_suggestion": null,
+  "warnings": [],
+  "events": [
+    {
+      "step": "incident_access",
+      "status": "allowed"
+    },
+    {
+      "step": "get_metrics",
+      "status": "ok"
+    },
+    {
+      "step": "get_deployments",
+      "status": "ok"
+    },
+    {
+      "step": "analyze_and_validate",
+      "status": "ok"
+    }
+  ],
+  "action_executed": false
+}

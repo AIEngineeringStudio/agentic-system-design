@@ -1,0 +1,12 @@
+[
+  {
+    "evidence_id": "METRIC-07",
+    "source": "monitoring",
+    "tenant_id": "company-A",
+    "service": "checkout-api",
+    "recorded_at": "2026-11-06T10:10:00Z",
+    "p95_latency_ms": 1800,
+    "baseline_p95_ms": 240,
+    "error_rate_percent": 3.1
+  }
+]

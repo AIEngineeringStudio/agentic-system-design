@@ -1,0 +1,44 @@
+{
+  "run_id": "RUN-INC-42",
+  "incident_id": "INC-42",
+  "service": "checkout-api",
+  "status": "insufficient_evidence",
+  "analysis_mode": "deterministic_mock_not_llm",
+  "observations": [
+    {
+      "text": "Version v2.7.4 deployed at 2026-11-06T09:55:00Z.",
+      "evidence_ids": [
+        "CHANGE-03"
+      ]
+    }
+  ],
+  "hypothesis": null,
+  "next_step": "Restore missing evidence before diagnosing root cause.",
+  "evidence_ids": [
+    "CHANGE-03"
+  ],
+  "missing_evidence": [
+    "metrics"
+  ],
+  "specialist_suggestion": null,
+  "warnings": [],
+  "events": [
+    {
+      "step": "incident_access",
+      "status": "allowed"
+    },
+    {
+      "step": "get_metrics",
+      "status": "unavailable"
+    },
+    {
+      "step": "get_deployments",
+      "status": "ok"
+    },
+    {
+      "step": "analyze_and_validate",
+      "status": "ok"
+    }
+  ],
+  "action_executed": false
+}

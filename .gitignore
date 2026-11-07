@@ -193,7 +193,7 @@ nbdist/
 *.sqlite
 *.sqlite3
 *.dump
-data/
+# data/
 local_data/
 
 ########################################
