@@ -56,13 +56,14 @@ identifiers are fictional.
 
 ### 1.2 Actors and authority
 
-| Actor                     | Job                                              | Authority boundary                                       |
-|---------------------------|--------------------------------------------------|----------------------------------------------------------|
-| On-call engineer          | Investigate INC-42 and review results.           | May read only permitted service records.                 |
-| Incident commander        | Coordinate incident response.                    | Controls incident process within assigned rights.        |
-| Service owner / SRE       | Interpret technical state and evaluate changes.  | Can operate only owned/authorized services.              |
-| Change approver           | Review production changes.                       | Approval requires business-side policy enforcement.      |
-| Security / platform teams | Provide identity, policies and shared standards. | Govern controls; do not replace source-system ownership. |
+| Actor                      | Job                                               | Authority boundary                                |
+|----------------------------|---------------------------------------------------|---------------------------------------------------|
+| On-call engineer           | Investigate INC-42 and review results.            | May read only permitted service records.          |
+| Incident commander         | Coordinate incident response and status.          | Controls incident process within assigned rights. |
+| Service owner / SRE        | Check technical findings and remediation options. | Can operate only owned/authorized services.       |
+| Change approver            | Review proposed production changes.               | Approve eligible actions under policy.            |
+| Security / compliance team | Defines identity, policy, and audit rules         | Governs identity, policy and security controls    |
+| Shared platform team       | Owns reusable AI platform capabilities later      | Does not own every service's business semantics   |
 
 ### 1.3 Representative user journey
 
@@ -189,15 +190,23 @@ Analyze + validate
 
 > **Key distinction**  
 > Observability answers “What happened during the run?” Evaluation answers “Was
-> the investigation answer actually correct?” A successful API response can still
+> the investigation answer actually correct?” A successful API response can
+> still
 > contain a wrong analysis.
 
 ### Why MCP, A2A and GenUI are not required yet
 
 **MCP** becomes valuable when tools/resources need a reusable host-to-server
-interface. **A2A** is useful for delegating work between independently deployed
-agents. **AG-UI** streams agent state to owned frontends; **A2UI** specifies
-trusted components declaratively; **MCP Apps** embeds UI in a compatible host.
+interface. 
+
+**A2A** is useful for delegating work between independently deployed agents. 
+
+**AG-UI** streams agent state to owned frontends; 
+
+**A2UI** specifies trusted components declaratively; 
+
+**MCP Apps** embeds UI in a compatible host.
+
 These are separate boundaries, not substitutes for one another.
 
 Our current scope has one application and two simple read functions. Ordinary
@@ -312,7 +321,8 @@ contracts.
 
 > **Trust the server, not request fields**  
 > The backend derives principal, tenant and allowed incident scope from verified
-> context. The user’s request and the model do not provide authoritative identity
+> context. The user’s request and the model do not provide authoritative
+> identity
 > or permissions.
 
 ### 3.3 Happy-path sequence

@@ -4,33 +4,6 @@
 
 ---
 
-**Capstone:** Enterprise IT Operations Assistant
-
-We will continue with incident `INC-42`, where the Checkout API became slow
-after a deployment.
-
-This stage explains only the concepts needed to build our first working
-assistant. We will use simple examples, solid-line ASCII diagrams, and no full
-production architecture.
-
-## STAGE 2 — Essential AI architecture concepts
-
-### The following table summarizes the concepts we will introduce in this stage.
-
-| Concept                 | Simple definition                                                        | Applied to INC-42                                                                                               |
-|-------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| **LLM**                 | Generates explanations or structured text from itsinput.                 | Summarizes why latency may have increased; does not know live metrics without supplied evidence.                |
-| **Fixed workflow**      | Application code determines the order of steps.                          | Always read metrics and deployments, then analyze results.                                                      |
-| **Bounded agent**       | Model helps choose from permitted tools under execution limits.          | Can propose which diagnostic read to make; cannot invent permissions.                                           |
-| **Tool calling**        | Model proposes a typed operation; application validates and runs it.     | `get_metrics` and `get_deployments` are approved reads.                                                         |
-| **Context engineering** | Select information and instructions relevant to the  current model call. | Give incident ID, approved evidence, source IDs, and uncertainty rules.                                         |
-| **Grounding**           | Base material claims on retrieved records.                               | “Latency is 1,800 ms” cites `METRIC-07`.                                                                        |
-| **RAG**                 | Retrieve relevant knowledge passages before generation.                  | Useful later for large runbook or historical incident collections; unnecessary for two direct structured reads. |
-| **Control plane**       | Governance/configuration of capabilities.                                | Approved tools, tool versions, identity policy and budgets.                                                     |
-| **Runtime/data plane**  | Actual work performed on requests.                                       | Incident workflow, authorized tool reads, and report generation.                                                |
-| **Observability**       | Explains what executed, where, and with what latency/errors.             | Shows tool timeline, failures and run correlation.                                                              |
-| **Evaluation**          | Tests whether the output is correct and useful.                          | Checks claims, citations, uncertainty and recommendation safety.                                                |
-
 ## 1. Our starting problem
 
 The on-call engineer asks:
@@ -47,7 +20,23 @@ We already have two pieces of synthetic evidence:
 A normal application can retrieve these facts. But we want an assistant that can
 interpret them, explain possible causes, and recommend further investigation.
 
-That distinction introduces our first concept.
+### New concepts we will introduce in this stage.
+
+| Concept                 | Simple definition                                                        | Applied to INC-42                                                                                               |
+|-------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| **LLM**                 | Generates explanations or structured text from itsinput.                 | Summarizes why latency may have increased; does not know live metrics without supplied evidence.                |
+| **Fixed workflow**      | Application code determines the order of steps.                          | Always read metrics and deployments, then analyze results.                                                      |
+| **Bounded agent**       | Model helps choose from permitted tools under execution limits.          | Can propose which diagnostic read to make; cannot invent permissions.                                           |
+| **Tool calling**        | Model proposes a typed operation; application validates and runs it.     | `get_metrics` and `get_deployments` are approved reads.                                                         |
+| **Context engineering** | Select information and instructions relevant to the  current model call. | Give incident ID, approved evidence, source IDs, and uncertainty rules.                                         |
+| **Grounding**           | Base material claims on retrieved records.                               | “Latency is 1,800 ms” cites `METRIC-07`.                                                                        |
+| **RAG**                 | Retrieve relevant knowledge passages before generation.                  | Useful later for large runbook or historical incident collections; unnecessary for two direct structured reads. |
+| **Control plane**       | Governance/configuration of capabilities.                                | Approved tools, tool versions, identity policy and budgets.                                                     |
+| **Runtime/data plane**  | Actual work performed on requests.                                       | Incident workflow, authorized tool reads, and report generation.                                                |
+| **Observability**       | Explains what executed, where, and with what latency/errors.             | Shows tool timeline, failures and run correlation.                                                              |
+| **Evaluation**          | Tests whether the output is correct and useful.                          | Checks claims, citations, uncertainty and recommendation safety.                                                |
+
+---
 
 ## 2. LLM versus AI agent
 
@@ -70,9 +59,8 @@ The model might respond:
 > deployment may be related, but further evidence is needed.
 
 It can explain metrics or summarize a deployment record, but it does not
-automatically know the current state of Checkout API.
-
-It cannot investigate any system itself.
+automatically know the current state of Checkout API. It cannot investigate any
+system itself.
 
 ### What is an AI agent?
 
@@ -80,9 +68,6 @@ An **AI agent** is an application that lets a model participate in deciding
 which tools or steps to request while pursuing a goal.
 
 The application still executes and authorizes those steps.
-
-For example, the agent may decide to inspect deployment history after detecting
-a latency spike.
 
 **ILLUSTRATIVE AGENT LOOP**
 
@@ -102,14 +87,12 @@ a latency spike.
  +───────────────────+       +────────────────────────────+    │
  │  Is tool call     │  Yes  │ Application validates and  │    │
  │  required?        │  ───▶ │ executes allowed tool call │    │
- │                   │       │                            │    │
  +───────────────────+       +────────────────────────────+    │
           │ NO                             │                   │
           │                                ▼                   │
           │                  +────────────────────────────+    │
           │                  │ Tool returns evidence      │────+
-          │                  +────────────────────────────+
-          │                        
+          │                  +────────────────────────────+                     
           ▼                       
 +────────────────────────────+
 │ Final evidence-based reply │
@@ -432,6 +415,18 @@ We established the main conceptual boundaries:
 
 ---
 
+
+**Capstone:** Enterprise IT Operations Assistant
+
+We will continue with incident `INC-42`, where the Checkout API became slow
+after a deployment.
+
+This stage explains only the concepts needed to build our first working
+assistant. We will use simple examples, solid-line ASCII diagrams, and no full
+production architecture.
+
+---
+
 ## Next — Stage 3: Minimal Working Architecture
 
 Stage 3 will turn these concepts into a concrete design. We will draw the
@@ -439,6 +434,4 @@ smallest component diagram, specify the two tool contracts, trace one request
 from the engineer to the final response, and demonstrate an authorization or
 tool-failure path.
 
-We will still avoid the full enterprise architecture.
-
-Continue to Stage 3 Go deeper into Stage 2
+Continue to Stage 3

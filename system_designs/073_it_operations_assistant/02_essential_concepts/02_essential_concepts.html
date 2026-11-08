@@ -529,21 +529,17 @@
         }
 
     
-:root{--accent:#64C8E6;--accent-soft:#EAF8FC;}@page{@top-right{content:"AI DESIGN #73 — UNIFIED ENTERPRISE AGENTIC PLATFORM";}@bottom-left{content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";}}
+:root{--accent:#19BAA1;--accent-soft:#EAF8F5;}@page{@top-right{content:"AI DESIGN #73 — UNIFIED ENTERPRISE AGENTIC PLATFORM";}@bottom-left{content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";}}
 @media screen{body{max-width:210mm;margin:0 auto;box-shadow:0 0 20px #dce2e6;}}</style></head><body><section class="cover"><div class="cover-brand">THE ARCHITECT&#39;S FIELD NOTES</div><div class="cover-series">BEHAVIORAL INTERVIEW STUDY GUIDE &nbsp;/&nbsp; 01 OF 01</div><div class="cover-accent-bar"></div><div class="cover-title long">AI Design #73 — Unified<span class="second">Enterprise Agentic Platform</span></div><div class="cover-sub">THINK CLEARLY. DECIDE WITH EVIDENCE. DELIVER WITH CONFIDENCE.<div class="cover-note">Evidence-based STAR answers, senior-level judgment, and focused interview rehearsal.</div></div><div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR SENIOR / PRINCIPAL SOLUTION ARCHITECT INTERVIEWS<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div><div class="cover-number">01</div></section><section class="preface"><div class="preface-label">YOUR STUDY COMPANION</div><p><code>Stage 2 of 6 — Essential Concepts</code></p>
-<hr>
-<p><strong>Capstone:</strong> Enterprise IT Operations Assistant</p>
-<p>We will continue with incident <code>INC-42</code>, where the Checkout API became slow after a deployment.</p>
-<p>This stage explains only the concepts needed to build our first working assistant. We will use simple examples, solid-line ASCII diagrams, and no full production architecture.</p>
-<h2>STAGE 2 — Essential AI architecture concepts</h2>
-<h3>The following table summarizes the concepts we will introduce in this stage.</h3>
-<table><thead><tr><th>Concept</th><th>Simple definition</th><th>Applied to INC-42</th></tr></thead><tbody><tr><td><strong>LLM</strong></td><td>Generates explanations or structured text from itsinput.</td><td>Summarizes why latency may have increased; does not know live metrics without supplied evidence.</td></tr><tr><td><strong>Fixed workflow</strong></td><td>Application code determines the order of steps.</td><td>Always read metrics and deployments, then analyze results.</td></tr><tr><td><strong>Bounded agent</strong></td><td>Model helps choose from permitted tools under execution limits.</td><td>Can propose which diagnostic read to make; cannot invent permissions.</td></tr><tr><td><strong>Tool calling</strong></td><td>Model proposes a typed operation; application validates and runs it.</td><td><code>get_metrics</code> and <code>get_deployments</code> are approved reads.</td></tr><tr><td><strong>Context engineering</strong></td><td>Select information and instructions relevant to the  current model call.</td><td>Give incident ID, approved evidence, source IDs, and uncertainty rules.</td></tr><tr><td><strong>Grounding</strong></td><td>Base material claims on retrieved records.</td><td>“Latency is 1,800 ms” cites <code>METRIC-07</code>.</td></tr><tr><td><strong>RAG</strong></td><td>Retrieve relevant knowledge passages before generation.</td><td>Useful later for large runbook or historical incident collections; unnecessary for two direct structured reads.</td></tr><tr><td><strong>Control plane</strong></td><td>Governance/configuration of capabilities.</td><td>Approved tools, tool versions, identity policy and budgets.</td></tr><tr><td><strong>Runtime/data plane</strong></td><td>Actual work performed on requests.</td><td>Incident workflow, authorized tool reads, and report generation.</td></tr><tr><td><strong>Observability</strong></td><td>Explains what executed, where, and with what latency/errors.</td><td>Shows tool timeline, failures and run correlation.</td></tr><tr><td><strong>Evaluation</strong></td><td>Tests whether the output is correct and useful.</td><td>Checks claims, citations, uncertainty and recommendation safety.</td></tr></tbody></table><nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol><li><span class="toc-num">01</span><a href="#1-our-starting-problem">1. Our starting problem</a></li><li><span class="toc-num">02</span><a href="#2-llm-versus-ai-agent">2. LLM versus AI agent</a></li><li><span class="toc-num">03</span><a href="#3-tool-calling-how-ai-accesses-operational-data">3. Tool calling — how AI accesses operational data</a></li><li><span class="toc-num">04</span><a href="#4-context-engineering-and-grounding">4. Context engineering and grounding</a></li><li><span class="toc-num">05</span><a href="#5-control-plane-versus-data-plane">5. Control plane versus data plane</a></li><li><span class="toc-num">06</span><a href="#6-observability-versus-evaluation">6. Observability versus evaluation</a></li><li><span class="toc-num">07</span><a href="#7-which-technologies-do-we-actually-need-now">7. Which technologies do we actually need now?</a></li><li><span class="toc-num">08</span><a href="#stage-2-summary">Stage 2 summary</a></li><li><span class="toc-num">09</span><a href="#next-stage-3-minimal-working-architecture">Next — Stage 3: Minimal Working Architecture</a></li></ol></nav></section><main class="content"><h2 id="1-our-starting-problem">1. Our starting problem</h2>
+<nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol><li><span class="toc-num">01</span><a href="#1-our-starting-problem">1. Our starting problem</a></li><li><span class="toc-num">02</span><a href="#2-llm-versus-ai-agent">2. LLM versus AI agent</a></li><li><span class="toc-num">03</span><a href="#3-tool-calling-how-ai-accesses-operational-data">3. Tool calling — how AI accesses operational data</a></li><li><span class="toc-num">04</span><a href="#4-context-engineering-and-grounding">4. Context engineering and grounding</a></li><li><span class="toc-num">05</span><a href="#5-control-plane-versus-data-plane">5. Control plane versus data plane</a></li><li><span class="toc-num">06</span><a href="#6-observability-versus-evaluation">6. Observability versus evaluation</a></li><li><span class="toc-num">07</span><a href="#7-which-technologies-do-we-actually-need-now">7. Which technologies do we actually need now?</a></li><li><span class="toc-num">08</span><a href="#stage-2-summary">Stage 2 summary</a></li><li><span class="toc-num">09</span><a href="#next-stage-3-minimal-working-architecture">Next — Stage 3: Minimal Working Architecture</a></li></ol></nav></section><main class="content"><h2 id="1-our-starting-problem">1. Our starting problem</h2>
 <p>The on-call engineer asks:</p>
 <blockquote><p>Investigate INC-42. Why is Checkout API slow, and what should I do next?</p></blockquote>
 <p>We already have two pieces of synthetic evidence:</p>
 <table><thead><tr><th>Evidence</th><th>Observation</th></tr></thead><tbody><tr><td><code>METRIC-07</code></td><td>p95 latency increased from 240 ms to 1,800 ms</td></tr><tr><td><code>CHANGE-03</code></td><td>Version <code>v2.7.4</code> deployed shortly before the slowdown</td></tr></tbody></table>
 <p>A normal application can retrieve these facts. But we want an assistant that can interpret them, explain possible causes, and recommend further investigation.</p>
-<p>That distinction introduces our first concept.</p>
+<h3 id="new-concepts-we-will-introduce-in-this-stage">New concepts we will introduce in this stage.</h3>
+<table><thead><tr><th>Concept</th><th>Simple definition</th><th>Applied to INC-42</th></tr></thead><tbody><tr><td><strong>LLM</strong></td><td>Generates explanations or structured text from itsinput.</td><td>Summarizes why latency may have increased; does not know live metrics without supplied evidence.</td></tr><tr><td><strong>Fixed workflow</strong></td><td>Application code determines the order of steps.</td><td>Always read metrics and deployments, then analyze results.</td></tr><tr><td><strong>Bounded agent</strong></td><td>Model helps choose from permitted tools under execution limits.</td><td>Can propose which diagnostic read to make; cannot invent permissions.</td></tr><tr><td><strong>Tool calling</strong></td><td>Model proposes a typed operation; application validates and runs it.</td><td><code>get_metrics</code> and <code>get_deployments</code> are approved reads.</td></tr><tr><td><strong>Context engineering</strong></td><td>Select information and instructions relevant to the  current model call.</td><td>Give incident ID, approved evidence, source IDs, and uncertainty rules.</td></tr><tr><td><strong>Grounding</strong></td><td>Base material claims on retrieved records.</td><td>“Latency is 1,800 ms” cites <code>METRIC-07</code>.</td></tr><tr><td><strong>RAG</strong></td><td>Retrieve relevant knowledge passages before generation.</td><td>Useful later for large runbook or historical incident collections; unnecessary for two direct structured reads.</td></tr><tr><td><strong>Control plane</strong></td><td>Governance/configuration of capabilities.</td><td>Approved tools, tool versions, identity policy and budgets.</td></tr><tr><td><strong>Runtime/data plane</strong></td><td>Actual work performed on requests.</td><td>Incident workflow, authorized tool reads, and report generation.</td></tr><tr><td><strong>Observability</strong></td><td>Explains what executed, where, and with what latency/errors.</td><td>Shows tool timeline, failures and run correlation.</td></tr><tr><td><strong>Evaluation</strong></td><td>Tests whether the output is correct and useful.</td><td>Checks claims, citations, uncertainty and recommendation safety.</td></tr></tbody></table>
+<hr>
 <h2 id="2-llm-versus-ai-agent">2. LLM versus AI agent</h2>
 <h3 id="what-is-an-llm">What is an LLM?</h3>
 <p>A <strong>Large Language Model (LLM)</strong> processes input and generates output, such as explanations, summaries, or structured text.</p>
@@ -553,12 +549,10 @@ Normal latency: 240 ms
 Recent deployment: v2.7.4</code></pre>
 <p>The model might respond:</p>
 <blockquote><p>Checkout API latency is significantly higher than normal. The recent deployment may be related, but further evidence is needed.</p></blockquote>
-<p>It can explain metrics or summarize a deployment record, but it does not automatically know the current state of Checkout API.</p>
-<p>It cannot investigate any system itself.</p>
+<p>It can explain metrics or summarize a deployment record, but it does not automatically know the current state of Checkout API. It cannot investigate any system itself.</p>
 <h3 id="what-is-an-ai-agent">What is an AI agent?</h3>
 <p>An <strong>AI agent</strong> is an application that lets a model participate in deciding which tools or steps to request while pursuing a goal.</p>
 <p>The application still executes and authorizes those steps.</p>
-<p>For example, the agent may decide to inspect deployment history after detecting a latency spike.</p>
 <p><strong>ILLUSTRATIVE AGENT LOOP</strong></p>
 <pre><code>+────────────────────────────+
 │ Engineer asks a question   │
@@ -575,14 +569,12 @@ Recent deployment: v2.7.4</code></pre>
  +───────────────────+       +────────────────────────────+    │
  │  Is tool call     │  Yes  │ Application validates and  │    │
  │  required?        │  ───▶ │ executes allowed tool call │    │
- │                   │       │                            │    │
  +───────────────────+       +────────────────────────────+    │
           │ NO                             │                   │
           │                                ▼                   │
           │                  +────────────────────────────+    │
           │                  │ Tool returns evidence      │────+
-          │                  +────────────────────────────+
-          │                        
+          │                  +────────────────────────────+                     
           ▼                       
 +────────────────────────────+
 │ Final evidence-based reply │
@@ -745,7 +737,10 @@ Rules:
 <p>We established the main conceptual boundaries:</p>
 <table><thead><tr><th>Responsibility</th><th>Owner</th></tr></thead><tbody><tr><td>User access and tool permissions</td><td>Application and business systems</td></tr><tr><td>Metrics and deployment facts</td><td>Operational source systems</td></tr><tr><td>Explanation and hypotheses</td><td>LLM</td></tr><tr><td>Operational decision</td><td>Authorized human</td></tr><tr><td>Governance of reusable capabilities</td><td>Future shared platform</td></tr></tbody></table>
 <hr>
+<p><strong>Capstone:</strong> Enterprise IT Operations Assistant</p>
+<p>We will continue with incident <code>INC-42</code>, where the Checkout API became slow after a deployment.</p>
+<p>This stage explains only the concepts needed to build our first working assistant. We will use simple examples, solid-line ASCII diagrams, and no full production architecture.</p>
+<hr>
 <h2 id="next-stage-3-minimal-working-architecture">Next — Stage 3: Minimal Working Architecture</h2>
 <p>Stage 3 will turn these concepts into a concrete design. We will draw the smallest component diagram, specify the two tool contracts, trace one request from the engineer to the final response, and demonstrate an authorization or tool-failure path.</p>
-<p>We will still avoid the full enterprise architecture.</p>
-<p>Continue to Stage 3 Go deeper into Stage 2</p></main></body></html>
+<p>Continue to Stage 3</p></main></body></html>
