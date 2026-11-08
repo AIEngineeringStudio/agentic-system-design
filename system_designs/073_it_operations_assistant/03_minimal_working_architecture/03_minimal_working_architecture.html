@@ -1,0 +1,803 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Design #73 — Unified Enterprise Agentic Platform</title><style>
+        /* The original PDF skill style sheet is embedded below. */
+        /* Architect's Field Notes — original study-guide design recreation.
+           Standalone builder embeds this file into its generated HTML. */
+        :root {
+            --navy: #112c3a;
+            --header: #193a4b;
+            --ink: #273944;
+            --heading: #17313e;
+            --muted: #75838d;
+            --line: #d9e2e7;
+            --zebra: #f6f8f9;
+            --accent: #64c8e6;
+            --accent-soft: #eaf8fc;
+        }
+
+        @page {
+            size: A4;
+            margin: 19mm 19mm 19mm;
+            @top-left {
+                content: "INTERVIEW / FIELD GUIDE";
+                color: #75838d;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 7pt;
+                letter-spacing: .05em;
+                vertical-align: middle;
+            }
+            @top-right {
+                content: string(running-topic);
+                color: #75838d;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 7pt;
+                letter-spacing: .02em;
+                vertical-align: middle;
+            }
+            @bottom-left {
+                content: "SENIOR / PRINCIPAL SOLUTION ARCHITECT";
+                color: #9aa5ae;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 6.3pt;
+                letter-spacing: .03em;
+                vertical-align: middle;
+            }
+            @bottom-right {
+                content: counter(page, decimal-leading-zero);
+                color: #394b56;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-weight: 700;
+                font-size: 7pt;
+                vertical-align: middle;
+            }
+        }
+
+        @page cover {
+            size: A4;
+            margin: 0;
+            @top-left {
+                content: none;
+            }
+            @top-right {
+                content: none;
+            }
+            @bottom-left {
+                content: none;
+            }
+            @bottom-right {
+                content: none;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", "DejaVu Sans", sans-serif;
+            font-size: 9.4pt;
+            font-weight: 400;
+            line-height: 1.55;
+            color: var(--ink);
+            background: #fff;
+            overflow-wrap: break-word;
+        }
+
+        .cover {
+            page: cover;
+            break-after: page;
+            height: 297mm;
+            width: 210mm;
+            overflow: hidden;
+            position: relative;
+            background: var(--navy);
+            color: #fff;
+            padding: 29.6mm 26mm;
+        }
+
+        .cover::before, .cover::after {
+            content: "";
+            position: absolute;
+            border: .55pt solid rgba(255, 255, 255, .08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .cover::before {
+            width: 158mm;
+            height: 158mm;
+            right: -84mm;
+            top: -61mm;
+        }
+
+        .cover::after {
+            width: 108mm;
+            height: 108mm;
+            right: -28mm;
+            bottom: -75mm;
+        }
+
+        .cover-brand {
+            font-size: 9.5pt;
+            font-weight: 800;
+            letter-spacing: .31em;
+            text-transform: uppercase;
+            color: #dceaf0;
+        }
+
+        .cover-series {
+            font-size: 8pt;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: #98b3c1;
+            margin-top: 7mm;
+        }
+
+        .cover-accent-bar {
+            position: absolute;
+            left: 26mm;
+            top: 80mm;
+            height: 3.5mm;
+            width: 21mm;
+            background: var(--accent);
+        }
+
+        .cover-title {
+            position: absolute;
+            left: 25.5mm;
+            right: 25mm;
+            top: 97mm;
+            font-family: "Inter Display", "Inter", "DejaVu Sans", sans-serif;
+            font-size: 42pt;
+            font-weight: 800;
+            letter-spacing: -.043em;
+            line-height: 1.08;
+            color: #fff;
+        }
+
+        .cover-title .second {
+            display: block;
+            color: var(--accent);
+        }
+
+        .cover-title.long {
+            font-size: 37pt;
+        }
+
+        .cover-sub {
+            position: absolute;
+            left: 26mm;
+            right: 31mm;
+            top: 173.5mm;
+            color: #bdcdd5;
+            font-size: 11.5pt;
+            line-height: 1.7;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+        }
+
+        .cover-note {
+            color: #91aab7;
+            text-transform: none;
+            font-size: 9pt;
+            letter-spacing: .01em;
+            margin-top: 7mm;
+            line-height: 1.6;
+        }
+
+        .cover-bottom {
+            position: absolute;
+            bottom: 31mm;
+            left: 26mm;
+            font-size: 7.8pt;
+            line-height: 1.9;
+            letter-spacing: .065em;
+            color: #cfdae0;
+        }
+
+        .cover-rule {
+            position: absolute;
+            bottom: 62mm;
+            height: .35pt;
+            left: 26mm;
+            right: 26mm;
+            background: rgba(255, 255, 255, .15);
+        }
+
+        .cover-number {
+            position: absolute;
+            bottom: 29mm;
+            right: 26mm;
+            color: var(--accent);
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 39pt;
+            font-weight: 800;
+            letter-spacing: -.04em;
+        }
+
+        /* Introduction + automatically generated navigable contents. */
+        .preface {
+            break-after: page;
+        }
+
+        .preface-label, .toc-overline {
+            color: var(--accent);
+            font-size: 7.6pt;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+
+        .preface h1 {
+            display: none;
+        }
+
+        .preface h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -.02em;
+            color: var(--heading);
+            margin: 5mm 0 5mm;
+            border-bottom: .5pt solid var(--line);
+            padding-bottom: 2.5mm;
+        }
+
+        .preface p {
+            font-size: 9.5pt;
+            line-height: 1.6;
+        }
+
+        .toc {
+            border-top: .5pt solid var(--line);
+            margin-top: 8mm;
+            padding-top: 6.5mm;
+        }
+
+        .toc h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 21pt;
+            letter-spacing: -.03em;
+            margin: 2mm 0 5mm;
+            border: 0;
+            padding: 0;
+        }
+
+        .toc ol {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc li {
+            display: flex;
+            align-items: baseline;
+            gap: 5mm;
+            font-size: 9.1pt;
+            padding: 2.7mm 1mm;
+            border-top: .5pt solid #e7ecef;
+            break-inside: avoid;
+        }
+
+        .toc li:last-child {
+            border-bottom: .5pt solid #e7ecef;
+        }
+
+        .toc .toc-num {
+            width: 8mm;
+            flex: 0 0 8mm;
+            font-size: 7.5pt;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .toc a {
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        /* Continuous editorial body: sections can flow across pages. */
+        .content {
+            padding: 0;
+        }
+
+        .content h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 17.2pt;
+            font-weight: 700;
+            color: var(--heading);
+            line-height: 1.28;
+            letter-spacing: -.024em;
+            margin: 11mm 0 5mm;
+            padding-top: 5.5mm;
+            border-top: .6pt solid var(--line);
+            break-after: avoid;
+        }
+
+        .content h2::before {
+            content: "CHAPTER";
+            display: block;
+            color: var(--accent);
+            font-size: 7pt;
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: .19em;
+            margin-bottom: 2.2mm;
+        }
+
+        .content h2:first-child {
+            margin-top: 0;
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .content h3 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 11.6pt;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -.012em;
+            color: var(--heading);
+            margin: 7mm 0 2.5mm;
+            break-after: avoid;
+        }
+
+        .content h4, .preface h3 {
+            font-size: 10pt;
+            color: var(--heading);
+            margin: 5mm 0 2mm;
+            break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 3.15mm;
+            orphans: 2;
+            widows: 2;
+        }
+
+        strong, b {
+            font-weight: 700;
+            color: #1a3341;
+        }
+
+        a {
+            color: #23778e;
+            text-decoration: none;
+        }
+
+        hr {
+            height: 0;
+            border: none;
+            border-top: .55pt solid #d9e2e7;
+            margin: 7mm 0;
+        }
+
+        ul, ol {
+            margin: 2.5mm 0 4mm;
+            padding-left: 6mm;
+        }
+
+        li {
+            padding-left: .5mm;
+            margin: 1.5mm 0;
+        }
+
+        li::marker {
+            color: var(--accent);
+        }
+
+        li p {
+            margin: 0;
+        }
+
+        blockquote {
+            background: var(--accent-soft);
+            border-left: 2.5pt solid var(--accent);
+            margin: 4mm 0 6mm;
+            padding: 4mm 5.2mm;
+            color: #2b4654;
+            font-size: 9.4pt;
+            line-height: 1.56;
+        }
+
+        blockquote p {
+            margin-bottom: 2.3mm;
+        }
+
+        blockquote p:last-child {
+            margin-bottom: 0;
+        }
+
+        blockquote strong {
+            color: #143743;
+        }
+
+        table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+            font-size: 8pt;
+            line-height: 1.42;
+            color: var(--ink);
+            margin: 3.6mm 0 4.8mm;
+            overflow-wrap: anywhere;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        thead th {
+            background: var(--header);
+            color: #fff;
+            text-align: left;
+            font-weight: 700;
+            padding: 2.2mm 2.4mm;
+            vertical-align: top;
+            border-right: 1pt solid rgba(255, 255, 255, .04);
+        }
+
+        thead th strong {
+            color: #fff;
+        }
+
+        tbody td {
+            border-bottom: .35pt solid #e3e9ed;
+            padding: 2.3mm 2.4mm;
+            vertical-align: top;
+        }
+
+        tbody tr:nth-child(even) {
+            background: var(--zebra);
+        }
+
+        tr {
+            break-inside: avoid;
+        }
+
+        table.wide {
+            font-size: 7.15pt;
+        }
+
+        table.wide th, table.wide td {
+            padding: 1.8mm;
+        }
+
+        code {
+            font-family: "DejaVu Sans Mono", monospace;
+            font-size: .91em;
+            color: #22445a;
+        }
+
+        pre {
+            color: #dce9f0;
+            background: #173746;
+            padding: 4mm 5mm;
+            font-size: 8.3pt;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin: 4mm 0;
+        }
+
+        pre code {
+            color: inherit;
+        }
+
+        .task-list-item {
+            list-style: none;
+            margin-left: -5mm;
+        }
+
+        .task-box {
+            display: inline-block;
+            border: .85pt solid #7b8b93;
+            width: 2.6mm;
+            height: 2.6mm;
+            margin-right: 3mm;
+            vertical-align: baseline;
+        }
+
+        .task-box.checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .caption {
+            color: var(--muted);
+            font-size: 7.8pt;
+        }
+
+        @media screen {
+            body {
+                max-width: 210mm;
+                margin: 0 auto;
+                box-shadow: 0 0 25px #ddd;
+            }
+        }
+
+    
+:root{--accent:#64C8E6;--accent-soft:#EAF8FC;}@page{@top-right{content:"AI DESIGN #73 — UNIFIED ENTERPRISE AGENTIC PLATFORM";}@bottom-left{content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";}}
+@media screen{body{max-width:210mm;margin:0 auto;box-shadow:0 0 20px #dce2e6;}}</style></head><body><section class="cover"><div class="cover-brand">THE ARCHITECT&#39;S FIELD NOTES</div><div class="cover-series">BEHAVIORAL INTERVIEW STUDY GUIDE &nbsp;/&nbsp; 01 OF 02</div><div class="cover-accent-bar"></div><div class="cover-title long">AI Design #73 — Unified<span class="second">Enterprise Agentic Platform</span></div><div class="cover-sub">THINK CLEARLY. DECIDE WITH EVIDENCE. DELIVER WITH CONFIDENCE.<div class="cover-note">Evidence-based STAR answers, senior-level judgment, and focused interview rehearsal.</div></div><div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR SENIOR / PRINCIPAL SOLUTION ARCHITECT INTERVIEWS<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div><div class="cover-number">01</div></section><section class="preface"><div class="preface-label">YOUR STUDY COMPANION</div><p><strong>Capstone:</strong> Enterprise IT Operations Assistant</p>
+<p><code>Stage 3 of 6 — Minimal Working Architecture</code></p>
+<nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol><li><span class="toc-num">01</span><a href="#1-minimal-component-architecture">1. Minimal component architecture</a></li><li><span class="toc-num">02</span><a href="#2-ownership-by-component">2. Ownership by component</a></li><li><span class="toc-num">03</span><a href="#3-define-the-api-and-typed-tool-contracts">3. Define the API and typed tool contracts</a></li><li><span class="toc-num">04</span><a href="#4-happy-path-request-sequence">4. Happy-path request sequence</a></li><li><span class="toc-num">05</span><a href="#5-trust-boundaries-and-authorization">5. Trust boundaries and authorization</a></li><li><span class="toc-num">06</span><a href="#6-failure-path-monitoring-data-unavailable">6. Failure path — monitoring data unavailable</a></li><li><span class="toc-num">07</span><a href="#7-baseline-execution-limits">7. Baseline execution limits</a></li><li><span class="toc-num">08</span><a href="#8-what-we-will-implement-in-stage-4">8. What we will implement in Stage 4</a></li><li><span class="toc-num">09</span><a href="#stage-3-summary">Stage 3 summary</a></li></ol></nav></section><main class="content"><h2 id="1-minimal-component-architecture">1. Minimal component architecture</h2>
+<p>We will now turn the Stage 1 requirements and Stage 2 concepts into a concrete system design.</p>
+<p>Our goal is to build the smallest architecture that can:</p>
+<ol start="1"><li>Accept an investigation request for <code>INC-42</code>.</li><li>Retrieve authorized metrics and deployment evidence.</li><li>Use an LLM to analyze the evidence.</li><li>Return findings and a safe recommendation.</li><li>Never modify production.</li></ol>
+<p>One bounded investigation component and two approved read-only tools. No MCP, A2A, RAG or distributed platform services yet.</p>
+<h3 id="11-logical-components">1.1 Logical components</h3>
+<p><strong>V1 — READ-ONLY INVESTIGATION ASSISTANT</strong></p>
+<pre><code>+--------------------------------+
+| On-call Engineer               |
+| Web UI                         |
++--------------------------------+
+                |
+                v
++--------------------------------+
+| Investigation API              |
+| - Authenticate user            |
+| - Validate request             |
+| - Incident authorization       |
++--------------------------------+
+                |
+                v
++--------------------------------+
+| Bounded Investigation Workflow |
+| - Coordinate two read calls    |
+| - Collect evidence             |
+| - Prepare model context        |
++--------------------------------+
+                |
+                v
++--------------------------------+
+| Approved Read-Only Tools       |
+|                                |
+| 1. get_metrics                 |
+| 2. get_deployments             |
++--------------------------------+
+                |
+                v
++--------------------------------+
+| Source Systems                 |
+| - Monitoring records           |
+| - Deployment records           |
+| - Enforce data permissions     |
++--------------------------------+
+                |
+                | Evidence returns
+                v
++--------------------------------+
+| LLM Analysis                   |
+| - Interpret evidence           |
+| - Identify possible causes     |
+| - Recommend next steps         |
++--------------------------------+
+                |
+                v
++--------------------------------+
+| Report Validation             |
+| - Validate response structure  |
+| - Check evidence references    |
++--------------------------------+
+                |
+                v
++--------------------------------+
+| Engineer Reviews Report        |
+| No production action executed  |
++--------------------------------+</code></pre>
+<p>Logical request/data flow, not a deployment topology. Tool responses pass back through the workflow before reaching the model.</p>
+<p><strong>Deployment decision:</strong> The API, workflow, tools, and validator can run in one Python application. They are not required to be separate services.</p>
+<h3 id="why-each-component-exists">Why each component exists</h3>
+<table><thead><tr><th>Component</th><th>Responsibility</th><th>Boundary</th><th>Why we need it</th></tr></thead><tbody><tr><td>Web UI</td><td>Accept request and show findings</td><td></td><td>Human interaction</td></tr><tr><td>Investigation API</td><td>Verify identity and enforce request access</td><td>External user → trusted application.</td><td>Security boundary</td></tr><tr><td>Investigation workflow</td><td>Bound allowed reads and prepare evidence context.</td><td>Model suggestions → application decisions</td><td>Predictable investigation</td></tr><tr><td>Read-only tools</td><td>Access approved operational information</td><td>Application → business source systems</td><td>Controlled integrations</td></tr><tr><td>Source systems</td><td>Own metrics and deployment facts</td><td></td><td>Authoritative evidence</td></tr><tr><td>LLM/Analysis</td><td>Explain evidence, uncertainty and form hypotheses</td><td>Source records → untrusted model output</td><td>Flexible reasoning</td></tr><tr><td>Report validator</td><td>Check structure and evidence references</td><td>Untrusted result → user-visible report</td><td>Reject invalid or unsupported output</td></tr></tbody></table>
+<p><strong>Design decision:</strong> These components do not need to be separate microservices. The API, workflow, tools and validator can initially live inside one Python application.</p>
+<p>The source systems can be local synthetic JSON files in Stage 4.</p>
+<h2 id="2-ownership-by-component">2. Ownership by component</h2>
+<p>This distinction is more important than the choice of framework.</p>
+<table><thead><tr><th>Data or decision</th><th>Owner</th></tr></thead><tbody><tr><td>Verified user identity</td><td>Authentication system / application</td></tr><tr><td>Access to operational records</td><td>Source-system authorization</td></tr><tr><td>Metric values</td><td>Monitoring system</td></tr><tr><td>Deployment history</td><td>Deployment system</td></tr><tr><td>Investigation execution</td><td>Investigation workflow</td></tr><tr><td>Generated explanation</td><td>LLM output, not authoritative evidence</td></tr><tr><td>Production remediation</td><td>Authorized operations service and human decision-maker</td></tr></tbody></table>
+<table><thead><tr><th>Component</th><th>Owns</th><th>Does not own</th></tr></thead><tbody><tr><td>Investigation API</td><td>Request validation and user-context handling</td><td>The original business records</td></tr><tr><td>Workflow</td><td>Execution order and result state</td><td>User privileges</td></tr><tr><td>Read-only adapters</td><td>Calls into approved systems</td><td>Authorization grants generated by the model</td></tr><tr><td>Source systems</td><td>Metrics and deployment truth</td><td>LLM interpretation</td></tr><tr><td>Analysis component</td><td>Observations, hypotheses, recommendations</td><td>Operational authority</td></tr><tr><td>Report validator</td><td>Output shape and citation existence</td><td>Proof of semantic correctness</td></tr></tbody></table>
+<p>The assistant can summarize operational facts, but it cannot make itself the source of truth.</p>
+<p>For example, if the LLM reports a deployment time that conflicts with the deployment system, the deployment record wins.</p>
+<h2 id="3-define-the-api-and-typed-tool-contracts">3. Define the API and typed tool contracts</h2>
+<p>A contract describes the inputs and outputs a component expects.</p>
+<p>Contracts let us develop and test components independently. They also reduce the chance that the model receives unexpected data.</p>
+<p>For now, these are proposed application-level contracts, not MCP protocol definitions.</p>
+<h3 id="contract-a-investigation-api">Contract A — Investigation API</h3>
+<p><strong>REQUEST</strong></p>
+<pre><code>{
+  "incident_id": "INC-42",
+  "service": "checkout-api",
+  "question": "Why is Checkout API slow?"
+}</code></pre>
+<p>The request does not supply a trusted <code>user_id</code>, role or tenant. The backend derives these from the authenticated session.</p>
+<h3 id="contract-b-read-only-tools">Contract B — Read-only tools</h3>
+<p><strong>PYTHON TYPE CONTRACTS — ILLUSTRATIVE</strong></p>
+<pre><code>from typing import TypedDict
+
+
+class Principal(TypedDict):
+    user_id: str
+    tenant_id: str
+
+
+class MetricsEvidence(TypedDict):
+    evidence_id: str
+    service: str
+    p95_latency_ms: int
+    baseline_p95_ms: int
+    error_rate_percent: float
+
+
+class DeploymentEvidence(TypedDict):
+    evidence_id: str
+    service: str
+    version: str
+    deployed_at: str
+
+
+def get_metrics(
+        service: str,
+        principal: Principal
+) -&gt; MetricsEvidence:
+    ...
+
+
+def get_deployments(
+        service: str,
+        principal: Principal
+) -&gt; list[DeploymentEvidence]:
+    ...</code></pre>
+<p>These describe <strong>logical interfaces</strong>, not a particular SDK or wire protocol. The mock implementation will add explicit errors, time bounds and validation.</p>
+<p>The trusted <code>principal</code> is created by the application, never generated by the LLM.</p>
+<h3 id="example-tool-outputs">Example tool outputs</h3>
+<p><code>get_metrics</code></p>
+<p><strong>Read only</strong></p>
+<pre><code>{
+  "evidence_id": "METRIC-07",
+  "service": "checkout-api",
+  "p95_latency_ms": 1800,
+  "baseline_p95_ms": 240,
+  "error_rate_percent": 3.1
+}</code></pre>
+<p><code>get_deployments</code></p>
+<p><strong>Read only</strong></p>
+<pre><code>[
+  {
+    "evidence_id": "CHANGE-03",
+    "service": "checkout-api",
+    "version": "v2.7.4",
+    "deployed_at": "09:55"
+  }
+]</code></pre>
+<p>All records are fictional. Production contracts will also need complete timestamps, source provenance and explicit error types.</p>
+<h2 id="4-happy-path-request-sequence">4. Happy-path request sequence</h2>
+<p>We now walk through one successful investigation.</p>
+<table><thead><tr><th>Step</th><th>Component</th><th>Operation</th></tr></thead><tbody><tr><td>1</td><td>Engineer</td><td>Sends investigation request for INC-42</td></tr><tr><td>2</td><td>Investigation API</td><td>Authenticates and verifies incident access</td></tr><tr><td>3</td><td>Workflow</td><td>Calls <code>get_metrics</code> with the verified identity</td></tr><tr><td>4</td><td>Monitoring system</td><td>Authorizes access and returns <code>METRIC-07</code></td></tr><tr><td>5</td><td>Workflow</td><td>Calls <code>get_deployments</code></td></tr><tr><td>6</td><td>Deployment system</td><td>Authorizes access and returns <code>CHANGE-03</code></td></tr><tr><td>7</td><td>Workflow</td><td>Builds a context containing only relevant evidence</td></tr><tr><td>8</td><td>LLM</td><td>Produces observations, hypotheses and next steps</td></tr><tr><td>9</td><td>Validator</td><td>Checks required fields and cited evidence IDs</td></tr><tr><td>10</td><td>Engineer</td><td>Receives the report for review</td></tr></tbody></table>
+<h3 id="contract-c-investigation-result">Contract C — Investigation result</h3>
+<pre><code>{
+  "run_id": "RUN-42",
+  "incident_id": "INC-42",
+  "status": "needs_review",
+  "observations": [
+    {
+      "text": "Checkout API p95 latency is 1800 ms.",
+      "evidence_ids": [
+        "METRIC-07"
+      ]
+    },
+    {
+      "text": "Version v2.7.4 deployed at 09:55.",
+      "evidence_ids": [
+        "CHANGE-03"
+      ]
+    }
+  ],
+  "hypothesis": {
+    "text": "Recent deployment may be related.",
+    "evidence_ids": [
+      "METRIC-07",
+      "CHANGE-03"
+    ]
+  },
+  "next_step": "Investigate latency by deployment version.",
+  "action_executed": false
+}</code></pre>
+<p>Here, <code>needs_review</code> means the investigation has findings for human review. It does not mean the incident has been resolved or that an operational change is authorized.</p>
+<p>The validator can check that <code>METRIC-07</code> and <code>CHANGE-03</code> really exist in the retrieved evidence. It cannot, by itself, prove that the hypothesis is correct.</p>
+<h2 id="5-trust-boundaries-and-authorization">5. Trust boundaries and authorization</h2>
+<p>There are three important boundaries.</p>
+<table><thead><tr><th>Boundary</th><th>What must happen</th></tr></thead><tbody><tr><td>User → Investigation API</td><td>Authenticate the caller and verify incident access</td></tr><tr><td>Workflow → Source systems</td><td>Enforce permitted tool operations and source-level authorization</td></tr><tr><td>Retrieved evidence → LLM</td><td>Treat results as untrusted data and prevent them from becoming instructions</td></tr></tbody></table>
+<p><strong>Example:</strong> The engineer may be authorized to inspect Checkout API but not the Payroll API.</p>
+<p>Even if the LLM requests <code>get_metrics("payroll-api")</code>, the application and monitoring service must deny the unauthorized request.</p>
+<p>A prompt saying "only access Checkout API" is not sufficient security.</p>
+<h2 id="6-failure-path-monitoring-data-unavailable">6. Failure path — monitoring data unavailable</h2>
+<p>Suppose the monitoring system times out while the deployment tool succeeds.</p>
+<pre><code>+----------------------------+
+| Investigation starts       |
++----------------------------+
+              |
+              v
++----------------------------+
+| get_metrics                |
+| Result: TIMEOUT            |
++----------------------------+
+              |
+              v
++----------------------------+
+| get_deployments            |
+| Result: CHANGE-03          |
++----------------------------+
+              |
+              v
++----------------------------+
+| Evidence incomplete        |
+| Cannot verify latency      |
++----------------------------+
+              |
+              v
++----------------------------+
+| Return partial findings    |
+| No root-cause conclusion   |
++----------------------------+</code></pre>
+<p>Expected result:</p>
+<pre><code>{
+  "run_id": "RUN-42",
+  "status": "insufficient_evidence",
+  "available_evidence": [
+    "CHANGE-03"
+  ],
+  "missing_evidence": [
+    "metrics"
+  ],
+  "recommendation": "Retry metrics retrieval or investigate manually.",
+  "action_executed": false
+}</code></pre>
+<p>This is a deliberate reliability choice: partial evidence must not become a confident conclusion.</p>
+<p>If <strong>authorization</strong> fails, the workflow must stop <strong>before</strong> protected data reaches the model. The API must return an access-denied result and must not disclose incident evidence to the model.</p>
+<h2 id="7-baseline-execution-limits">7. Baseline execution limits</h2>
+<p>Keep execution bounded: Our first version has a proposed execution budget:</p>
+<table><thead><tr><th>Control</th><th>Initial rule</th></tr></thead><tbody><tr><td>Tool calls</td><td>One metrics read and one deployment-history read</td></tr><tr><td>Model calls</td><td>One analysis call</td></tr><tr><td>Production write tools</td><td>None</td></tr><tr><td>Source failure</td><td>Explicit incomplete-evidence result</td></tr><tr><td>Invalid citations</td><td>Reject or regenerate within a defined budget</td></tr><tr><td>Remediation</td><td>Human review, outside the initial execution path</td></tr></tbody></table>
+<p>These are design choices for the local baseline, not enterprise service limits.</p>
+<p>We also do not need autonomous tool selection yet. A fixed workflow is more predictable because we already know which two records to retrieve.</p>
+<p>Later, if the assistant needs to decide whether to inspect logs, database connections or deployment changes based on intermediate evidence, we can replace the fixed sequence with a bounded adaptive agent.</p>
+<h2 id="8-what-we-will-implement-in-stage-4">8. What we will implement in Stage 4</h2>
+<p>The local mock will use this small structure:</p>
+<pre><code>it-ops-assistant/
+|
++-- app.py
+|   Investigation entry point
+|
++-- tools.py
+|   Read-only mock operations
+|
++-- investigator.py
+|   Workflow and evidence analysis
+|
++-- data/
+|   +-- metrics.json
+|   +-- deployments.json
+|
++-- tests/
+    +-- test_investigation.py</code></pre>
+<p>We will create synthetic source records, wire the two tools to the workflow, and display the investigation result. We will also test unauthorized access and missing evidence.</p>
+<p>No real production credentials or infrastructure will be needed.</p>
+<h2 id="stage-3-summary">Stage 3 summary</h2>
+<p>We established the smallest useful design:</p>
+<p>Engineer → Authorized API → Bounded workflow → Two read-only tools → Evidence → LLM → Validated report</p>
+<p>The important architectural decisions are:</p>
+<ul><li>Source systems own operational truth and enforce data permissions.</li><li>Application code controls tool execution.</li><li>The LLM produces explanations and hypotheses, not authorization decisions.</li><li>Reports must distinguish facts, uncertainty and recommendations.</li><li>Missing evidence produces an honest incomplete result.</li><li>No production changes are permitted.</li></ul>
+<hr>
+<h3 id="next-stage-4-build-a-working-local-mock">Next — Stage 4: Build a Working Local Mock</h3>
+<p>We will implement this design in Python, using synthetic metrics and deployment records. We will make the request and tool outputs visible and verify the behavior with software tests.</p>
+<p>Continue to Stage 4</p></main></body></html>
