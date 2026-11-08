@@ -1,92 +1,48 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Design #73 — Unified Enterprise Agentic Platform</title><style>
-        /* The original PDF skill style sheet is embedded below. */
-        /* Architect's Field Notes — original study-guide design recreation.
-           Standalone builder embeds this file into its generated HTML. */
-        :root {
-            --navy: #112c3a;
-            --header: #193a4b;
-            --ink: #273944;
-            --heading: #17313e;
-            --muted: #75838d;
-            --line: #d9e2e7;
-            --zebra: #f6f8f9;
-            --accent: #64c8e6;
-            --accent-soft: #eaf8fc;
-        }
 
-        @page {
-            size: A4;
-            margin: 19mm 19mm 19mm;
-            @top-left {
-                content: "INTERVIEW / FIELD GUIDE";
-                color: #75838d;
-                font-family: "Inter", "DejaVu Sans", sans-serif;
-                font-size: 7pt;
-                letter-spacing: .05em;
-                vertical-align: middle;
-            }
-            @top-right {
-                content: string(running-topic);
-                color: #75838d;
-                font-family: "Inter", "DejaVu Sans", sans-serif;
-                font-size: 7pt;
-                letter-spacing: .02em;
-                vertical-align: middle;
-            }
-            @bottom-left {
-                content: "SENIOR / PRINCIPAL SOLUTION ARCHITECT";
-                color: #9aa5ae;
-                font-family: "Inter", "DejaVu Sans", sans-serif;
-                font-size: 6.3pt;
-                letter-spacing: .03em;
-                vertical-align: middle;
-            }
-            @bottom-right {
-                content: counter(page, decimal-leading-zero);
-                color: #394b56;
-                font-family: "Inter", "DejaVu Sans", sans-serif;
-                font-weight: 700;
-                font-size: 7pt;
-                vertical-align: middle;
-            }
-        }
+/* Adapted from the user-provided AI Design #73 study-guide template.
+   Field Notes cover design is preserved, with theme-matched green and amber editions. */
+/* Shared design tokens: Forest Green is the first-render and no-JavaScript default.
+   Other palettes are applied by FieldNotesThemes from one central registry. */
+:root {
+ --paper:#fff; --on-accent:#fff;
+ --radius-control:7px; --radius-card:13px;
+ --accent:#205d49; --accent-dark:#174c3a; --wash:#eff8f3; --accent-soft:var(--wash);
+ --ink:#25362e; --muted:#596c61; --line:#d5e6db;
+ --bg:#f3f8f5; --soft:#f8fcf9; --zebra:#f7fbf8;
+ --rule:#e0ece4; --rule-strong:#d3e5d9; --control-border:#bad3c4;
+ --code-block-bg:#f3f9f5; --code-border:#d2e5d8;
+ --code-ink:#214d3a; --code-inline-bg:#e8f4eb;
+ --shadow-soft:rgba(28,77,53,.05); --shadow-strong:rgba(28,77,53,.18);
+ --amber:#79551e; --amber-wash:#fff8e8; --amber-border:#b68226;
+ --good:#205d49; --good-wash:#eff8f3; --good-border:#3e9370;
+ --danger:#9a4a23; --danger-border:#d6ad94; --danger-wash:#fff9f3;
+ --cover-bg:#205d49; --cover-accent:#89d2a9; --cover-title:#fff;
+ --cover-brand:#eaf8ef; --cover-series:#b9dacb; --cover-sub:#e2f2e9;
+ --cover-note:#c4e4d3; --cover-bottom:#d5ebdf;
+ --heading:var(--accent-dark); --header:var(--accent-dark);
+}
 
-        @page cover {
-            size: A4;
-            margin: 0;
-            @top-left {
-                content: none;
-            }
-            @top-right {
-                content: none;
-            }
-            @bottom-left {
-                content: none;
-            }
-            @bottom-right {
-                content: none;
-            }
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: "Inter", "DejaVu Sans", sans-serif;
-            font-size: 9.4pt;
-            font-weight: 400;
-            line-height: 1.55;
-            color: var(--ink);
-            background: #fff;
-            overflow-wrap: break-word;
-        }
-
+@page {
+ size:A4; margin:14mm 12mm;
+ @top-left {content:"INTERVIEW / FIELD GUIDE";color:var(--muted);font:7pt system-ui,sans-serif;letter-spacing:.04em;vertical-align:middle}
+ @top-right {content:"";color:var(--muted);font:7pt system-ui,sans-serif;vertical-align:middle}
+ @bottom-left {content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";color:var(--muted);font:6.3pt system-ui,sans-serif;vertical-align:middle}
+ @bottom-right {content:counter(page, decimal-leading-zero);color:var(--accent-dark);font:700 7pt system-ui,sans-serif;vertical-align:middle}
+}
+@page cover {size:A4;margin:0;
+ @top-left{content:none}@top-right{content:none}
+ @bottom-left{content:none}@bottom-right{content:none}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-underline-offset:2px}
+a:hover{text-decoration-thickness:2px}
+strong,b{font-weight:720}
+.cover-stage{width:min(100%,210mm);margin:0 auto;overflow:hidden;height:297mm;background:var(--cover-bg)}
+/* The original cover sheet artwork, dimensions and arrangement. */
         .cover {
             page: cover;
             break-after: page;
@@ -94,445 +50,236 @@
             width: 210mm;
             overflow: hidden;
             position: relative;
-            background: var(--navy);
-            color: #fff;
+            background: var(--cover-bg);
+            color: var(--cover-title);
             padding: 29.6mm 26mm;
         }
-
         .cover::before, .cover::after {
             content: "";
             position: absolute;
-            border: .55pt solid rgba(255, 255, 255, .08);
+            border: .55pt solid rgba(255,255,255,.08);
             border-radius: 50%;
             pointer-events: none;
         }
-
-        .cover::before {
-            width: 158mm;
-            height: 158mm;
-            right: -84mm;
-            top: -61mm;
-        }
-
-        .cover::after {
-            width: 108mm;
-            height: 108mm;
-            right: -28mm;
-            bottom: -75mm;
-        }
-
+        .cover::before { width:158mm; height:158mm; right:-84mm; top:-61mm; }
+        .cover::after { width:108mm; height:108mm; right:-28mm; bottom:-75mm; }
         .cover-brand {
-            font-size: 9.5pt;
-            font-weight: 800;
-            letter-spacing: .31em;
-            text-transform: uppercase;
-            color: #dceaf0;
+            font-size:9.5pt; font-weight:800; letter-spacing:.31em;
+            text-transform:uppercase; color:var(--cover-brand);
         }
-
         .cover-series {
-            font-size: 8pt;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            color: #98b3c1;
-            margin-top: 7mm;
+            font-size:8pt; letter-spacing:.12em; text-transform:uppercase;
+            color:var(--cover-series); margin-top:7mm;
         }
-
         .cover-accent-bar {
-            position: absolute;
-            left: 26mm;
-            top: 80mm;
-            height: 3.5mm;
-            width: 21mm;
-            background: var(--accent);
+            position:absolute; left:26mm; top:80mm; height:3.5mm;
+            width:21mm; background:var(--cover-accent);
         }
-
         .cover-title {
-            position: absolute;
-            left: 25.5mm;
-            right: 25mm;
-            top: 97mm;
-            font-family: "Inter Display", "Inter", "DejaVu Sans", sans-serif;
-            font-size: 42pt;
-            font-weight: 800;
-            letter-spacing: -.043em;
-            line-height: 1.08;
-            color: #fff;
+            position:absolute; left:25.5mm; right:25mm; top:97mm;
+            font-family:"Inter Display", "Inter", "DejaVu Sans", sans-serif;
+            font-size:42pt; font-weight:800; letter-spacing:-.043em;
+            line-height:1.08; color:var(--cover-title);
         }
-
-        .cover-title .second {
-            display: block;
-            color: var(--accent);
-        }
-
-        .cover-title.long {
-            font-size: 37pt;
-        }
-
+        .cover-title .second { display:block; color:var(--cover-accent); }
+        .cover-title.long { font-size:37pt; }
         .cover-sub {
-            position: absolute;
-            left: 26mm;
-            right: 31mm;
-            top: 173.5mm;
-            color: #bdcdd5;
-            font-size: 11.5pt;
-            line-height: 1.7;
-            letter-spacing: .07em;
-            text-transform: uppercase;
+            position:absolute; left:26mm; right:31mm; top:173.5mm;
+            color:var(--cover-sub); font-size:11.5pt; line-height:1.7;
+            letter-spacing:.07em; text-transform:uppercase;
         }
-
         .cover-note {
-            color: #91aab7;
-            text-transform: none;
-            font-size: 9pt;
-            letter-spacing: .01em;
-            margin-top: 7mm;
-            line-height: 1.6;
+            color:var(--cover-note); text-transform:none; font-size:9pt;
+            letter-spacing:.01em; margin-top:7mm; line-height:1.6;
         }
-
         .cover-bottom {
-            position: absolute;
-            bottom: 31mm;
-            left: 26mm;
-            font-size: 7.8pt;
-            line-height: 1.9;
-            letter-spacing: .065em;
-            color: #cfdae0;
+            position:absolute; bottom:31mm; left:26mm;
+            font-size:7.8pt; line-height:1.9;
+            letter-spacing:.065em; color:var(--cover-bottom);
         }
-
         .cover-rule {
-            position: absolute;
-            bottom: 62mm;
-            height: .35pt;
-            left: 26mm;
-            right: 26mm;
-            background: rgba(255, 255, 255, .15);
+            position:absolute; bottom:62mm; height:.35pt;
+            left:26mm; right:26mm; background:rgba(255,255,255,.15);
         }
-
         .cover-number {
-            position: absolute;
-            bottom: 29mm;
-            right: 26mm;
-            color: var(--accent);
-            font-family: "Inter Display", "Inter", sans-serif;
-            font-size: 39pt;
-            font-weight: 800;
-            letter-spacing: -.04em;
+            position:absolute; bottom:29mm; right:26mm;
+            color:var(--cover-accent);
+            font-family:"Inter Display", "Inter", sans-serif;
+            font-size:39pt; font-weight:800; letter-spacing:-.04em;
         }
 
-        /* Introduction + automatically generated navigable contents. */
-        .preface {
-            break-after: page;
-        }
 
-        .preface-label, .toc-overline {
-            color: var(--accent);
-            font-size: 7.6pt;
-            font-weight: 800;
-            letter-spacing: .18em;
-            text-transform: uppercase;
-            margin-top: 0;
-        }
+.guide-layout{display:grid;grid-template-columns:230px minmax(0,960px);gap:28px;max-width:1280px;margin:0 auto;padding:26px}
+.guide-side{align-self:start;position:sticky;top:18px;padding:22px 16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 15px var(--shadow-soft);max-height:calc(100vh - 36px);overflow:auto}
+.guide-side h2{font-size:13px;letter-spacing:.09em;color:var(--accent-dark);text-transform:uppercase;margin:0 8px 12px}
+.guide-side a{display:block;text-decoration:none;padding:8px 10px;margin:2px 0;border-radius:6px;color:var(--ink);font-size:13px;line-height:1.45}
+.guide-side a:hover,.guide-side a:focus-visible{background:var(--wash);outline:0}
+.guide-side .mini{margin:14px 8px 0;border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--muted)}
+.guide-main{min-width:0}
+.preface{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:var(--radius-card);padding:30px 36px 27px;margin:0 0 19px}
+.preface-label,.toc-overline{font-size:12px;color:var(--accent-dark);font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+.preface .guide-title{font-size:clamp(28px,4vw,43px);line-height:1.1;letter-spacing:-.035em;margin:12px 0 8px;color:var(--ink)}
+.preface .subtitle{font-size:18px;color:var(--muted);margin:0 0 18px}
+.preface > p{max-width:78ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
+.tag{padding:5px 11px;border-radius:20px;background:var(--wash);font-size:12px;font-weight:700;color:var(--accent-dark);border:1px solid var(--control-border)}
+.toc{border-top:1px solid var(--line);padding-top:20px;margin-top:22px}
+.toc h2{font-size:24px;line-height:1.25;letter-spacing:-.02em;margin:6px 0 13px;color:var(--ink)}
+.toc ol{list-style:none;padding:0;margin:0}
+.toc li{display:flex;align-items:baseline;gap:12px;padding:10px 4px;border-top:1px solid var(--rule);break-inside:avoid}
+.toc li:last-child{border-bottom:1px solid var(--rule)}
+.toc-num{font-size:11px;font-weight:800;color:var(--accent);flex:0 0 27px}
+.toc a{text-decoration:none;color:var(--ink);font-size:13px}
+.content{min-width:0}
+.content .chapter{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);padding:28px 35px;margin:18px 0;scroll-margin-top:20px}
+.content .section-head{display:flex;gap:12px;align-items:center;padding-bottom:11px;border-bottom:2px solid var(--rule-strong);margin-bottom:18px}
+.stage{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--on-accent);background:var(--accent);padding:7px 9px;border-radius:6px;white-space:nowrap}
+.content h2{font-size:18px;line-height:1.23;margin:0;letter-spacing:-.02em;color:var(--ink);break-after:avoid}
+.content h3{font-size:17px;margin:24px 0 8px;color:var(--accent-dark);break-after:avoid}
+.content h4{font-size:14px;margin:18px 0 8px;color:var(--accent-dark);break-after:avoid}
+.content > h1{font-size:24px;line-height:1.3;margin:24px 0 8px;padding:12px 6px;border-bottom:2px solid var(--line);color:var(--accent-dark);break-after:avoid}
+p{margin:10px 0;orphans:2;widows:2}
+ul,ol{padding-left:22px;margin:9px 0 14px}
+li{padding-left:3px;margin-bottom:5px}
+li::marker{color:var(--accent)}
+li p{margin:0}
+hr{height:0;border:0;border-top:1px solid var(--line);margin:20px 0}
+blockquote,.note{border-left:4px solid var(--accent);padding:12px 15px;background:var(--wash);border-radius:0 7px 7px 0;margin:15px 0;color:var(--ink)}
+blockquote p:first-child{margin-top:0}
+blockquote p:last-child{margin-bottom:0}
+/* Match the supplied template's green and amber callouts in HTML and PDF. */
+blockquote.caution,.note.caution{border-left-color:var(--amber-border);background:var(--amber-wash)}
+blockquote.good,.note.good{border-left-color:var(--good-border);background:var(--good-wash)}
+blockquote.good strong,blockquote.caution strong{display:block;margin-bottom:3px}
+.tablewrap{overflow-x:auto;margin:13px 0 19px;border:1px solid var(--line);border-radius:8px}
+/* Let the browser allocate width from actual cell content instead of equal columns. */
+table{width:100%;border-collapse:collapse;table-layout:auto;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.tablewrap table{margin:0}
+th{text-align:left;color:var(--accent-dark);background:var(--wash);font-size:12px;line-height:1.35}
+th,td{padding:10px 12px;vertical-align:top;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:var(--zebra)}
+thead{display:table-header-group}
+tr,th,td{break-inside:avoid-page}
+table.wide{font-size:12px}
+table.wide th,table.wide td{padding:8px}
+pre{background:var(--code-block-bg);border:1px solid var(--code-border);border-radius:8px;padding:16px 15px;overflow-x:auto;white-space:pre;line-height:1.4;font-size:12.5px;color:var(--code-ink);margin:12px 0 16px;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;break-inside:avoid-page}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92em;background:var(--code-inline-bg);border-radius:3px;padding:1px 4px;color:var(--code-ink)}
+pre code{background:transparent;padding:0;font-size:inherit;color:inherit}
+.caption{font-size:12px;color:var(--muted)}
+.task-list-item{list-style:none;margin-left:-16px}
+.task-box{display:inline-block;border:1px solid var(--muted);width:11px;height:11px;margin-right:10px;vertical-align:baseline}
+.task-box.checked{background:var(--accent);border-color:var(--accent)}
+img{max-width:100%;height:auto}
+@media screen and (max-width:960px){
+ .guide-layout{grid-template-columns:1fr;padding:12px;gap:12px}
+ .guide-side{position:static;display:flex;flex-wrap:wrap;gap:3px 8px;padding:12px;max-height:none}
+ .guide-side h2{width:100%;margin:4px 6px 2px}
+ .guide-side a{padding:5px 8px}
+ .guide-side .mini{display:none}
+ .preface,.content .chapter{padding:22px}
+}
+@media screen and (max-width:620px){
+ .preface,.content .chapter{padding:18px 16px}
+ .content .section-head{flex-wrap:wrap}
+ pre{font-size:11px}
+ .preface .guide-title{font-size:28px}
+}
+@media print{
+ :root{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ html{scroll-behavior:auto}
+ body{background:var(--paper);font-size:10.2pt;line-height:1.42}
+ .cover-stage{width:210mm!important;height:297mm!important;overflow:visible;break-after:page}
+ .cover{transform:none!important;page:cover;break-after:page;width:210mm;height:297mm}
+ .guide-layout{display:block;max-width:none;margin:0;padding:0}
+ .guide-side{display:none!important}
+ .preface{padding:0;border:0;border-radius:0;margin:0;break-after:page}
+ .preface .guide-title{font-size:26pt}
+ .preface .subtitle{font-size:14pt}
+ .content .chapter{padding:0;border:0;border-radius:0;margin:0;break-inside:auto}
+ .content .section-head{break-after:avoid-page}
+ .content h2{font-size:18pt}
+ .content h3{font-size:12pt}
+ .content h4{font-size:10pt}
+ .content > h1{font-size:16pt}
+ table{font-size:9pt}
+ th,td{padding:6px 7px}
+ pre{font-size:8.5pt;white-space:pre-wrap;overflow-wrap:anywhere;padding:9px;break-inside:avoid-page}
+ .tablewrap{overflow:visible;border:0;border-radius:0}
+ .toc li{padding:7px 3px}
+ a{text-decoration:none}
+}
 
-        .preface h1 {
-            display: none;
-        }
 
-        .preface h2 {
-            font-family: "Inter Display", "Inter", sans-serif;
-            font-size: 14pt;
-            font-weight: 700;
-            line-height: 1.3;
-            letter-spacing: -.02em;
-            color: var(--heading);
-            margin: 5mm 0 5mm;
-            border-bottom: .5pt solid var(--line);
-            padding-bottom: 2.5mm;
-        }
+/* v6: interactive chapter reader. Screen-only controls do not enter the PDF engine. */
+@media screen {
+ .content details.chapter{padding:0;overflow:hidden}
+ .content details.chapter>summary{list-style:none;cursor:pointer;padding:24px 35px 19px;display:block}
+ .content details.chapter>summary::-webkit-details-marker{display:none}
+ .content details.chapter>summary:focus-visible{outline:3px solid var(--accent);outline-offset:-4px}
+ .content details.chapter[open]>summary{background:var(--wash);border-bottom:1px solid var(--line)}
+ .content details.chapter>summary .section-head{padding:0;margin:0;border:0}
+ .content details.chapter .chapter-body{padding:8px 35px 24px}
+ .content details.chapter .chapter-body>:first-child{margin-top:8px}
+ .chapter-caret{margin-left:auto;color:var(--accent);font-size:18px;font-weight:800;transition:transform .15s ease}
+ .content details.chapter[open] .chapter-caret{transform:rotate(180deg)}
+ .chapter-complete-indicator{font-size:11px;font-weight:800;color:var(--good);white-space:nowrap}
+ .chapter-complete-indicator:not(.is-done){display:none}
+ .chapter-completion{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);margin-top:23px;padding-top:14px;font-size:13px;font-weight:700;color:var(--accent-dark)}
+ .chapter-completion input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+ .guide-search-label{display:block;margin:15px 8px 5px;font-size:12px;font-weight:800;color:var(--accent-dark)}
+ .guide-search{display:block;width:100%;min-width:0;border:1px solid var(--control-border);border-radius:var(--radius-control);padding:9px 10px;font:inherit;font-size:13px;background:var(--paper);color:var(--ink)}
+ .guide-search:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ .guide-search-count{font-size:11px;color:var(--muted);margin:5px 8px 12px;min-height:1.4em}
+ .guide-progress{border:1px solid var(--line);background:var(--soft);border-radius:9px;padding:12px;margin:12px 0 14px}
+ .guide-progress-head{display:flex;justify-content:space-between;gap:6px;font-size:12px;font-weight:750;color:var(--accent-dark)}
+ .guide-progress progress{width:100%;height:11px;accent-color:var(--accent);margin-top:8px}
+ .guide-study-controls{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+ .guide-study-controls button{border:1px solid var(--control-border);background:var(--paper);color:var(--accent-dark);border-radius:var(--radius-control);padding:6px 8px;font-size:11px;font-weight:700;line-height:1.4;cursor:pointer}
+ .guide-study-controls button:hover{background:var(--wash)}
+ .guide-jump{position:relative;margin:10px 0 13px}
+ .guide-jump>summary{list-style:none;cursor:pointer;border:1px solid var(--control-border);background:var(--wash);color:var(--accent-dark);border-radius:var(--radius-control);padding:10px 12px;font-size:12px;font-weight:800}
+ .guide-jump>summary::-webkit-details-marker{display:none}
+ .guide-jump>summary::after{content:" ▾";float:right}
+ .guide-jump[open]>summary::after{content:" ▴"}
+ .guide-jump-list{max-height:min(55vh,430px);overflow-y:auto;border:1px solid var(--control-border);border-radius:var(--radius-control);margin-top:5px;padding:5px;background:var(--paper)}
+ .guide-jump-list a{display:block;margin:0;padding:7px 8px;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+ .guide-jump-list .guide-jump-section{padding-left:20px;color:var(--muted);font-size:11.5px}
+ .guide-jump-list .guide-jump-overview{font-weight:800;border-bottom:1px solid var(--line);margin-bottom:5px}
+ .guide-study-controls [data-study-action="backup"],.guide-study-controls [data-study-action="restore"]{flex:1 1 90px}
+ .guide-study-controls [data-study-action="reset"]{color:var(--danger);border-color:var(--danger-border);background:var(--paper)9f3}
+ .guide-study-status{font-size:11px;line-height:1.45;color:var(--accent-dark);margin:7px 0;min-height:1.3em}
+ .guide-study-status[data-error="true"]{color:var(--danger)}
+ .guide-study-file{display:none!important}
+ .content .chapter-body h3[id],.content .chapter-body h4[id]{scroll-margin-top:25px}
 
-        .preface p {
-            font-size: 9.5pt;
-            line-height: 1.6;
-        }
+ .guide-side a[hidden],.content .chapter[hidden]{display:none!important}
+ .guide-no-results{border-left:4px solid var(--amber-border);background:var(--amber-wash);padding:12px 15px;margin:16px 0}
+ .guide-no-results[hidden]{display:none!important}
+ .guide-storage-note{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0}
+}
+@media screen and (max-width:960px){
+ .guide-side .guide-search-label,.guide-side .guide-search,.guide-side .guide-search-count,.guide-side .guide-progress,.guide-side .guide-study-controls,.guide-side .guide-storage-note{flex:0 0 100%}
+ .content details.chapter>summary{padding:18px 20px}
+ .content details.chapter .chapter-body{padding:6px 20px 20px}
+}
+@media screen and (max-width:620px){
+ .content details.chapter>summary{padding:14px 16px}
+ .content details.chapter .chapter-body{padding:5px 16px 17px}
+ .content details.chapter>summary .section-head{flex-wrap:nowrap}
+ .chapter-complete-indicator{font-size:10px}
+}
+@media print{
+ .guide-study-controls,.guide-progress,.guide-search-label,.guide-search,.guide-search-count,.guide-no-results,.chapter-completion,.chapter-complete-indicator,.chapter-caret,.guide-storage-note,.guide-jump,.guide-study-status,.guide-study-file{display:none!important}
+ .content details.chapter{display:block!important;overflow:visible!important}
+ .content details.chapter>summary{display:block;padding:0!important;background:transparent!important;border:0!important;cursor:auto}
+ .content details.chapter .chapter-body{display:block!important;padding:0!important}
+ .content details.chapter .section-head{border-bottom:2px solid var(--rule-strong)}
+}
 
-        .toc {
-            border-top: .5pt solid var(--line);
-            margin-top: 8mm;
-            padding-top: 6.5mm;
-        }
-
-        .toc h2 {
-            font-family: "Inter Display", "Inter", sans-serif;
-            font-size: 21pt;
-            letter-spacing: -.03em;
-            margin: 2mm 0 5mm;
-            border: 0;
-            padding: 0;
-        }
-
-        .toc ol {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .toc li {
-            display: flex;
-            align-items: baseline;
-            gap: 5mm;
-            font-size: 9.1pt;
-            padding: 2.7mm 1mm;
-            border-top: .5pt solid #e7ecef;
-            break-inside: avoid;
-        }
-
-        .toc li:last-child {
-            border-bottom: .5pt solid #e7ecef;
-        }
-
-        .toc .toc-num {
-            width: 8mm;
-            flex: 0 0 8mm;
-            font-size: 7.5pt;
-            font-weight: 800;
-            color: var(--accent);
-        }
-
-        .toc a {
-            color: var(--ink);
-            text-decoration: none;
-        }
-
-        /* Continuous editorial body: sections can flow across pages. */
-        .content {
-            padding: 0;
-        }
-
-        .content h2 {
-            font-family: "Inter Display", "Inter", sans-serif;
-            font-size: 17.2pt;
-            font-weight: 700;
-            color: var(--heading);
-            line-height: 1.28;
-            letter-spacing: -.024em;
-            margin: 11mm 0 5mm;
-            padding-top: 5.5mm;
-            border-top: .6pt solid var(--line);
-            break-after: avoid;
-        }
-
-        .content h2::before {
-            content: "CHAPTER";
-            display: block;
-            color: var(--accent);
-            font-size: 7pt;
-            font-family: "Inter Display", "Inter", sans-serif;
-            font-weight: 700;
-            line-height: 1;
-            letter-spacing: .19em;
-            margin-bottom: 2.2mm;
-        }
-
-        .content h2:first-child {
-            margin-top: 0;
-            border-top: 0;
-            padding-top: 0;
-        }
-
-        .content h3 {
-            font-family: "Inter Display", "Inter", sans-serif;
-            font-size: 11.6pt;
-            font-weight: 700;
-            line-height: 1.35;
-            letter-spacing: -.012em;
-            color: var(--heading);
-            margin: 7mm 0 2.5mm;
-            break-after: avoid;
-        }
-
-        .content h4, .preface h3 {
-            font-size: 10pt;
-            color: var(--heading);
-            margin: 5mm 0 2mm;
-            break-after: avoid;
-        }
-
-        p {
-            margin: 0 0 3.15mm;
-            orphans: 2;
-            widows: 2;
-        }
-
-        strong, b {
-            font-weight: 700;
-            color: #1a3341;
-        }
-
-        a {
-            color: #23778e;
-            text-decoration: none;
-        }
-
-        hr {
-            height: 0;
-            border: none;
-            border-top: .55pt solid #d9e2e7;
-            margin: 7mm 0;
-        }
-
-        ul, ol {
-            margin: 2.5mm 0 4mm;
-            padding-left: 6mm;
-        }
-
-        li {
-            padding-left: .5mm;
-            margin: 1.5mm 0;
-        }
-
-        li::marker {
-            color: var(--accent);
-        }
-
-        li p {
-            margin: 0;
-        }
-
-        blockquote {
-            background: var(--accent-soft);
-            border-left: 2.5pt solid var(--accent);
-            margin: 4mm 0 6mm;
-            padding: 4mm 5.2mm;
-            color: #2b4654;
-            font-size: 9.4pt;
-            line-height: 1.56;
-        }
-
-        blockquote p {
-            margin-bottom: 2.3mm;
-        }
-
-        blockquote p:last-child {
-            margin-bottom: 0;
-        }
-
-        blockquote strong {
-            color: #143743;
-        }
-
-        table {
-            border-collapse: collapse;
-            table-layout: fixed;
-            width: 100%;
-            font-size: 8pt;
-            line-height: 1.42;
-            color: var(--ink);
-            margin: 3.6mm 0 4.8mm;
-            overflow-wrap: anywhere;
-        }
-
-        thead {
-            display: table-header-group;
-        }
-
-        thead th {
-            background: var(--header);
-            color: #fff;
-            text-align: left;
-            font-weight: 700;
-            padding: 2.2mm 2.4mm;
-            vertical-align: top;
-            border-right: 1pt solid rgba(255, 255, 255, .04);
-        }
-
-        thead th strong {
-            color: #fff;
-        }
-
-        tbody td {
-            border-bottom: .35pt solid #e3e9ed;
-            padding: 2.3mm 2.4mm;
-            vertical-align: top;
-        }
-
-        tbody tr:nth-child(even) {
-            background: var(--zebra);
-        }
-
-        tr {
-            break-inside: avoid;
-        }
-
-        table.wide {
-            font-size: 7.15pt;
-        }
-
-        table.wide th, table.wide td {
-            padding: 1.8mm;
-        }
-
-        code {
-            font-family: "DejaVu Sans Mono", monospace;
-            font-size: .91em;
-            color: #22445a;
-        }
-
-        pre {
-            color: #dce9f0;
-            background: #173746;
-            padding: 4mm 5mm;
-            font-size: 8.3pt;
-            line-height: 1.55;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-            margin: 4mm 0;
-        }
-
-        pre code {
-            color: inherit;
-        }
-
-        .task-list-item {
-            list-style: none;
-            margin-left: -5mm;
-        }
-
-        .task-box {
-            display: inline-block;
-            border: .85pt solid #7b8b93;
-            width: 2.6mm;
-            height: 2.6mm;
-            margin-right: 3mm;
-            vertical-align: baseline;
-        }
-
-        .task-box.checked {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .caption {
-            color: var(--muted);
-            font-size: 7.8pt;
-        }
-
-        @media screen {
-            body {
-                max-width: 210mm;
-                margin: 0 auto;
-                box-shadow: 0 0 25px #ddd;
-            }
-        }
-
-    
-:root{--accent:#64C8E6;--accent-soft:#EAF8FC;}@page{@top-right{content:"AI DESIGN #73 — UNIFIED ENTERPRISE AGENTIC PLATFORM";}@bottom-left{content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";}}
-@media screen{body{max-width:210mm;margin:0 auto;box-shadow:0 0 20px #dce2e6;}}</style></head><body><section class="cover"><div class="cover-brand">THE ARCHITECT&#39;S FIELD NOTES</div><div class="cover-series">BEHAVIORAL INTERVIEW STUDY GUIDE &nbsp;/&nbsp; 01 OF 02</div><div class="cover-accent-bar"></div><div class="cover-title long">AI Design #73 — Unified<span class="second">Enterprise Agentic Platform</span></div><div class="cover-sub">THINK CLEARLY. DECIDE WITH EVIDENCE. DELIVER WITH CONFIDENCE.<div class="cover-note">Evidence-based STAR answers, senior-level judgment, and focused interview rehearsal.</div></div><div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR SENIOR / PRINCIPAL SOLUTION ARCHITECT INTERVIEWS<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div><div class="cover-number">01</div></section><section class="preface"><div class="preface-label">YOUR STUDY COMPANION</div><p><strong>Capstone:</strong> Enterprise IT Operations Assistant</p>
+:root{--accent:#205d49;--accent-dark:#174c3a;--wash:#eff8f3;--ink:#25362e;--muted:#596c61;--line:#d5e6db;--bg:#f3f8f5;--soft:#f8fcf9;--zebra:#f7fbf8;--rule:#e0ece4;--rule-strong:#d3e5d9;--control-border:#bad3c4;--code-block-bg:#f3f9f5;--code-border:#d2e5d8;--code-ink:#214d3a;--code-inline-bg:#e8f4eb;--shadow-soft:rgba(28,77,53,.05);--shadow-strong:rgba(28,77,53,.18);--cover-bg:#205d49;--cover-accent:#89d2a9;--cover-brand:#eaf8ef;--cover-series:#b9dacb;--cover-sub:#e2f2e9;--cover-note:#c4e4d3;--cover-bottom:#d5ebdf;--accent-soft:var(--wash);--heading:var(--accent-dark);--header:var(--accent-dark)}@page{@top-right{content:"AI DESIGN #73 — UNIFIED ENTERPRISE AGENTIC PLATFORM";}@bottom-left{content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";}}</style></head><body><div class="cover-stage"><section class="cover"><div class="cover-brand">THE ARCHITECT&#39;S FIELD NOTES</div><div class="cover-series">STUDY GUIDE &nbsp;/&nbsp; 01 OF 01</div><div class="cover-accent-bar"></div><div class="cover-title long">AI Design #73 — Unified<span class="second">Enterprise Agentic Platform</span></div><div class="cover-sub">THINK CLEARLY. DECIDE WITH EVIDENCE. DELIVER WITH CONFIDENCE.<div class="cover-note">A structured, print-ready study guide.</div></div><div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR SENIOR / PRINCIPAL SOLUTION ARCHITECT INTERVIEWS<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div><div class="cover-number">01</div></section></div><div class="guide-layout"><nav class="guide-side" aria-label="Guide navigation"><h2>Study guide</h2><a href="#overview">Overview &amp; contents</a><details class="guide-jump"><summary>Jump to section</summary><div class="guide-jump-list" aria-label="Chapter and section links"><a class="guide-jump-overview" href="#overview">Overview &amp; contents</a><a href="#chapter-card-1">01 · Minimal component architecture</a><a class="guide-jump-section" href="#11-logical-components">1.1 Logical components</a><a class="guide-jump-section" href="#why-each-component-exists">Why each component exists</a><a href="#chapter-card-2">02 · Ownership by component</a><a href="#chapter-card-3">03 · Define the API and typed tool contracts</a><a class="guide-jump-section" href="#contract-a-investigation-api">Contract A — Investigation API</a><a class="guide-jump-section" href="#contract-b-read-only-tools">Contract B — Read-only tools</a><a class="guide-jump-section" href="#example-tool-outputs">Example tool outputs</a><a href="#chapter-card-4">04 · Happy-path request sequence</a><a class="guide-jump-section" href="#contract-c-investigation-result">Contract C — Investigation result</a><a href="#chapter-card-5">05 · Trust boundaries and authorization</a><a href="#chapter-card-6">06 · Failure path — monitoring data unavailable</a><a href="#chapter-card-7">07 · Baseline execution limits</a><a href="#chapter-card-8">08 · What we will implement in Stage 4</a><a href="#chapter-card-9">09 · Stage 3 summary</a><a class="guide-jump-section" href="#next-stage-4-build-a-working-local-mock">Next — Stage 4: Build a Working Local Mock</a></div></details><label class="guide-search-label" for="guide-search">Search chapters</label><input id="guide-search" class="guide-search" type="search" placeholder="Search all chapters…" autocomplete="off" aria-label="Search chapter content"><div class="guide-search-count" role="status" aria-live="polite"></div><div class="guide-progress"><div class="guide-progress-head"><span>Study progress</span><span class="guide-progress-text">0 / 9</span></div><progress value="0" max="9"></progress></div><div class="guide-study-controls"><button type="button" data-study-action="expand">Expand all</button><button type="button" data-study-action="collapse">Collapse all</button><button type="button" data-study-action="backup">Back up progress</button><button type="button" data-study-action="restore">Restore progress</button><button type="button" data-study-action="reset">Reset progress</button></div><input class="guide-study-file" type="file" accept=".json,application/json" aria-label="Select study progress backup"><p class="guide-study-status" role="status" aria-live="polite"></p><a class="guide-chapter-link" href="#chapter-card-1">01 · Minimal component architecture</a><a class="guide-chapter-link" href="#chapter-card-2">02 · Ownership by component</a><a class="guide-chapter-link" href="#chapter-card-3">03 · Define the API and typed tool contracts</a><a class="guide-chapter-link" href="#chapter-card-4">04 · Happy-path request sequence</a><a class="guide-chapter-link" href="#chapter-card-5">05 · Trust boundaries and authorization</a><a class="guide-chapter-link" href="#chapter-card-6">06 · Failure path — monitoring data unavailable</a><a class="guide-chapter-link" href="#chapter-card-7">07 · Baseline execution limits</a><a class="guide-chapter-link" href="#chapter-card-8">08 · What we will implement in Stage 4</a><a class="guide-chapter-link" href="#chapter-card-9">09 · Stage 3 summary</a><p class="guide-storage-note">Progress is saved in this browser when local storage is available.</p><p class="mini">Offline HTML · No external libraries · Light mode · Print-friendly.</p></nav><div class="guide-main"><section class="preface" id="overview"><div class="preface-label">STUDY GUIDE</div><h1 class="guide-title">AI Design #73 — Unified Enterprise Agentic Platform</h1><p class="subtitle">A structured reference for study and review</p><div class="meta"><span class="tag">9 chapters</span><span class="tag">Offline reference</span><span class="tag">Print-ready A4</span></div><p><strong>Capstone:</strong> Enterprise IT Operations Assistant</p>
 <p><code>Stage 3 of 6 — Minimal Working Architecture</code></p>
-<nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol><li><span class="toc-num">01</span><a href="#1-minimal-component-architecture">1. Minimal component architecture</a></li><li><span class="toc-num">02</span><a href="#2-ownership-by-component">2. Ownership by component</a></li><li><span class="toc-num">03</span><a href="#3-define-the-api-and-typed-tool-contracts">3. Define the API and typed tool contracts</a></li><li><span class="toc-num">04</span><a href="#4-happy-path-request-sequence">4. Happy-path request sequence</a></li><li><span class="toc-num">05</span><a href="#5-trust-boundaries-and-authorization">5. Trust boundaries and authorization</a></li><li><span class="toc-num">06</span><a href="#6-failure-path-monitoring-data-unavailable">6. Failure path — monitoring data unavailable</a></li><li><span class="toc-num">07</span><a href="#7-baseline-execution-limits">7. Baseline execution limits</a></li><li><span class="toc-num">08</span><a href="#8-what-we-will-implement-in-stage-4">8. What we will implement in Stage 4</a></li><li><span class="toc-num">09</span><a href="#stage-3-summary">Stage 3 summary</a></li></ol></nav></section><main class="content"><h2 id="1-minimal-component-architecture">1. Minimal component architecture</h2>
+<nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol><li><span class="toc-num">01</span><a href="#chapter-card-1">Minimal component architecture</a></li><li><span class="toc-num">02</span><a href="#chapter-card-2">Ownership by component</a></li><li><span class="toc-num">03</span><a href="#chapter-card-3">Define the API and typed tool contracts</a></li><li><span class="toc-num">04</span><a href="#chapter-card-4">Happy-path request sequence</a></li><li><span class="toc-num">05</span><a href="#chapter-card-5">Trust boundaries and authorization</a></li><li><span class="toc-num">06</span><a href="#chapter-card-6">Failure path — monitoring data unavailable</a></li><li><span class="toc-num">07</span><a href="#chapter-card-7">Baseline execution limits</a></li><li><span class="toc-num">08</span><a href="#chapter-card-8">What we will implement in Stage 4</a></li><li><span class="toc-num">09</span><a href="#chapter-card-9">Stage 3 summary</a></li></ol></nav></section><main class="content"><p class="guide-no-results" hidden>No matching chapters. Clear the search to show all chapters.</p><details class="chapter" open="" id="chapter-card-1"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 01</span><h2 id="1-minimal-component-architecture" data-chapter-label="CHAPTER 01">1. Minimal component architecture</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>We will now turn the Stage 1 requirements and Stage 2 concepts into a concrete system design.</p>
 <p>Our goal is to build the smallest architecture that can:</p>
 <ol start="1"><li>Accept an investigation request for <code>INC-42</code>.</li><li>Retrieve authorized metrics and deployment evidence.</li><li>Use an LLM to analyze the evidence.</li><li>Return findings and a safe recommendation.</li><li>Never modify production.</li></ol>
@@ -600,16 +347,16 @@
 <p>Logical request/data flow, not a deployment topology. Tool responses pass back through the workflow before reaching the model.</p>
 <p><strong>Deployment decision:</strong> The API, workflow, tools, and validator can run in one Python application. They are not required to be separate services.</p>
 <h3 id="why-each-component-exists">Why each component exists</h3>
-<table><thead><tr><th>Component</th><th>Responsibility</th><th>Boundary</th><th>Why we need it</th></tr></thead><tbody><tr><td>Web UI</td><td>Accept request and show findings</td><td></td><td>Human interaction</td></tr><tr><td>Investigation API</td><td>Verify identity and enforce request access</td><td>External user → trusted application.</td><td>Security boundary</td></tr><tr><td>Investigation workflow</td><td>Bound allowed reads and prepare evidence context.</td><td>Model suggestions → application decisions</td><td>Predictable investigation</td></tr><tr><td>Read-only tools</td><td>Access approved operational information</td><td>Application → business source systems</td><td>Controlled integrations</td></tr><tr><td>Source systems</td><td>Own metrics and deployment facts</td><td></td><td>Authoritative evidence</td></tr><tr><td>LLM/Analysis</td><td>Explain evidence, uncertainty and form hypotheses</td><td>Source records → untrusted model output</td><td>Flexible reasoning</td></tr><tr><td>Report validator</td><td>Check structure and evidence references</td><td>Untrusted result → user-visible report</td><td>Reject invalid or unsupported output</td></tr></tbody></table>
+<div class="tablewrap"><table><thead><tr><th>Component</th><th>Responsibility</th><th>Boundary</th><th>Why we need it</th></tr></thead><tbody><tr><td>Web UI</td><td>Accept request and show findings</td><td></td><td>Human interaction</td></tr><tr><td>Investigation API</td><td>Verify identity and enforce request access</td><td>External user → trusted application.</td><td>Security boundary</td></tr><tr><td>Investigation workflow</td><td>Bound allowed reads and prepare evidence context.</td><td>Model suggestions → application decisions</td><td>Predictable investigation</td></tr><tr><td>Read-only tools</td><td>Access approved operational information</td><td>Application → business source systems</td><td>Controlled integrations</td></tr><tr><td>Source systems</td><td>Own metrics and deployment facts</td><td></td><td>Authoritative evidence</td></tr><tr><td>LLM/Analysis</td><td>Explain evidence, uncertainty and form hypotheses</td><td>Source records → untrusted model output</td><td>Flexible reasoning</td></tr><tr><td>Report validator</td><td>Check structure and evidence references</td><td>Untrusted result → user-visible report</td><td>Reject invalid or unsupported output</td></tr></tbody></table></div>
 <p><strong>Design decision:</strong> These components do not need to be separate microservices. The API, workflow, tools and validator can initially live inside one Python application.</p>
 <p>The source systems can be local synthetic JSON files in Stage 4.</p>
-<h2 id="2-ownership-by-component">2. Ownership by component</h2>
+<label class="chapter-completion"><input type="checkbox" data-chapter-complete="1" aria-label="Mark chapter 1 complete">Mark chapter complete</label></div></details><details class="chapter" id="chapter-card-2"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 02</span><h2 id="2-ownership-by-component" data-chapter-label="CHAPTER 02">2. Ownership by component</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>This distinction is more important than the choice of framework.</p>
-<table><thead><tr><th>Data or decision</th><th>Owner</th></tr></thead><tbody><tr><td>Verified user identity</td><td>Authentication system / application</td></tr><tr><td>Access to operational records</td><td>Source-system authorization</td></tr><tr><td>Metric values</td><td>Monitoring system</td></tr><tr><td>Deployment history</td><td>Deployment system</td></tr><tr><td>Investigation execution</td><td>Investigation workflow</td></tr><tr><td>Generated explanation</td><td>LLM output, not authoritative evidence</td></tr><tr><td>Production remediation</td><td>Authorized operations service and human decision-maker</td></tr></tbody></table>
-<table><thead><tr><th>Component</th><th>Owns</th><th>Does not own</th></tr></thead><tbody><tr><td>Investigation API</td><td>Request validation and user-context handling</td><td>The original business records</td></tr><tr><td>Workflow</td><td>Execution order and result state</td><td>User privileges</td></tr><tr><td>Read-only adapters</td><td>Calls into approved systems</td><td>Authorization grants generated by the model</td></tr><tr><td>Source systems</td><td>Metrics and deployment truth</td><td>LLM interpretation</td></tr><tr><td>Analysis component</td><td>Observations, hypotheses, recommendations</td><td>Operational authority</td></tr><tr><td>Report validator</td><td>Output shape and citation existence</td><td>Proof of semantic correctness</td></tr></tbody></table>
+<div class="tablewrap"><table><thead><tr><th>Data or decision</th><th>Owner</th></tr></thead><tbody><tr><td>Verified user identity</td><td>Authentication system / application</td></tr><tr><td>Access to operational records</td><td>Source-system authorization</td></tr><tr><td>Metric values</td><td>Monitoring system</td></tr><tr><td>Deployment history</td><td>Deployment system</td></tr><tr><td>Investigation execution</td><td>Investigation workflow</td></tr><tr><td>Generated explanation</td><td>LLM output, not authoritative evidence</td></tr><tr><td>Production remediation</td><td>Authorized operations service and human decision-maker</td></tr></tbody></table></div>
+<div class="tablewrap"><table><thead><tr><th>Component</th><th>Owns</th><th>Does not own</th></tr></thead><tbody><tr><td>Investigation API</td><td>Request validation and user-context handling</td><td>The original business records</td></tr><tr><td>Workflow</td><td>Execution order and result state</td><td>User privileges</td></tr><tr><td>Read-only adapters</td><td>Calls into approved systems</td><td>Authorization grants generated by the model</td></tr><tr><td>Source systems</td><td>Metrics and deployment truth</td><td>LLM interpretation</td></tr><tr><td>Analysis component</td><td>Observations, hypotheses, recommendations</td><td>Operational authority</td></tr><tr><td>Report validator</td><td>Output shape and citation existence</td><td>Proof of semantic correctness</td></tr></tbody></table></div>
 <p>The assistant can summarize operational facts, but it cannot make itself the source of truth.</p>
 <p>For example, if the LLM reports a deployment time that conflicts with the deployment system, the deployment record wins.</p>
-<h2 id="3-define-the-api-and-typed-tool-contracts">3. Define the API and typed tool contracts</h2>
+<label class="chapter-completion"><input type="checkbox" data-chapter-complete="2" aria-label="Mark chapter 2 complete">Mark chapter complete</label></div></details><details class="chapter" id="chapter-card-3"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 03</span><h2 id="3-define-the-api-and-typed-tool-contracts" data-chapter-label="CHAPTER 03">3. Define the API and typed tool contracts</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>A contract describes the inputs and outputs a component expects.</p>
 <p>Contracts let us develop and test components independently. They also reduce the chance that the model receives unexpected data.</p>
 <p>For now, these are proposed application-level contracts, not MCP protocol definitions.</p>
@@ -681,9 +428,9 @@ def get_deployments(
   }
 ]</code></pre>
 <p>All records are fictional. Production contracts will also need complete timestamps, source provenance and explicit error types.</p>
-<h2 id="4-happy-path-request-sequence">4. Happy-path request sequence</h2>
+<label class="chapter-completion"><input type="checkbox" data-chapter-complete="3" aria-label="Mark chapter 3 complete">Mark chapter complete</label></div></details><details class="chapter" id="chapter-card-4"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 04</span><h2 id="4-happy-path-request-sequence" data-chapter-label="CHAPTER 04">4. Happy-path request sequence</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>We now walk through one successful investigation.</p>
-<table><thead><tr><th>Step</th><th>Component</th><th>Operation</th></tr></thead><tbody><tr><td>1</td><td>Engineer</td><td>Sends investigation request for INC-42</td></tr><tr><td>2</td><td>Investigation API</td><td>Authenticates and verifies incident access</td></tr><tr><td>3</td><td>Workflow</td><td>Calls <code>get_metrics</code> with the verified identity</td></tr><tr><td>4</td><td>Monitoring system</td><td>Authorizes access and returns <code>METRIC-07</code></td></tr><tr><td>5</td><td>Workflow</td><td>Calls <code>get_deployments</code></td></tr><tr><td>6</td><td>Deployment system</td><td>Authorizes access and returns <code>CHANGE-03</code></td></tr><tr><td>7</td><td>Workflow</td><td>Builds a context containing only relevant evidence</td></tr><tr><td>8</td><td>LLM</td><td>Produces observations, hypotheses and next steps</td></tr><tr><td>9</td><td>Validator</td><td>Checks required fields and cited evidence IDs</td></tr><tr><td>10</td><td>Engineer</td><td>Receives the report for review</td></tr></tbody></table>
+<div class="tablewrap"><table><thead><tr><th>Step</th><th>Component</th><th>Operation</th></tr></thead><tbody><tr><td>1</td><td>Engineer</td><td>Sends investigation request for INC-42</td></tr><tr><td>2</td><td>Investigation API</td><td>Authenticates and verifies incident access</td></tr><tr><td>3</td><td>Workflow</td><td>Calls <code>get_metrics</code> with the verified identity</td></tr><tr><td>4</td><td>Monitoring system</td><td>Authorizes access and returns <code>METRIC-07</code></td></tr><tr><td>5</td><td>Workflow</td><td>Calls <code>get_deployments</code></td></tr><tr><td>6</td><td>Deployment system</td><td>Authorizes access and returns <code>CHANGE-03</code></td></tr><tr><td>7</td><td>Workflow</td><td>Builds a context containing only relevant evidence</td></tr><tr><td>8</td><td>LLM</td><td>Produces observations, hypotheses and next steps</td></tr><tr><td>9</td><td>Validator</td><td>Checks required fields and cited evidence IDs</td></tr><tr><td>10</td><td>Engineer</td><td>Receives the report for review</td></tr></tbody></table></div>
 <h3 id="contract-c-investigation-result">Contract C — Investigation result</h3>
 <pre><code>{
   "run_id": "RUN-42",
@@ -715,13 +462,13 @@ def get_deployments(
 }</code></pre>
 <p>Here, <code>needs_review</code> means the investigation has findings for human review. It does not mean the incident has been resolved or that an operational change is authorized.</p>
 <p>The validator can check that <code>METRIC-07</code> and <code>CHANGE-03</code> really exist in the retrieved evidence. It cannot, by itself, prove that the hypothesis is correct.</p>
-<h2 id="5-trust-boundaries-and-authorization">5. Trust boundaries and authorization</h2>
+<label class="chapter-completion"><input type="checkbox" data-chapter-complete="4" aria-label="Mark chapter 4 complete">Mark chapter complete</label></div></details><details class="chapter" id="chapter-card-5"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 05</span><h2 id="5-trust-boundaries-and-authorization" data-chapter-label="CHAPTER 05">5. Trust boundaries and authorization</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>There are three important boundaries.</p>
-<table><thead><tr><th>Boundary</th><th>What must happen</th></tr></thead><tbody><tr><td>User → Investigation API</td><td>Authenticate the caller and verify incident access</td></tr><tr><td>Workflow → Source systems</td><td>Enforce permitted tool operations and source-level authorization</td></tr><tr><td>Retrieved evidence → LLM</td><td>Treat results as untrusted data and prevent them from becoming instructions</td></tr></tbody></table>
+<div class="tablewrap"><table><thead><tr><th>Boundary</th><th>What must happen</th></tr></thead><tbody><tr><td>User → Investigation API</td><td>Authenticate the caller and verify incident access</td></tr><tr><td>Workflow → Source systems</td><td>Enforce permitted tool operations and source-level authorization</td></tr><tr><td>Retrieved evidence → LLM</td><td>Treat results as untrusted data and prevent them from becoming instructions</td></tr></tbody></table></div>
 <p><strong>Example:</strong> The engineer may be authorized to inspect Checkout API but not the Payroll API.</p>
 <p>Even if the LLM requests <code>get_metrics("payroll-api")</code>, the application and monitoring service must deny the unauthorized request.</p>
 <p>A prompt saying "only access Checkout API" is not sufficient security.</p>
-<h2 id="6-failure-path-monitoring-data-unavailable">6. Failure path — monitoring data unavailable</h2>
+<label class="chapter-completion"><input type="checkbox" data-chapter-complete="5" aria-label="Mark chapter 5 complete">Mark chapter complete</label></div></details><details class="chapter" id="chapter-card-6"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 06</span><h2 id="6-failure-path-monitoring-data-unavailable" data-chapter-label="CHAPTER 06">6. Failure path — monitoring data unavailable</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>Suppose the monitoring system times out while the deployment tool succeeds.</p>
 <pre><code>+----------------------------+
 | Investigation starts       |
@@ -765,13 +512,13 @@ def get_deployments(
 }</code></pre>
 <p>This is a deliberate reliability choice: partial evidence must not become a confident conclusion.</p>
 <p>If <strong>authorization</strong> fails, the workflow must stop <strong>before</strong> protected data reaches the model. The API must return an access-denied result and must not disclose incident evidence to the model.</p>
-<h2 id="7-baseline-execution-limits">7. Baseline execution limits</h2>
+<label class="chapter-completion"><input type="checkbox" data-chapter-complete="6" aria-label="Mark chapter 6 complete">Mark chapter complete</label></div></details><details class="chapter" id="chapter-card-7"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 07</span><h2 id="7-baseline-execution-limits" data-chapter-label="CHAPTER 07">7. Baseline execution limits</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>Keep execution bounded: Our first version has a proposed execution budget:</p>
-<table><thead><tr><th>Control</th><th>Initial rule</th></tr></thead><tbody><tr><td>Tool calls</td><td>One metrics read and one deployment-history read</td></tr><tr><td>Model calls</td><td>One analysis call</td></tr><tr><td>Production write tools</td><td>None</td></tr><tr><td>Source failure</td><td>Explicit incomplete-evidence result</td></tr><tr><td>Invalid citations</td><td>Reject or regenerate within a defined budget</td></tr><tr><td>Remediation</td><td>Human review, outside the initial execution path</td></tr></tbody></table>
+<div class="tablewrap"><table><thead><tr><th>Control</th><th>Initial rule</th></tr></thead><tbody><tr><td>Tool calls</td><td>One metrics read and one deployment-history read</td></tr><tr><td>Model calls</td><td>One analysis call</td></tr><tr><td>Production write tools</td><td>None</td></tr><tr><td>Source failure</td><td>Explicit incomplete-evidence result</td></tr><tr><td>Invalid citations</td><td>Reject or regenerate within a defined budget</td></tr><tr><td>Remediation</td><td>Human review, outside the initial execution path</td></tr></tbody></table></div>
 <p>These are design choices for the local baseline, not enterprise service limits.</p>
 <p>We also do not need autonomous tool selection yet. A fixed workflow is more predictable because we already know which two records to retrieve.</p>
 <p>Later, if the assistant needs to decide whether to inspect logs, database connections or deployment changes based on intermediate evidence, we can replace the fixed sequence with a bounded adaptive agent.</p>
-<h2 id="8-what-we-will-implement-in-stage-4">8. What we will implement in Stage 4</h2>
+<label class="chapter-completion"><input type="checkbox" data-chapter-complete="7" aria-label="Mark chapter 7 complete">Mark chapter complete</label></div></details><details class="chapter" id="chapter-card-8"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 08</span><h2 id="8-what-we-will-implement-in-stage-4" data-chapter-label="CHAPTER 08">8. What we will implement in Stage 4</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>The local mock will use this small structure:</p>
 <pre><code>it-ops-assistant/
 |
@@ -792,7 +539,7 @@ def get_deployments(
     +-- test_investigation.py</code></pre>
 <p>We will create synthetic source records, wire the two tools to the workflow, and display the investigation result. We will also test unauthorized access and missing evidence.</p>
 <p>No real production credentials or infrastructure will be needed.</p>
-<h2 id="stage-3-summary">Stage 3 summary</h2>
+<label class="chapter-completion"><input type="checkbox" data-chapter-complete="8" aria-label="Mark chapter 8 complete">Mark chapter complete</label></div></details><details class="chapter" id="chapter-card-9"><summary class="chapter-summary"><div class="section-head"><span class="stage">CHAPTER 09</span><h2 id="stage-3-summary" data-chapter-label="CHAPTER 09">Stage 3 summary</h2><span class="chapter-complete-indicator">Completed</span><span class="chapter-caret" aria-hidden="true">⌄</span></div></summary><div class="chapter-body">
 <p>We established the smallest useful design:</p>
 <p>Engineer → Authorized API → Bounded workflow → Two read-only tools → Evidence → LLM → Validated report</p>
 <p>The important architectural decisions are:</p>
@@ -800,4 +547,183 @@ def get_deployments(
 <hr>
 <h3 id="next-stage-4-build-a-working-local-mock">Next — Stage 4: Build a Working Local Mock</h3>
 <p>We will implement this design in Python, using synthetic metrics and deployment records. We will make the request and tool outputs visible and verify the behavior with software tests.</p>
-<p>Continue to Stage 4</p></main></body></html>
+<p>Continue to Stage 4</p><label class="chapter-completion"><input type="checkbox" data-chapter-complete="9" aria-label="Mark chapter 9 complete">Mark chapter complete</label></div></details></main></div></div><script>
+/* Reusable offline study reader, shared by publisher preview and exported HTML. */
+window.initStudyGuide = function(root, key) {
+    'use strict';
+    const chapters = Array.from(root.querySelectorAll('details.chapter'));
+    const sidebar = root.querySelector('.guide-side');
+    if (!sidebar) return function(){};
+    const search = sidebar.querySelector('.guide-search');
+    const count = sidebar.querySelector('.guide-search-count');
+    const progress = sidebar.querySelector('progress');
+    const progressText = sidebar.querySelector('.guide-progress-text');
+    const noResults = root.querySelector('.guide-no-results');
+    const checks = chapters.map(c => c.querySelector('[data-chapter-complete]'));
+    const links = Array.from(sidebar.querySelectorAll('.guide-chapter-link'));
+    const jump = sidebar.querySelector('.guide-jump');
+    const restoreFile = sidebar.querySelector('.guide-study-file');
+    const status = sidebar.querySelector('.guide-study-status');
+    const format = 'architect-field-notes-study-progress';
+    const version = 1;
+    let saved = {};
+    let storageAvailable = true;
+    try {
+        const parsed = JSON.parse(localStorage.getItem(key) || '{}');
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) saved = parsed;
+    } catch (_) { storageAvailable = false; }
+    const showStatus = (message, error) => {
+        status.textContent = message;
+        status.dataset.error = error ? 'true' : 'false';
+    };
+    if (!storageAvailable) showStatus('Browser storage is unavailable. Use Back up progress to save a copy.', true);
+    const persist = () => {
+        try { localStorage.setItem(key, JSON.stringify(saved)); storageAvailable = true; }
+        catch (_) { storageAvailable = false; showStatus('Browser storage is unavailable. Back up progress before closing this page.', true); }
+    };
+    const updateProgress = () => {
+        const n = checks.filter(c => c && c.checked).length;
+        progress.value = n;
+        progressText.textContent = n + ' / ' + chapters.length + ' complete';
+        progress.setAttribute('aria-label', n + ' of ' + chapters.length + ' chapters complete');
+        chapters.forEach((chapter, i) => {
+            const indicator = chapter.querySelector('.chapter-complete-indicator');
+            if (indicator) indicator.classList.toggle('is-done', !!(checks[i] && checks[i].checked));
+        });
+    };
+    const syncChecks = () => {
+        checks.forEach((check, i) => { if (check) check.checked = saved[String(i + 1)] === true; });
+        updateProgress();
+    };
+    checks.forEach((check, i) => {
+        if (!check) return;
+        check.addEventListener('change', () => {
+            if (check.checked) saved[String(i + 1)] = true;
+            else delete saved[String(i + 1)];
+            persist(); updateProgress();
+        });
+    });
+    syncChecks();
+    let originalOpen = null;
+    const applySearch = () => {
+        const q = search.value.trim().toLocaleLowerCase();
+        if (q && !originalOpen) originalOpen = chapters.map(c => c.open);
+        let visible = 0;
+        chapters.forEach((chapter, i) => {
+            const match = !q || chapter.textContent.toLocaleLowerCase().includes(q);
+            chapter.hidden = !match;
+            if (links[i]) links[i].hidden = !match;
+            if (match) { visible++; if (q) chapter.open = true; }
+        });
+        if (!q && originalOpen) {
+            chapters.forEach((chapter, i) => { chapter.open = originalOpen[i]; });
+            originalOpen = null;
+        }
+        count.textContent = q ? visible + ' of ' + chapters.length + ' chapters match' : 'All ' + chapters.length + ' chapters shown';
+        if (noResults) noResults.hidden = visible !== 0;
+    };
+    search.addEventListener('input', applySearch);
+    applySearch();
+    sidebar.querySelector('[data-study-action="expand"]').addEventListener('click', () => {
+        chapters.filter(c => !c.hidden).forEach(c => { c.open = true; });
+        if (originalOpen) originalOpen = chapters.map(c => c.open);
+    });
+    sidebar.querySelector('[data-study-action="collapse"]').addEventListener('click', () => {
+        chapters.filter(c => !c.hidden).forEach(c => { c.open = false; });
+        if (originalOpen) originalOpen = chapters.map(c => c.open);
+    });
+    const safeName = (root.querySelector('.guide-title')?.textContent || 'study-guide')
+        .toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 65) || 'study-guide';
+    sidebar.querySelector('[data-study-action="backup"]').addEventListener('click', () => {
+        const completed = checks.flatMap((check, i) => check && check.checked ? [i + 1] : []);
+        const payload = {format, version, documentKey:key, title:root.querySelector('.guide-title')?.textContent || '',
+            chapterCount:chapters.length, completed};
+        const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'}));
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = safeName + '-progress.json';
+        document.body.appendChild(anchor);
+        anchor.click(); anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showStatus('Progress backup downloaded (' + completed.length + ' completed).', false);
+    });
+    sidebar.querySelector('[data-study-action="restore"]').addEventListener('click', () => restoreFile.click());
+    restoreFile.addEventListener('change', async () => {
+        const file = restoreFile.files && restoreFile.files[0];
+        if (!file) return;
+        try {
+            if (file.size > 1024 * 1024) throw new Error('The backup file is too large.');
+            const data = JSON.parse(await file.text());
+            if (!data || data.format !== format || data.version !== version ||
+                data.documentKey !== key || data.chapterCount !== chapters.length ||
+                !Array.isArray(data.completed) ||
+                data.completed.some(n => !Number.isInteger(n) || n < 1 || n > chapters.length) ||
+                new Set(data.completed).size !== data.completed.length) {
+                throw new Error('This is not a valid backup for this exact Markdown guide.');
+            }
+            if (!window.confirm('Replace current study progress with the backup (' + data.completed.length + ' completed chapters)?')) return;
+            saved = {};
+            data.completed.forEach(n => { saved[String(n)] = true; });
+            syncChecks(); persist();
+            if (storageAvailable) showStatus('Progress restored: ' + data.completed.length + ' chapters completed.', false);
+        } catch (error) {
+            showStatus(error.message || 'Could not restore progress.', true);
+        } finally { restoreFile.value = ''; }
+    });
+    sidebar.querySelector('[data-study-action="reset"]').addEventListener('click', () => {
+        if (!window.confirm('Reset all completed chapters for this guide? Back up first if you want to restore them later.')) return;
+        saved = {};
+        syncChecks(); persist();
+        if (storageAvailable) showStatus('Progress reset for this guide.', false);
+    });
+    const onNavClick = event => {
+        const anchor = event.target.closest('a[href^="#"]');
+        if (!anchor || !root.contains(anchor)) return;
+        const id = anchor.getAttribute('href').slice(1);
+        const target = root.querySelector('#' + (window.CSS && CSS.escape ? CSS.escape(id) : id));
+        if (!target) return;
+        const chapter = target.closest('details.chapter');
+        if (chapter) {
+            if (chapter.hidden) { search.value = ''; applySearch(); }
+            chapter.open = true;
+        }
+        if (jump && jump.open) jump.open = false;
+        // Opening a collapsed chapter changes document geometry. Scroll after layout.
+        event.preventDefault();
+        requestAnimationFrame(() => {
+            target.scrollIntoView({block:'start', behavior:'smooth'});
+            try { history.replaceState(null, '', '#' + encodeURIComponent(id)); } catch (_) {}
+        });
+    };
+    root.addEventListener('click', onNavClick);
+    const onStorage = event => {
+        if (event.key !== key) return;
+        try {
+            const parsed = JSON.parse(event.newValue || '{}');
+            saved = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+        } catch (_) { saved = {}; }
+        syncChecks();
+    };
+    window.addEventListener('storage', onStorage);
+    let printSnapshot = null;
+    const openForPrint = () => {
+        if (printSnapshot) return;
+        printSnapshot = chapters.map(c => ({open:c.open,hidden:c.hidden}));
+        chapters.forEach(c => { c.hidden = false; c.open = true; });
+    };
+    const restoreAfterPrint = () => {
+        if (!printSnapshot) return;
+        chapters.forEach((c, i) => { c.open = printSnapshot[i].open; c.hidden = printSnapshot[i].hidden; });
+        printSnapshot = null;
+    };
+    window.addEventListener('beforeprint', openForPrint);
+    window.addEventListener('afterprint', restoreAfterPrint);
+    return () => {
+        window.removeEventListener('storage', onStorage);
+        window.removeEventListener('beforeprint', openForPrint);
+        window.removeEventListener('afterprint', restoreAfterPrint);
+    };
+};
+
+window.initStudyGuide(document.body,"field-notes-study-v6-7da61a89");
+(function(){function resize(){document.querySelectorAll(".cover-stage").forEach(function(stage){var cover=stage.querySelector(".cover");if(!cover)return;var r=Math.min(1,stage.clientWidth/(210*96/25.4));cover.style.transformOrigin="top left";cover.style.transform="scale("+r+")";stage.style.height=(297*96/25.4*r)+"px";});}window.addEventListener("resize",resize);resize();})();</script></body></html>

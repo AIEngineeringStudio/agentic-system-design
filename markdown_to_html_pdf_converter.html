@@ -3,30 +3,32 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Architect's Field Notes · Study Guide Template Converter v10</title>
+    <title>Architect's Field Notes · Offline Markdown Publisher</title>
     <style id="skill-css">
 
 /* Adapted from the user-provided AI Design #73 study-guide template.
    Field Notes cover design is preserved, with theme-matched green and amber editions. */
+/* Shared design tokens: Forest Green is the first-render and no-JavaScript default.
+   Other palettes are applied by FieldNotesThemes from one central registry. */
 :root {
- --ink:#1c2936; --muted:#566776; --line:#d7e1e8;
- --paper:#fff; --bg:#f4f7f9; --accent:#205a7c;
- --accent-dark:#143e58; --wash:#eaf2f7; --soft:#fafbfc;
- /* Exact green/amber tokens from the supplied AI Design #73 HTML. */
+ --paper:#fff; --on-accent:#fff;
+ --radius-control:7px; --radius-card:13px;
+ --accent:#205d49; --accent-dark:#174c3a; --wash:#eff8f3; --accent-soft:var(--wash);
+ --ink:#25362e; --muted:#596c61; --line:#d5e6db;
+ --bg:#f3f8f5; --soft:#f8fcf9; --zebra:#f7fbf8;
+ --rule:#e0ece4; --rule-strong:#d3e5d9; --control-border:#bad3c4;
+ --code-block-bg:#f3f9f5; --code-border:#d2e5d8;
+ --code-ink:#214d3a; --code-inline-bg:#e8f4eb;
+ --shadow-soft:rgba(28,77,53,.05); --shadow-strong:rgba(28,77,53,.18);
  --amber:#79551e; --amber-wash:#fff8e8; --amber-border:#b68226;
  --good:#205d49; --good-wash:#eff8f3; --good-border:#3e9370;
- --navy:#112c3a; --cover-bg:var(--navy); --cover-accent:var(--accent);
- --cover-brand:#dceaf0; --cover-series:#98b3c1;
- --cover-sub:#bdcdd5; --cover-note:#91aab7; --cover-bottom:#cfdae0;
+ --danger:#9a4a23; --danger-border:#d6ad94; --danger-wash:#fff9f3;
+ --cover-bg:#205d49; --cover-accent:#89d2a9; --cover-title:#fff;
+ --cover-brand:#eaf8ef; --cover-series:#b9dacb; --cover-sub:#e2f2e9;
+ --cover-note:#c4e4d3; --cover-bottom:#d5ebdf;
  --heading:var(--accent-dark); --header:var(--accent-dark);
- --accent-soft:var(--wash);
- /* All surfaces, borders, typography, controls and code use theme tokens. */
- --rule:#e3eaf0; --rule-strong:#e1eaf0;
- --control-border:#cbd7dc; --zebra:#fafbfd;
- --code-block-bg:#f8fafc; --code-border:#d9e4eb;
- --code-ink:#17334b; --code-inline-bg:#eef3f6;
- --shadow-soft:#1935490a; --shadow-strong:#19354928;
 }
+
 @page {
  size:A4; margin:14mm 12mm;
  @top-left {content:"INTERVIEW / FIELD GUIDE";color:var(--muted);font:7pt system-ui,sans-serif;letter-spacing:.04em;vertical-align:middle}
@@ -55,7 +57,7 @@ strong,b{font-weight:720}
             overflow: hidden;
             position: relative;
             background: var(--cover-bg);
-            color: #fff;
+            color: var(--cover-title);
             padding: 29.6mm 26mm;
         }
         .cover::before, .cover::after {
@@ -83,7 +85,7 @@ strong,b{font-weight:720}
             position:absolute; left:25.5mm; right:25mm; top:97mm;
             font-family:"Inter Display", "Inter", "DejaVu Sans", sans-serif;
             font-size:42pt; font-weight:800; letter-spacing:-.043em;
-            line-height:1.08; color:#fff;
+            line-height:1.08; color:var(--cover-title);
         }
         .cover-title .second { display:block; color:var(--cover-accent); }
         .cover-title.long { font-size:37pt; }
@@ -114,13 +116,13 @@ strong,b{font-weight:720}
 
 
 .guide-layout{display:grid;grid-template-columns:230px minmax(0,960px);gap:28px;max-width:1280px;margin:0 auto;padding:26px}
-.guide-side{align-self:start;position:sticky;top:18px;padding:22px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 15px var(--shadow-soft);max-height:calc(100vh - 36px);overflow:auto}
+.guide-side{align-self:start;position:sticky;top:18px;padding:22px 16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 15px var(--shadow-soft);max-height:calc(100vh - 36px);overflow:auto}
 .guide-side h2{font-size:13px;letter-spacing:.09em;color:var(--accent-dark);text-transform:uppercase;margin:0 8px 12px}
 .guide-side a{display:block;text-decoration:none;padding:8px 10px;margin:2px 0;border-radius:6px;color:var(--ink);font-size:13px;line-height:1.45}
 .guide-side a:hover,.guide-side a:focus-visible{background:var(--wash);outline:0}
 .guide-side .mini{margin:14px 8px 0;border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--muted)}
 .guide-main{min-width:0}
-.preface{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:13px;padding:30px 36px 27px;margin:0 0 19px}
+.preface{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:var(--radius-card);padding:30px 36px 27px;margin:0 0 19px}
 .preface-label,.toc-overline{font-size:12px;color:var(--accent-dark);font-weight:800;letter-spacing:.11em;text-transform:uppercase}
 .preface .guide-title{font-size:clamp(28px,4vw,43px);line-height:1.1;letter-spacing:-.035em;margin:12px 0 8px;color:var(--ink)}
 .preface .subtitle{font-size:18px;color:var(--muted);margin:0 0 18px}
@@ -135,9 +137,9 @@ strong,b{font-weight:720}
 .toc-num{font-size:11px;font-weight:800;color:var(--accent);flex:0 0 27px}
 .toc a{text-decoration:none;color:var(--ink);font-size:13px}
 .content{min-width:0}
-.content .chapter{background:#fff;border:1px solid var(--line);border-radius:13px;padding:28px 35px;margin:18px 0;scroll-margin-top:20px}
+.content .chapter{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);padding:28px 35px;margin:18px 0;scroll-margin-top:20px}
 .content .section-head{display:flex;gap:12px;align-items:center;padding-bottom:11px;border-bottom:2px solid var(--rule-strong);margin-bottom:18px}
-.stage{font-size:12px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--accent);padding:7px 9px;border-radius:6px;white-space:nowrap}
+.stage{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--on-accent);background:var(--accent);padding:7px 9px;border-radius:6px;white-space:nowrap}
 .content h2{font-size:18px;line-height:1.23;margin:0;letter-spacing:-.02em;color:var(--ink);break-after:avoid}
 .content h3{font-size:17px;margin:24px 0 8px;color:var(--accent-dark);break-after:avoid}
 .content h4{font-size:14px;margin:18px 0 8px;color:var(--accent-dark);break-after:avoid}
@@ -156,7 +158,8 @@ blockquote.caution,.note.caution{border-left-color:var(--amber-border);backgroun
 blockquote.good,.note.good{border-left-color:var(--good-border);background:var(--good-wash)}
 blockquote.good strong,blockquote.caution strong{display:block;margin-bottom:3px}
 .tablewrap{overflow-x:auto;margin:13px 0 19px;border:1px solid var(--line);border-radius:8px}
-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+/* Let the browser allocate width from actual cell content instead of equal columns. */
+table{width:100%;border-collapse:collapse;table-layout:auto;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
 .tablewrap table{margin:0}
 th{text-align:left;color:var(--accent-dark);background:var(--wash);font-size:12px;line-height:1.35}
 th,td{padding:10px 12px;vertical-align:top;border-bottom:1px solid var(--rule)}
@@ -191,7 +194,7 @@ img{max-width:100%;height:auto}
 @media print{
  :root{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  html{scroll-behavior:auto}
- body{background:#fff;font-size:10.2pt;line-height:1.42}
+ body{background:var(--paper);font-size:10.2pt;line-height:1.42}
  .cover-stage{width:210mm!important;height:297mm!important;overflow:visible;break-after:page}
  .cover{transform:none!important;page:cover;break-after:page;width:210mm;height:297mm}
  .guide-layout{display:block;max-width:none;margin:0;padding:0}
@@ -231,28 +234,28 @@ img{max-width:100%;height:auto}
  .chapter-completion{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);margin-top:23px;padding-top:14px;font-size:13px;font-weight:700;color:var(--accent-dark)}
  .chapter-completion input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
  .guide-search-label{display:block;margin:15px 8px 5px;font-size:12px;font-weight:800;color:var(--accent-dark)}
- .guide-search{display:block;width:100%;min-width:0;border:1px solid var(--control-border);border-radius:7px;padding:9px 10px;font:inherit;font-size:13px;background:white;color:var(--ink)}
+ .guide-search{display:block;width:100%;min-width:0;border:1px solid var(--control-border);border-radius:var(--radius-control);padding:9px 10px;font:inherit;font-size:13px;background:var(--paper);color:var(--ink)}
  .guide-search:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
  .guide-search-count{font-size:11px;color:var(--muted);margin:5px 8px 12px;min-height:1.4em}
  .guide-progress{border:1px solid var(--line);background:var(--soft);border-radius:9px;padding:12px;margin:12px 0 14px}
  .guide-progress-head{display:flex;justify-content:space-between;gap:6px;font-size:12px;font-weight:750;color:var(--accent-dark)}
  .guide-progress progress{width:100%;height:11px;accent-color:var(--accent);margin-top:8px}
  .guide-study-controls{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
- .guide-study-controls button{border:1px solid var(--control-border);background:#fff;color:var(--accent-dark);border-radius:7px;padding:6px 8px;font-size:11px;font-weight:700;line-height:1.4;cursor:pointer}
+ .guide-study-controls button{border:1px solid var(--control-border);background:var(--paper);color:var(--accent-dark);border-radius:var(--radius-control);padding:6px 8px;font-size:11px;font-weight:700;line-height:1.4;cursor:pointer}
  .guide-study-controls button:hover{background:var(--wash)}
  .guide-jump{position:relative;margin:10px 0 13px}
- .guide-jump>summary{list-style:none;cursor:pointer;border:1px solid var(--control-border);background:var(--wash);color:var(--accent-dark);border-radius:7px;padding:10px 12px;font-size:12px;font-weight:800}
+ .guide-jump>summary{list-style:none;cursor:pointer;border:1px solid var(--control-border);background:var(--wash);color:var(--accent-dark);border-radius:var(--radius-control);padding:10px 12px;font-size:12px;font-weight:800}
  .guide-jump>summary::-webkit-details-marker{display:none}
  .guide-jump>summary::after{content:" ▾";float:right}
  .guide-jump[open]>summary::after{content:" ▴"}
- .guide-jump-list{max-height:min(55vh,430px);overflow-y:auto;border:1px solid var(--control-border);border-radius:7px;margin-top:5px;padding:5px;background:var(--paper)}
+ .guide-jump-list{max-height:min(55vh,430px);overflow-y:auto;border:1px solid var(--control-border);border-radius:var(--radius-control);margin-top:5px;padding:5px;background:var(--paper)}
  .guide-jump-list a{display:block;margin:0;padding:7px 8px;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
  .guide-jump-list .guide-jump-section{padding-left:20px;color:var(--muted);font-size:11.5px}
  .guide-jump-list .guide-jump-overview{font-weight:800;border-bottom:1px solid var(--line);margin-bottom:5px}
  .guide-study-controls [data-study-action="backup"],.guide-study-controls [data-study-action="restore"]{flex:1 1 90px}
- .guide-study-controls [data-study-action="reset"]{color:#9a4a23;border-color:#d6ad94;background:#fff9f3}
+ .guide-study-controls [data-study-action="reset"]{color:var(--danger);border-color:var(--danger-border);background:var(--paper)9f3}
  .guide-study-status{font-size:11px;line-height:1.45;color:var(--accent-dark);margin:7px 0;min-height:1.3em}
- .guide-study-status[data-error="true"]{color:#9a4a23}
+ .guide-study-status[data-error="true"]{color:var(--danger)}
  .guide-study-file{display:none!important}
  .content .chapter-body h3[id],.content .chapter-body h4[id]{scroll-margin-top:25px}
 
@@ -280,18 +283,19 @@ img{max-width:100%;height:auto}
  .content details.chapter .section-head{border-bottom:2px solid var(--rule-strong)}
 }
 </style>
-    <style>
+    <style id="publisher-css">
 
-/* Publisher controls use the same light-blue visual language as the template. */
+/* Publisher UI: same component tokens as the reader and printed pages. */
 @media screen{
- .app-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:13px;background:white;padding:16px 26px;border-bottom:1px solid var(--line);box-shadow:0 4px 14px var(--shadow-soft)}
+ .app-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:13px;background:var(--paper);padding:16px 26px;border-bottom:1px solid var(--line);box-shadow:0 4px 14px var(--shadow-soft)}
  .logo{font-size:16px;font-weight:800;color:var(--accent-dark);letter-spacing:-.02em}
  .logo small{display:block;text-transform:uppercase;color:var(--muted);font-weight:700;font-size:10px;letter-spacing:.15em;margin-top:1px}
  .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
- .btn,select,input[type=text]{border:1px solid var(--control-border);background:#fff;color:var(--accent-dark);border-radius:7px;padding:10px 12px;font:inherit;max-width:310px;min-height:41px}
+ .btn,select,input[type=text]{border:1px solid var(--control-border);background:var(--paper);color:var(--accent-dark);border-radius:var(--radius-control);padding:10px 12px;font:inherit;max-width:310px;min-height:41px}
  .btn{cursor:pointer;font-weight:700;white-space:nowrap}
- .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+ .btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
  .btn:disabled,select:disabled{opacity:.48;cursor:not-allowed}
+ :is(.btn,select,input,button):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
  .btn:hover:not(:disabled){filter:brightness(.95)}
  .file-picker{display:inline-flex;align-items:center}
  .file-picker input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
@@ -303,7 +307,7 @@ img{max-width:100%;height:auto}
  .guidance{max-width:1280px;padding:12px 18px;margin:0 auto;color:var(--muted);font-size:12px}
  .app-stage{padding:12px 18px 44px}
  .app-preview{width:100%;max-width:1280px;margin:0 auto;background:transparent;box-shadow:none;overflow:visible}
- .app-empty{margin:54px auto;max-width:690px;text-align:center;background:#fff;border:1px dashed var(--control-border);padding:56px 25px;border-radius:14px}
+ .app-empty{margin:54px auto;max-width:690px;text-align:center;background:var(--paper);border:1px dashed var(--control-border);padding:56px 25px;border-radius:var(--radius-card)}
  .app-empty h1{font-size:25px;line-height:1.3;margin:0 0 10px;color:var(--accent-dark)}
  .app-empty p{margin:0;color:var(--muted);font-size:14px}
  .helper{max-width:680px;margin:18px auto 0;color:var(--muted);font-size:13px;text-align:center}
@@ -324,21 +328,24 @@ img{max-width:100%;height:auto}
 
 </style>
     <style id="theme-style"></style>
-    <!-- Pagination-only overrides. The two original style sheets above remain unchanged in behavior. -->
+    <!-- Pagination-only styles, shared with the same design tokens. -->
     <style id="pagination-css">
 
 /* Off-screen page measurement uses exactly the same page metrics as printing. */
-#print-root{position:absolute;left:-50000px;top:0;visibility:hidden;width:186mm;font:10.2pt/1.42 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#fff}
-#print-root .print-sheet{display:flow-root;width:186mm;height:auto;min-height:0;overflow:visible;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;background:#fff;break-after:auto!important}
+#print-root{position:absolute;left:-50000px;top:0;visibility:hidden;width:186mm;font:10.2pt/1.42 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--paper)}
+#print-root .print-sheet{display:flow-root;width:186mm;height:auto;min-height:0;overflow:visible;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;background:var(--paper);break-after:auto!important}
 #print-root .print-sheet.preface{break-after:auto!important}
 #print-root .print-sheet .guide-title{font-size:26pt}
 #print-root .print-sheet .subtitle{font-size:14pt}
 #print-root .print-sheet.content h1{font-size:16pt;break-after:avoid-page}
 #print-root .print-sheet.content h2{font-size:18pt;line-height:1.23;letter-spacing:-.02em;margin:16pt 0 9pt;padding:0 0 9pt;border-bottom:2px solid var(--rule-strong);break-after:avoid-page}
-#print-root .print-sheet.content h2::before{content:attr(data-chapter-label);display:inline-block;background:var(--accent);color:#fff;border-radius:5px;font-size:8pt;font-weight:800;letter-spacing:.06em;padding:4px 7px;margin-right:10px;vertical-align:middle}
+#print-root .print-sheet.content h2::before{content:attr(data-chapter-label);display:inline-block;background:var(--accent);color:var(--on-accent);border-radius:5px;font-size:8pt;font-weight:800;letter-spacing:.06em;padding:4px 7px;margin-right:10px;vertical-align:middle}
 #print-root .print-sheet.content h3{font-size:12pt;margin:16pt 0 6pt;break-after:avoid-page}
 #print-root .print-sheet.content h4{font-size:10pt;margin:12pt 0 6pt;break-after:avoid-page}
-#print-root .print-sheet table{font-size:9pt;line-height:1.4;margin:10pt 0 13pt;table-layout:fixed}
+#print-root .print-sheet table{font-size:9pt;line-height:1.4;margin:10pt 0 13pt;table-layout:auto}
+/* PDF tables are measured at their full length before splitting. The resulting
+   colgroup must be honored on each page to prevent widths changing mid-table. */
+#print-root .print-sheet table.content-sized{table-layout:fixed}
 #print-root .print-sheet th,#print-root .print-sheet td{padding:6px 7px}
 #print-root .print-sheet pre{font-size:8.5pt;white-space:pre-wrap;overflow-wrap:anywhere;padding:9px;line-height:1.4;break-inside:avoid-page}
 #print-root .print-sheet tr,#print-root .print-sheet th,#print-root .print-sheet td{break-inside:avoid-page;page-break-inside:avoid}
@@ -349,7 +356,7 @@ img{max-width:100%;height:auto}
 #print-root .print-sheet .continued-table{margin-top:0!important}
 #print-root .print-sheet .continued-table tbody tr:nth-child(even){background:var(--zebra)}
 #print-root .print-sheet .table-end{margin-bottom:13pt}
-#print-root .print-sheet.preface{border:0;padding:0;margin:0;background:#fff}
+#print-root .print-sheet.preface{border:0;padding:0;margin:0;background:var(--paper)}
 #print-root .print-sheet .toc{border-top:1px solid var(--line);padding-top:12pt;margin-top:14pt}
 #print-root .print-sheet .toc li{padding:7px 3px}
 @media print{
@@ -388,10 +395,10 @@ img{max-width:100%;height:auto}
         device. No uploads or internet required.
     </div>
     <div class="app-settings"><label for="theme">Accent theme</label><select
-            id="theme" disabled>
+            id="theme">
         <option value="auto">Auto by topic</option>
         <option value="teal">Teal — Collaboration</option>
-        <option value="green">Green — Forest</option>
+        <option value="green" selected>Green — Forest</option>
         <option value="amber">Amber — Warm gold</option>
         <option value="lavender">Lavender — Communication</option>
         <option value="coral">Coral — Time management</option>
@@ -406,33 +413,133 @@ img{max-width:100%;height:auto}
         guides</h1>
         <p>Select one or more Markdown files. Every guide gets a theme-matched cover, a light-mode study-guide layout,
             sidebar navigation, linked contents, tables, callouts, and A4 PDF pages.</p>
-        <div class="helper">Offline, single-file publisher. Uses the selected template's light palette and
-            the original page-aware PDF layout engine.
+        <div class="helper">Offline, single-file publisher. Choose or change Accent Theme before or after loading Markdown.
+            Print and HTML export use the same palette.
         </div>
     </section>
     <div class="app-preview" id="preview" hidden></div>
 </div>
-<!-- PDF-only paginated layout. This never changes the existing preview or exported HTML. -->
+<!-- PDF-only paginated layout. It inherits the active theme tokens. -->
 <div id="print-root" aria-hidden="true"></div>
-<script>
+<script id="theme-engine">
+/* Single-file theme module. All screen, print, and HTML-export colors share these tokens. */
+window.FieldNotesThemes = (() => {
     'use strict';
-    const $ = id => document.getElementById(id), files = [], palette = {
-        teal: ['#207d70', '#eaf7f3'],
-        green: ['#205d49', '#eff8f3', '#89d2a9'],
-        amber: ['#79551e', '#fff8e8', '#f0c676'],
-        lavender: ['#596ab0', '#f0f2ff'],
-        coral: ['#ad604d', '#fff1ed'],
-        cyan: ['#205a7c', '#eaf2f7']
+    const defaultName = 'green';
+    const themes = {
+        green: {
+            accent:'#205d49', dark:'#174c3a', wash:'#eff8f3',
+            ink:'#25362e', muted:'#596c61', line:'#d5e6db', bg:'#f3f8f5',
+            soft:'#f8fcf9', zebra:'#f7fbf8', rule:'#e0ece4', strong:'#d3e5d9',
+            border:'#bad3c4', codeBg:'#f3f9f5', codeBorder:'#d2e5d8', codeInk:'#214d3a', codeInline:'#e8f4eb',
+            shadowSoft:'rgba(28,77,53,.05)', shadowStrong:'rgba(28,77,53,.18)',
+            coverBg:'#205d49', coverAccent:'#89d2a9',
+            coverBrand:'#eaf8ef', coverSeries:'#b9dacb', coverSub:'#e2f2e9', coverNote:'#c4e4d3', coverBottom:'#d5ebdf'
+        },
+        teal: {
+            accent:'#207d70', dark:'#145b51', wash:'#eaf7f3',
+            ink:'#243832', muted:'#566f68', line:'#d3e8e1', bg:'#f2f9f6',
+            soft:'#f8fcfa', zebra:'#f5fbf8', rule:'#e0eee8', strong:'#cde5db',
+            border:'#b6d8ca', codeBg:'#f2faf6', codeBorder:'#cce5db', codeInk:'#205447', codeInline:'#e6f4ed',
+            shadowSoft:'rgba(24,79,70,.05)', shadowStrong:'rgba(24,79,70,.18)',
+            coverBg:'#144d47', coverAccent:'#91dbc9',
+            coverBrand:'#e7f8f2', coverSeries:'#a5d5c8', coverSub:'#d5efe6', coverNote:'#b6ded2', coverBottom:'#c8e9de'
+        },
+        amber: {
+            accent:'#79551e', dark:'#664416', wash:'#fff8e8',
+            ink:'#332d24', muted:'#736451', line:'#e9deca', bg:'#faf7ef',
+            soft:'#fdfaf4', zebra:'#fdfaf4', rule:'#f0e6d4', strong:'#e6d8bc',
+            border:'#d9c7a7', codeBg:'#fcf8ed', codeBorder:'#e9dbbd', codeInk:'#674a1f', codeInline:'#f7ecd5',
+            shadowSoft:'rgba(96,67,25,.05)', shadowStrong:'rgba(96,67,25,.18)',
+            coverBg:'#79551e', coverAccent:'#f0c676',
+            coverBrand:'#fff2d8', coverSeries:'#ecd5ac', coverSub:'#fff0d3', coverNote:'#f1dfbe', coverBottom:'#f9e8ca'
+        },
+        lavender: {
+            accent:'#596ab0', dark:'#424f8d', wash:'#f0f2ff',
+            ink:'#2c3045', muted:'#656c83', line:'#dfe2ef', bg:'#f6f7fc',
+            soft:'#fbfbfe', zebra:'#f8f9fe', rule:'#e9eaf5', strong:'#dcdfef',
+            border:'#c6cce4', codeBg:'#f6f7fd', codeBorder:'#dcdff0', codeInk:'#434f86', codeInline:'#eceefa',
+            shadowSoft:'rgba(59,69,121,.05)', shadowStrong:'rgba(59,69,121,.18)',
+            coverBg:'#303961', coverAccent:'#b3bcff',
+            coverBrand:'#f1f0ff', coverSeries:'#c8c8e8', coverSub:'#e2e3fa', coverNote:'#c4c9eb', coverBottom:'#d6daf3'
+        },
+        coral: {
+            accent:'#ad604d', dark:'#8b4433', wash:'#fff1ed',
+            ink:'#3d2e2a', muted:'#795f59', line:'#ebdad4', bg:'#fcf6f3',
+            soft:'#fffbf9', zebra:'#fff8f5', rule:'#f2e5df', strong:'#e8d7d0',
+            border:'#dfbdb2', codeBg:'#fcf6f3', codeBorder:'#ecd4ca', codeInk:'#834d3d', codeInline:'#faeae3',
+            shadowSoft:'rgba(109,59,44,.05)', shadowStrong:'rgba(109,59,44,.18)',
+            coverBg:'#633b36', coverAccent:'#ffc0a9',
+            coverBrand:'#fff0e9', coverSeries:'#e7c2b6', coverSub:'#fbe0d6', coverNote:'#eac5b8', coverBottom:'#f2d6ca'
+        },
+        cyan: {
+            accent:'#205a7c', dark:'#17445f', wash:'#eaf2f7',
+            ink:'#1c2936', muted:'#566776', line:'#d7e1e8', bg:'#f4f7f9',
+            soft:'#fafbfc', zebra:'#fafbfd', rule:'#e3eaf0', strong:'#e1eaf0',
+            border:'#cbd7dc', codeBg:'#f8fafc', codeBorder:'#d9e4eb', codeInk:'#17334b', codeInline:'#eef3f6',
+            shadowSoft:'rgba(25,53,73,.05)', shadowStrong:'rgba(25,53,73,.18)',
+            coverBg:'#112c3a', coverAccent:'#9bd4f4',
+            coverBrand:'#dceaf0', coverSeries:'#98b3c1', coverSub:'#bdcdd5', coverNote:'#91aab7', coverBottom:'#cfdae0'
+        }
     };
-    // The cover retains its original composition. Only the green and amber
-    // themes change its full-page background; other themes retain navy.
-    const coverPalette = {
-        green: {background:'#205d49', brand:'#eaf8ef', series:'#b9dacb', sub:'#e2f2e9', note:'#c4e4d3', bottom:'#d5ebdf'},
-        amber: {background:'#79551e', brand:'#fff2d8', series:'#ecd5ac', sub:'#fff0d3', note:'#f1dfbe', bottom:'#f9e8ca'}
+    const tokenNames = {
+        accent:'accent', dark:'accent-dark', wash:'wash', ink:'ink', muted:'muted', line:'line',
+        bg:'bg', soft:'soft', zebra:'zebra', rule:'rule', strong:'rule-strong', border:'control-border',
+        codeBg:'code-block-bg', codeBorder:'code-border', codeInk:'code-ink', codeInline:'code-inline-bg',
+        shadowSoft:'shadow-soft', shadowStrong:'shadow-strong', coverBg:'cover-bg', coverAccent:'cover-accent',
+        coverBrand:'cover-brand', coverSeries:'cover-series', coverSub:'cover-sub',
+        coverNote:'cover-note', coverBottom:'cover-bottom'
     };
+    function infer(name) {
+        const text = String(name || '').toLowerCase();
+        if (/collaboration|teamwork/.test(text)) return 'teal';
+        if (/adaptab/.test(text)) return 'amber';
+        if (/communicat/.test(text)) return 'lavender';
+        if (/time.management|prioriti/.test(text)) return 'coral';
+        if (/problem.solv|making.decisions/.test(text)) return 'cyan';
+        return defaultName;
+    }
+    function resolve(selection, guide = {}) {
+        if (Object.hasOwn(themes, selection)) return selection;
+        if (selection === 'auto') {
+            const metadataTheme = String(guide.meta?.theme || '').toLowerCase().trim();
+            if (Object.hasOwn(themes, metadataTheme)) return metadataTheme;
+            return infer(guide.title || guide.name);
+        }
+        return defaultName;
+    }
+    function printLabel(text) {
+        // CSS string escaping; protects both @page content and the exported <style> element.
+        return String(text || '').replace(/[<>&"\\\r\n\f]/g, ' ').trim();
+    }
+    function cssFor(selection, guide = {}) {
+        const name = resolve(selection, guide);
+        const tokens = themes[name];
+        const vars = Object.entries(tokenNames).map(([key, cssName]) => '--' + cssName + ':' + tokens[key]).join(';');
+        const right = printLabel(guide.meta?.footer_right || (guide.title || '').toUpperCase());
+        const left = printLabel(guide.meta?.footer_left || 'SENIOR / PRINCIPAL SOLUTION ARCHITECT');
+        return ':root{' + vars + ';--accent-soft:var(--wash);--heading:var(--accent-dark);--header:var(--accent-dark)}' +
+            '@page{@top-right{content:"' + right + '";}@bottom-left{content:"' + left + '";}}';
+    }
+    function apply(selection, guide = {}) {
+        const effective = resolve(selection, guide);
+        document.getElementById('theme-style').textContent = cssFor(selection, guide);
+        document.documentElement.dataset.accentTheme = effective;
+        return effective;
+    }
+    return Object.freeze({defaultName, resolve, cssFor, apply});
+})();
+</script>
+<script id="converter-engine">
+    'use strict';
+    // Guide parsing and rendering do not own palettes. See the theme-engine module.
+    const $ = id => document.getElementById(id), files = [];
+    let activeGuide = null;
     let current = -1;
     const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     const plain = s => String(s || '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`~]/g, '').trim();
+    // Preserve the source Markdown stem for both export types.
+    const sourceFileStem = name => String(name || '').replace(/\.(?:md|markdown)$/i, '');
     const slug = s => plain(s).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-') || 'section';
     const isURL = s => /^(https?:\/\/|mailto:|#|\.\.?\/)/i.test(s);
 
@@ -587,15 +694,6 @@ img{max-width:100%;height:auto}
         return name.replace(/\.markdown$|\.md$/i, '').replace(/^\d+[_ .-]*/, '').replace(/(?:_Study_Guide|_Expanded|\(\d+\))+/gi, '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/_/g, ' ').replace(/\s+/g, ' ').trim()
     }
 
-    function inferTheme(n) {
-        n = n.toLowerCase();
-        if (/collaboration|teamwork/.test(n)) return 'teal';
-        if (/adaptab/.test(n)) return 'amber';
-        if (/communicat/.test(n)) return 'lavender';
-        if (/time.management|prioriti/.test(n)) return 'coral';
-        return 'cyan'
-    }
-
     function labelForTitle(name) {
         const n = name.toLowerCase();
         if (/collaboration|teamwork/.test(n)) return 'Collaboration & Teamwork';
@@ -671,9 +769,6 @@ img{max-width:100%;height:auto}
 
     function makeGuide(doc, idx) {
         let src = sourceParts(doc.raw, doc.name);
-        const theme = doc.theme === 'auto' ? String(src.meta.theme || 'green') :
-            doc.theme;
-        let [accent, soft, coverAccent] = palette[theme] || palette.green;
         let title = src.title, coverLines = src.meta.cover_lines || balanced(title);
         if (typeof coverLines === 'string') coverLines = coverLines.split('|').map(x => x.trim());
         if (!Array.isArray(coverLines) || !coverLines.length) coverLines = balanced(title);
@@ -796,42 +891,7 @@ img{max-width:100%;height:auto}
         const intro = '<section class="preface" id="overview"><div class="preface-label">' + esc(introLabel) + '</div><h1 class="guide-title">' + esc(title) + '</h1><p class="subtitle">' + esc(subtitle) + '</p><div class="meta"><span class="tag">' + chapters.length + ' chapters</span><span class="tag">Offline reference</span><span class="tag">Print-ready A4</span></div>' + prefaceHTML + '<nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol>' + toc + '</ol></nav></section>';
         const interior = '<main class="content"><p class="guide-no-results" hidden>No matching chapters. Clear the search to show all chapters.</p>' + structured.innerHTML + '</main>';
         const layout = '<div class="guide-layout">' + sidebar + '<div class="guide-main">' + intro + interior + '</div></div>';
-        // These theme-specific values cover every visual surface, not only
-        // the accent and cover. Green/amber do not inherit blue UI tokens.
-        const fullTheme = {
-            green: {
-                ink:'#25362e', muted:'#596c61', line:'#d5e6db',
-                bg:'#f3f8f5', soft:'#f8fcf9', zebra:'#f7fbf8',
-                rule:'#e0ece4', 'rule-strong':'#d3e5d9',
-                'control-border':'#bad3c4',
-                'code-block-bg':'#f3f9f5', 'code-border':'#d2e5d8',
-                'code-ink':'#214d3a', 'code-inline-bg':'#e8f4eb',
-                'shadow-soft':'rgba(28,77,53,.05)',
-                'shadow-strong':'rgba(28,77,53,.18)'
-            },
-            amber: {
-                ink:'#332d24', muted:'#736451', line:'#e9deca',
-                bg:'#faf7ef', soft:'#fdfaf4', zebra:'#fdfaf4',
-                rule:'#f0e6d4', 'rule-strong':'#e6d8bc',
-                'control-border':'#d9c7a7',
-                'code-block-bg':'#fcf8ed', 'code-border':'#e9dbbd',
-                'code-ink':'#674a1f', 'code-inline-bg':'#f7ecd5',
-                'shadow-soft':'rgba(96,67,25,.05)',
-                'shadow-strong':'rgba(96,67,25,.18)'
-            }
-        };
-        const themeTokens = Object.entries(fullTheme[theme] || {})
-            .map(([key,value]) => '--' + key + ':' + value).join(';');
-        const coverColors = coverPalette[theme];
-        const coverCss = coverColors ?
-            ';--cover-bg:' + coverColors.background +
-            ';--cover-brand:' + coverColors.brand +
-            ';--cover-series:' + coverColors.series +
-            ';--cover-sub:' + coverColors.sub +
-            ';--cover-note:' + coverColors.note +
-            ';--cover-bottom:' + coverColors.bottom : '';
-        const themeCss = ':root{--accent:' + accent + ';--wash:' + soft + ';--accent-soft:' + soft + ';--accent-dark:' + accent + ';--cover-accent:' + (coverAccent || accent) + coverCss + ';' + themeTokens + ';}@page{@top-right{content:"' + String(src.meta.footer_right || title.toUpperCase()).replace(/["\\]/g, ' ') + '";}@bottom-left{content:"' + String(src.meta.footer_left || 'SENIOR / PRINCIPAL SOLUTION ARCHITECT').replace(/["\\]/g, ' ') + '";}}';
-        return {html:cover + layout,css:themeCss,title,accent,chapters:chapters.length,theme,storageKey:studyKey(doc)};
+        return {html:cover + layout,title,chapters:chapters.length,meta:src.meta,name:doc.name,storageKey:studyKey(doc)};
     }
 
     function scaleCover(root) {
@@ -847,10 +907,18 @@ img{max-width:100%;height:auto}
         }
     }
 
+    function updateStatus(data) {
+        const theme = FieldNotesThemes.resolve($('theme').value, data);
+        $('status').textContent = files[current].name + ' · ' + data.chapters +
+            ' chapters · ' + theme + ' theme · A4 · ready for PDF';
+    }
+
     function show(index) {
         if (!files[index]) return;
         current = index;
-        let data = makeGuide(files[index], index);
+        const data = makeGuide(files[index], index);
+        activeGuide = data;
+        FieldNotesThemes.apply($('theme').value, data);
         if (window.__studyCleanup) window.__studyCleanup();
         $('preview').innerHTML = data.html;
         window.__studyCleanup = window.initStudyGuide($('preview'), data.storageKey);
@@ -858,51 +926,52 @@ img{max-width:100%;height:auto}
         $('preview').hidden = false;
         $('empty').hidden = true;
         $('guide').value = String(index);
-        $('theme').value = files[index].theme;
-        $('theme-style').textContent = data.css;
         $('print').disabled = false;
         $('html-export').disabled = false;
-        $('status').textContent = files[index].name + ' · ' + data.chapters + ' chapters · ' + data.theme + ' theme · A4 · ready for PDF';
-        document.title = data.title + ' | Field Notes PDF Publisher';
+        updateStatus(data);
+        // The page title supplies the browser's suggested Save as PDF name.
+        document.title = sourceFileStem(files[current].name);
     }
 
+    // Apply the green default immediately, before the first Markdown file is selected.
+    FieldNotesThemes.apply($('theme').value);
     window.addEventListener('resize', () => scaleCover($('preview')));
     $('files').addEventListener('change', async event => {
-        let added = Array.from(event.target.files || []);
-        for (let file of added) {
-            if (!/\.(md|markdown)$/i.test(file.name)) { continue }
-            let raw = await file.text(), pos = files.findIndex(x => x.name === file.name);
-            let obj = {name: file.name, raw, theme: 'auto'};
-            if (pos >= 0) { obj.theme = files[pos].theme; files[pos] = obj }
-            else files.push(obj)
+        const added = Array.from(event.target.files || []);
+        for (const file of added) {
+            if (!/\.(md|markdown)$/i.test(file.name)) continue;
+            const raw = await file.text();
+            const pos = files.findIndex(x => x.name === file.name);
+            const obj = {name: file.name, raw};
+            if (pos >= 0) files[pos] = obj;
+            else files.push(obj);
         }
         files.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}));
         $('guide').innerHTML = files.map((f, i) => '<option value="' + i + '">' + esc(labelForTitle(f.name)) + '</option>').join('');
         $('guide').disabled = !files.length;
-        $('theme').disabled = !files.length;
         event.target.value = '';
-        if (files.length) show(0)
+        if (files.length) show(0);
     });
     $('guide').addEventListener('change', e => show(Number(e.target.value)));
-    $('theme').addEventListener('change', e => {
-        if (current < 0) return;
-        files[current].theme = e.target.value;
-        show(current)
+    $('theme').addEventListener('change', () => {
+        // A CSS-token-only update preserves searches, expanded chapters, and study progress.
+        FieldNotesThemes.apply($('theme').value, activeGuide || {});
+        if (activeGuide) updateStatus(activeGuide);
     });
     // PDF button handler is registered below, in the isolated pagination module.
     $('html-export').addEventListener('click', () => {
         if (current < 0) return;
-        let item = makeGuide(files[current], current),
-            base = document.getElementById('skill-css').textContent;
-        const style = base + '\n' + item.css;
+        const item = makeGuide(files[current], current);
+        const base = document.getElementById('skill-css').textContent;
+        const style = base + '\n' + FieldNotesThemes.cssFor($('theme').value, item);
         const studyJS = document.getElementById('study-engine').textContent;
-        let out = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(item.title) + '</title><style>' + style + '</style></head><body>' + item.html +
+        let out = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(sourceFileStem(files[current].name)) + '</title><style>' + style + '</style></head><body>' + item.html +
             '<scr' + 'ipt>' + studyJS + '\nwindow.initStudyGuide(document.body,' + JSON.stringify(item.storageKey) + ');' +
             '\n(function(){function resize(){document.querySelectorAll(".cover-stage").forEach(function(stage){var cover=stage.querySelector(".cover");if(!cover)return;var r=Math.min(1,stage.clientWidth/(210*96/25.4));cover.style.transformOrigin="top left";cover.style.transform="scale("+r+")";stage.style.height=(297*96/25.4*r)+"px";});}window.addEventListener("resize",resize);resize();})();</scr' + 'ipt></body></html>';
         let blob = new Blob([out], {type: 'text/html;charset=utf-8'}),
             u = URL.createObjectURL(blob), a = document.createElement('a');
         a.href = u;
-        a.download = files[current].name.replace(/\.markdown$|\.md$/i, '') + '.html';
+        a.download = sourceFileStem(files[current].name) + '.html';
         document.body.appendChild(a);
         a.click(); a.remove();
         setTimeout(() => URL.revokeObjectURL(u), 1000);
@@ -1089,7 +1158,7 @@ window.initStudyGuide = function(root, key) {
 <script id="pdf-pagination-engine">
 /*
  * Offline, page-aware PDF pagination layer.
- * No change to makeGuide(), the Markdown parser, UI, themes, or HTML export.
+ * Uses the same theme tokens and guide renderer as preview and HTML export.
  * This creates explicit A4 content pages only when Print / Save as PDF is used.
  * All layouts are measured with the browser that will print them. No CDN required.
  */
@@ -1367,6 +1436,10 @@ window.initStudyGuide = function(root, key) {
     function makeTableFragment(source, start, rows, isFirst) {
         const table = source.cloneNode(false);
         if (!isFirst) table.classList.add('continued-table');
+        // A fragment cannot infer column sizes from rows on other pages.
+        // Carry the original full-table widths into every fragment.
+        const colgroup = source.querySelector(':scope > colgroup');
+        if (colgroup) table.appendChild(colgroup.cloneNode(true));
         if (source.tHead) table.appendChild(source.tHead.cloneNode(true));
         const body = document.createElement('tbody');
         for (let i = 0; i < rows.length; i++) {
@@ -1455,6 +1528,8 @@ window.initStudyGuide = function(root, key) {
         const tag = source.tagName.toLowerCase();
         if (tag === 'table') {
             const preview = source.cloneNode(false);
+            const colgroup = source.querySelector(':scope > colgroup');
+            if (colgroup) preview.appendChild(colgroup.cloneNode(true));
             if (source.tHead) preview.appendChild(source.tHead.cloneNode(true));
             const tbody = document.createElement('tbody');
             for (const row of Array.from(source.tBodies[0]?.rows || []).slice(0, 2))
@@ -1675,6 +1750,36 @@ window.initStudyGuide = function(root, key) {
         return sheets.length + 1; // Cover page.
     }
 
+    function sizePrintTableColumns(tables) {
+        // Measure each COMPLETE table with the actual A4 printable width and
+        // print font. Native auto layout takes headers, body text and code
+        // into account; we then freeze those widths for page fragments.
+        const measurementSheet = document.createElement('main');
+        measurementSheet.className = 'content print-sheet';
+        pageRoot.replaceChildren(measurementSheet);
+        try {
+            for (const source of tables) {
+                const full = source.cloneNode(true);
+                measurementSheet.replaceChildren(full);
+                const heading = full.tHead?.rows[0] || full.rows[0];
+                if (!heading || !heading.cells.length) continue;
+                const sizes = Array.from(heading.cells, cell => cell.getBoundingClientRect().width);
+                const total = sizes.reduce((sum, width) => sum + width, 0);
+                if (!(total > 0) || sizes.some(width => !(width > 0))) continue;
+                const cols = document.createElement('colgroup');
+                for (const width of sizes) {
+                    const col = document.createElement('col');
+                    col.style.width = (100 * width / total).toFixed(4) + '%';
+                    cols.appendChild(col);
+                }
+                source.prepend(cols);
+                source.classList.add('content-sized');
+            }
+        } finally {
+            measurementSheet.remove();
+        }
+    }
+
     async function preparePrintLayout() {
         const item = makeGuide(files[current], current);
         const documentClone = document.createElement('div');
@@ -1706,6 +1811,9 @@ window.initStudyGuide = function(root, key) {
         }
         for (const node of Array.from(content.children)) flattenBlock(node);
         content.replaceChildren(...flattened);
+        // Split tables must retain the same widths on every PDF page.
+        // Do this once before pagination retries, never per page fragment.
+        sizePrintTableColumns(documentClone.querySelectorAll('.preface table, .content table'));
         // Stable identifiers make layout retries deterministic. This metadata
         // exists only in the print DOM, never the preview or HTML export.
         for (const [kind, root] of [['preface', preface], ['content', content]]) {
@@ -1756,6 +1864,8 @@ window.initStudyGuide = function(root, key) {
                 ' A4 pages · rows/diagrams kept intact' +
                 (result.warnings.length ? ' · ' + result.warnings.join(' ') : '');
             document.body.classList.add('pdf-ready');
+            // Suggest the selected source filename, not its document heading.
+            document.title = sourceFileStem(fileName);
             // Two frames allow style recalculation before the native print dialog.
             await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
             window.print();
