@@ -1,0 +1,1845 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Architect's Field Notes · Offline Markdown Publisher</title>
+    <style id="skill-css">
+
+/* Adapted from the user-provided AI Design #73 study-guide template.
+   Field Notes cover design is preserved, with theme-matched green and amber editions. */
+/* Shared design tokens: Forest Green is the first-render and no-JavaScript default.
+   Other palettes are applied by FieldNotesThemes from one central registry. */
+:root {
+ --paper:#fff; --on-accent:#fff;
+ --radius-control:7px; --radius-card:13px;
+ --accent:#205d49; --accent-dark:#174c3a; --wash:#eff8f3; --accent-soft:var(--wash);
+ --ink:#25362e; --muted:#596c61; --line:#d5e6db;
+ --bg:#f3f8f5; --soft:#f8fcf9; --zebra:#f7fbf8;
+ --rule:#e0ece4; --rule-strong:#d3e5d9; --control-border:#bad3c4;
+ --code-block-bg:#f3f9f5; --code-border:#d2e5d8;
+ --code-ink:#214d3a; --code-inline-bg:#e8f4eb;
+ --shadow-soft:rgba(28,77,53,.05); --shadow-strong:rgba(28,77,53,.18);
+ --amber:#79551e; --amber-wash:#fff8e8; --amber-border:#b68226;
+ --good:#205d49; --good-wash:#eff8f3; --good-border:#3e9370;
+ --danger:#9a4a23; --danger-border:#d6ad94; --danger-wash:#fff9f3;
+ --cover-bg:#205d49; --cover-accent:#89d2a9; --cover-title:#fff;
+ --cover-brand:#eaf8ef; --cover-series:#b9dacb; --cover-sub:#e2f2e9;
+ --cover-note:#c4e4d3; --cover-bottom:#d5ebdf;
+ --heading:var(--accent-dark); --header:var(--accent-dark);
+}
+
+@page {
+ size:A4; margin:14mm 12mm;
+ @top-left {content:"INTERVIEW / FIELD GUIDE";color:var(--muted);font:7pt system-ui,sans-serif;letter-spacing:.04em;vertical-align:middle}
+ @top-right {content:"";color:var(--muted);font:7pt system-ui,sans-serif;vertical-align:middle}
+ @bottom-left {content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";color:var(--muted);font:6.3pt system-ui,sans-serif;vertical-align:middle}
+ @bottom-right {content:counter(page, decimal-leading-zero);color:var(--accent-dark);font:700 7pt system-ui,sans-serif;vertical-align:middle}
+}
+@page cover {size:A4;margin:0;
+ @top-left{content:none}@top-right{content:none}
+ @bottom-left{content:none}@bottom-right{content:none}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-underline-offset:2px}
+a:hover{text-decoration-thickness:2px}
+strong,b{font-weight:720}
+.cover-stage{width:min(100%,210mm);margin:0 auto;overflow:hidden;height:297mm;background:var(--cover-bg)}
+/* The original cover sheet artwork, dimensions and arrangement. */
+        .cover {
+            page: cover;
+            break-after: page;
+            height: 297mm;
+            width: 210mm;
+            overflow: hidden;
+            position: relative;
+            background: var(--cover-bg);
+            color: var(--cover-title);
+            padding: 29.6mm 26mm;
+        }
+        .cover::before, .cover::after {
+            content: "";
+            position: absolute;
+            border: .55pt solid rgba(255,255,255,.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .cover::before { width:158mm; height:158mm; right:-84mm; top:-61mm; }
+        .cover::after { width:108mm; height:108mm; right:-28mm; bottom:-75mm; }
+        .cover-brand {
+            font-size:9.5pt; font-weight:800; letter-spacing:.31em;
+            text-transform:uppercase; color:var(--cover-brand);
+        }
+        .cover-series {
+            font-size:8pt; letter-spacing:.12em; text-transform:uppercase;
+            color:var(--cover-series); margin-top:7mm;
+        }
+        .cover-accent-bar {
+            position:absolute; left:26mm; top:80mm; height:3.5mm;
+            width:21mm; background:var(--cover-accent);
+        }
+        .cover-title {
+            position:absolute; left:25.5mm; right:25mm; top:97mm;
+            font-family:"Inter Display", "Inter", "DejaVu Sans", sans-serif;
+            font-size:42pt; font-weight:800; letter-spacing:-.043em;
+            line-height:1.08; color:var(--cover-title);
+        }
+        .cover-title .second { display:block; color:var(--cover-accent); }
+        .cover-title.long { font-size:37pt; }
+        .cover-sub {
+            position:absolute; left:26mm; right:31mm; top:173.5mm;
+            color:var(--cover-sub); font-size:11.5pt; line-height:1.7;
+            letter-spacing:.07em; text-transform:uppercase;
+        }
+        .cover-note {
+            color:var(--cover-note); text-transform:none; font-size:9pt;
+            letter-spacing:.01em; margin-top:7mm; line-height:1.6;
+        }
+        .cover-bottom {
+            position:absolute; bottom:31mm; left:26mm;
+            font-size:7.8pt; line-height:1.9;
+            letter-spacing:.065em; color:var(--cover-bottom);
+        }
+        .cover-rule {
+            position:absolute; bottom:62mm; height:.35pt;
+            left:26mm; right:26mm; background:rgba(255,255,255,.15);
+        }
+        .cover-number {
+            position:absolute; bottom:29mm; right:26mm;
+            color:var(--cover-accent);
+            font-family:"Inter Display", "Inter", sans-serif;
+            font-size:39pt; font-weight:800; letter-spacing:-.04em;
+        }
+
+
+.guide-layout{display:grid;grid-template-columns:230px minmax(0,960px);gap:28px;max-width:1280px;margin:0 auto;padding:26px}
+.guide-side{align-self:start;position:sticky;top:18px;padding:22px 16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 15px var(--shadow-soft);max-height:calc(100vh - 36px);overflow:auto}
+.guide-side h2{font-size:13px;letter-spacing:.09em;color:var(--accent-dark);text-transform:uppercase;margin:0 8px 12px}
+.guide-side a{display:block;text-decoration:none;padding:8px 10px;margin:2px 0;border-radius:6px;color:var(--ink);font-size:13px;line-height:1.45}
+.guide-side a:hover,.guide-side a:focus-visible{background:var(--wash);outline:0}
+.guide-side .mini{margin:14px 8px 0;border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--muted)}
+.guide-main{min-width:0}
+.preface{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:var(--radius-card);padding:30px 36px 27px;margin:0 0 19px}
+.preface-label,.toc-overline{font-size:12px;color:var(--accent-dark);font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+.preface .guide-title{font-size:clamp(28px,4vw,43px);line-height:1.1;letter-spacing:-.035em;margin:12px 0 8px;color:var(--ink)}
+.preface .subtitle{font-size:18px;color:var(--muted);margin:0 0 18px}
+.preface > p{max-width:78ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
+.tag{padding:5px 11px;border-radius:20px;background:var(--wash);font-size:12px;font-weight:700;color:var(--accent-dark);border:1px solid var(--control-border)}
+.toc{border-top:1px solid var(--line);padding-top:20px;margin-top:22px}
+.toc h2{font-size:24px;line-height:1.25;letter-spacing:-.02em;margin:6px 0 13px;color:var(--ink)}
+.toc ol{list-style:none;padding:0;margin:0}
+.toc li{display:flex;align-items:baseline;gap:12px;padding:10px 4px;border-top:1px solid var(--rule);break-inside:avoid}
+.toc li:last-child{border-bottom:1px solid var(--rule)}
+.toc-num{font-size:11px;font-weight:800;color:var(--accent);flex:0 0 27px}
+.toc a{text-decoration:none;color:var(--ink);font-size:13px}
+.content{min-width:0}
+.content .chapter{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);padding:28px 35px;margin:18px 0;scroll-margin-top:20px}
+.content .section-head{display:flex;gap:12px;align-items:center;padding-bottom:11px;border-bottom:2px solid var(--rule-strong);margin-bottom:18px}
+.stage{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--on-accent);background:var(--accent);padding:7px 9px;border-radius:6px;white-space:nowrap}
+.content h2{font-size:18px;line-height:1.23;margin:0;letter-spacing:-.02em;color:var(--ink);break-after:avoid}
+.content h3{font-size:17px;margin:24px 0 8px;color:var(--accent-dark);break-after:avoid}
+.content h4{font-size:14px;margin:18px 0 8px;color:var(--accent-dark);break-after:avoid}
+.content > h1{font-size:24px;line-height:1.3;margin:24px 0 8px;padding:12px 6px;border-bottom:2px solid var(--line);color:var(--accent-dark);break-after:avoid}
+p{margin:10px 0;orphans:2;widows:2}
+ul,ol{padding-left:22px;margin:9px 0 14px}
+li{padding-left:3px;margin-bottom:5px}
+li::marker{color:var(--accent)}
+li p{margin:0}
+hr{height:0;border:0;border-top:1px solid var(--line);margin:20px 0}
+blockquote,.note{border-left:4px solid var(--accent);padding:12px 15px;background:var(--wash);border-radius:0 7px 7px 0;margin:15px 0;color:var(--ink)}
+blockquote p:first-child{margin-top:0}
+blockquote p:last-child{margin-bottom:0}
+/* Match the supplied template's green and amber callouts in HTML and PDF. */
+blockquote.caution,.note.caution{border-left-color:var(--amber-border);background:var(--amber-wash)}
+blockquote.good,.note.good{border-left-color:var(--good-border);background:var(--good-wash)}
+blockquote.good strong,blockquote.caution strong{display:block;margin-bottom:3px}
+.tablewrap{overflow-x:auto;margin:13px 0 19px;border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.tablewrap table{margin:0}
+th{text-align:left;color:var(--accent-dark);background:var(--wash);font-size:12px;line-height:1.35}
+th,td{padding:10px 12px;vertical-align:top;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:var(--zebra)}
+thead{display:table-header-group}
+tr,th,td{break-inside:avoid-page}
+table.wide{font-size:12px}
+table.wide th,table.wide td{padding:8px}
+pre{background:var(--code-block-bg);border:1px solid var(--code-border);border-radius:8px;padding:16px 15px;overflow-x:auto;white-space:pre;line-height:1.4;font-size:12.5px;color:var(--code-ink);margin:12px 0 16px;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;break-inside:avoid-page}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92em;background:var(--code-inline-bg);border-radius:3px;padding:1px 4px;color:var(--code-ink)}
+pre code{background:transparent;padding:0;font-size:inherit;color:inherit}
+.caption{font-size:12px;color:var(--muted)}
+.task-list-item{list-style:none;margin-left:-16px}
+.task-box{display:inline-block;border:1px solid var(--muted);width:11px;height:11px;margin-right:10px;vertical-align:baseline}
+.task-box.checked{background:var(--accent);border-color:var(--accent)}
+img{max-width:100%;height:auto}
+@media screen and (max-width:960px){
+ .guide-layout{grid-template-columns:1fr;padding:12px;gap:12px}
+ .guide-side{position:static;display:flex;flex-wrap:wrap;gap:3px 8px;padding:12px;max-height:none}
+ .guide-side h2{width:100%;margin:4px 6px 2px}
+ .guide-side a{padding:5px 8px}
+ .guide-side .mini{display:none}
+ .preface,.content .chapter{padding:22px}
+}
+@media screen and (max-width:620px){
+ .preface,.content .chapter{padding:18px 16px}
+ .content .section-head{flex-wrap:wrap}
+ pre{font-size:11px}
+ .preface .guide-title{font-size:28px}
+}
+@media print{
+ :root{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ html{scroll-behavior:auto}
+ body{background:var(--paper);font-size:10.2pt;line-height:1.42}
+ .cover-stage{width:210mm!important;height:297mm!important;overflow:visible;break-after:page}
+ .cover{transform:none!important;page:cover;break-after:page;width:210mm;height:297mm}
+ .guide-layout{display:block;max-width:none;margin:0;padding:0}
+ .guide-side{display:none!important}
+ .preface{padding:0;border:0;border-radius:0;margin:0;break-after:page}
+ .preface .guide-title{font-size:26pt}
+ .preface .subtitle{font-size:14pt}
+ .content .chapter{padding:0;border:0;border-radius:0;margin:0;break-inside:auto}
+ .content .section-head{break-after:avoid-page}
+ .content h2{font-size:18pt}
+ .content h3{font-size:12pt}
+ .content h4{font-size:10pt}
+ .content > h1{font-size:16pt}
+ table{font-size:9pt}
+ th,td{padding:6px 7px}
+ pre{font-size:8.5pt;white-space:pre-wrap;overflow-wrap:anywhere;padding:9px;break-inside:avoid-page}
+ .tablewrap{overflow:visible;border:0;border-radius:0}
+ .toc li{padding:7px 3px}
+ a{text-decoration:none}
+}
+
+
+/* v6: interactive chapter reader. Screen-only controls do not enter the PDF engine. */
+@media screen {
+ .content details.chapter{padding:0;overflow:hidden}
+ .content details.chapter>summary{list-style:none;cursor:pointer;padding:24px 35px 19px;display:block}
+ .content details.chapter>summary::-webkit-details-marker{display:none}
+ .content details.chapter>summary:focus-visible{outline:3px solid var(--accent);outline-offset:-4px}
+ .content details.chapter[open]>summary{background:var(--wash);border-bottom:1px solid var(--line)}
+ .content details.chapter>summary .section-head{padding:0;margin:0;border:0}
+ .content details.chapter .chapter-body{padding:8px 35px 24px}
+ .content details.chapter .chapter-body>:first-child{margin-top:8px}
+ .chapter-caret{margin-left:auto;color:var(--accent);font-size:18px;font-weight:800;transition:transform .15s ease}
+ .content details.chapter[open] .chapter-caret{transform:rotate(180deg)}
+ .chapter-complete-indicator{font-size:11px;font-weight:800;color:var(--good);white-space:nowrap}
+ .chapter-complete-indicator:not(.is-done){display:none}
+ .chapter-completion{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);margin-top:23px;padding-top:14px;font-size:13px;font-weight:700;color:var(--accent-dark)}
+ .chapter-completion input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+ .guide-search-label{display:block;margin:15px 8px 5px;font-size:12px;font-weight:800;color:var(--accent-dark)}
+ .guide-search{display:block;width:100%;min-width:0;border:1px solid var(--control-border);border-radius:var(--radius-control);padding:9px 10px;font:inherit;font-size:13px;background:var(--paper);color:var(--ink)}
+ .guide-search:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ .guide-search-count{font-size:11px;color:var(--muted);margin:5px 8px 12px;min-height:1.4em}
+ .guide-progress{border:1px solid var(--line);background:var(--soft);border-radius:9px;padding:12px;margin:12px 0 14px}
+ .guide-progress-head{display:flex;justify-content:space-between;gap:6px;font-size:12px;font-weight:750;color:var(--accent-dark)}
+ .guide-progress progress{width:100%;height:11px;accent-color:var(--accent);margin-top:8px}
+ .guide-study-controls{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+ .guide-study-controls button{border:1px solid var(--control-border);background:var(--paper);color:var(--accent-dark);border-radius:var(--radius-control);padding:6px 8px;font-size:11px;font-weight:700;line-height:1.4;cursor:pointer}
+ .guide-study-controls button:hover{background:var(--wash)}
+ .guide-jump{position:relative;margin:10px 0 13px}
+ .guide-jump>summary{list-style:none;cursor:pointer;border:1px solid var(--control-border);background:var(--wash);color:var(--accent-dark);border-radius:var(--radius-control);padding:10px 12px;font-size:12px;font-weight:800}
+ .guide-jump>summary::-webkit-details-marker{display:none}
+ .guide-jump>summary::after{content:" ▾";float:right}
+ .guide-jump[open]>summary::after{content:" ▴"}
+ .guide-jump-list{max-height:min(55vh,430px);overflow-y:auto;border:1px solid var(--control-border);border-radius:var(--radius-control);margin-top:5px;padding:5px;background:var(--paper)}
+ .guide-jump-list a{display:block;margin:0;padding:7px 8px;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+ .guide-jump-list .guide-jump-section{padding-left:20px;color:var(--muted);font-size:11.5px}
+ .guide-jump-list .guide-jump-overview{font-weight:800;border-bottom:1px solid var(--line);margin-bottom:5px}
+ .guide-study-controls [data-study-action="backup"],.guide-study-controls [data-study-action="restore"]{flex:1 1 90px}
+ .guide-study-controls [data-study-action="reset"]{color:var(--danger);border-color:var(--danger-border);background:var(--paper)9f3}
+ .guide-study-status{font-size:11px;line-height:1.45;color:var(--accent-dark);margin:7px 0;min-height:1.3em}
+ .guide-study-status[data-error="true"]{color:var(--danger)}
+ .guide-study-file{display:none!important}
+ .content .chapter-body h3[id],.content .chapter-body h4[id]{scroll-margin-top:25px}
+
+ .guide-side a[hidden],.content .chapter[hidden]{display:none!important}
+ .guide-no-results{border-left:4px solid var(--amber-border);background:var(--amber-wash);padding:12px 15px;margin:16px 0}
+ .guide-no-results[hidden]{display:none!important}
+ .guide-storage-note{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0}
+}
+@media screen and (max-width:960px){
+ .guide-side .guide-search-label,.guide-side .guide-search,.guide-side .guide-search-count,.guide-side .guide-progress,.guide-side .guide-study-controls,.guide-side .guide-storage-note{flex:0 0 100%}
+ .content details.chapter>summary{padding:18px 20px}
+ .content details.chapter .chapter-body{padding:6px 20px 20px}
+}
+@media screen and (max-width:620px){
+ .content details.chapter>summary{padding:14px 16px}
+ .content details.chapter .chapter-body{padding:5px 16px 17px}
+ .content details.chapter>summary .section-head{flex-wrap:nowrap}
+ .chapter-complete-indicator{font-size:10px}
+}
+@media print{
+ .guide-study-controls,.guide-progress,.guide-search-label,.guide-search,.guide-search-count,.guide-no-results,.chapter-completion,.chapter-complete-indicator,.chapter-caret,.guide-storage-note,.guide-jump,.guide-study-status,.guide-study-file{display:none!important}
+ .content details.chapter{display:block!important;overflow:visible!important}
+ .content details.chapter>summary{display:block;padding:0!important;background:transparent!important;border:0!important;cursor:auto}
+ .content details.chapter .chapter-body{display:block!important;padding:0!important}
+ .content details.chapter .section-head{border-bottom:2px solid var(--rule-strong)}
+}
+</style>
+    <style id="publisher-css">
+
+/* Publisher UI: same component tokens as the reader and printed pages. */
+@media screen{
+ .app-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:13px;background:var(--paper);padding:16px 26px;border-bottom:1px solid var(--line);box-shadow:0 4px 14px var(--shadow-soft)}
+ .logo{font-size:16px;font-weight:800;color:var(--accent-dark);letter-spacing:-.02em}
+ .logo small{display:block;text-transform:uppercase;color:var(--muted);font-weight:700;font-size:10px;letter-spacing:.15em;margin-top:1px}
+ .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+ .btn,select,input[type=text]{border:1px solid var(--control-border);background:var(--paper);color:var(--accent-dark);border-radius:var(--radius-control);padding:10px 12px;font:inherit;max-width:310px;min-height:41px}
+ .btn{cursor:pointer;font-weight:700;white-space:nowrap}
+ .btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+ .btn:disabled,select:disabled{opacity:.48;cursor:not-allowed}
+ :is(.btn,select,input,button):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+ .btn:hover:not(:disabled){filter:brightness(.95)}
+ .file-picker{display:inline-flex;align-items:center}
+ .file-picker input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+ .app-subhead{max-width:1280px;margin:22px auto 0;padding:0 18px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}
+ .app-settings{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+ .app-settings label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+ .app-settings select{min-width:128px;padding:7px 9px;min-height:36px}
+ .app-status{color:var(--muted)}
+ .guidance{max-width:1280px;padding:12px 18px;margin:0 auto;color:var(--muted);font-size:12px}
+ .app-stage{padding:12px 18px 44px}
+ .app-preview{width:100%;max-width:1280px;margin:0 auto;background:transparent;box-shadow:none;overflow:visible}
+ .app-empty{margin:54px auto;max-width:690px;text-align:center;background:var(--paper);border:1px dashed var(--control-border);padding:56px 25px;border-radius:var(--radius-card)}
+ .app-empty h1{font-size:25px;line-height:1.3;margin:0 0 10px;color:var(--accent-dark)}
+ .app-empty p{margin:0;color:var(--muted);font-size:14px}
+ .helper{max-width:680px;margin:18px auto 0;color:var(--muted);font-size:13px;text-align:center}
+ .cover-stage{box-shadow:0 16px 47px var(--shadow-strong)}
+}
+@media screen and (max-width:800px){
+ .app-header{padding:12px}
+ .actions{width:100%}
+ .btn,select{font-size:12px}
+ .app-subhead{margin-top:12px}
+ .app-stage{padding:10px 8px 30px}
+}
+@media print{
+ .app-header,.app-subhead,.guidance,.app-empty,.helper{display:none!important}
+ .app-stage,.app-preview{margin:0!important;padding:0!important;width:auto!important;max-width:none!important;box-shadow:none!important;overflow:visible!important}
+ #preview[hidden]{display:none!important}
+}
+
+</style>
+    <style id="theme-style"></style>
+    <!-- Pagination-only styles, shared with the same design tokens. -->
+    <style id="pagination-css">
+
+/* Off-screen page measurement uses exactly the same page metrics as printing. */
+#print-root{position:absolute;left:-50000px;top:0;visibility:hidden;width:186mm;font:10.2pt/1.42 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--paper)}
+#print-root .print-sheet{display:flow-root;width:186mm;height:auto;min-height:0;overflow:visible;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;background:var(--paper);break-after:auto!important}
+#print-root .print-sheet.preface{break-after:auto!important}
+#print-root .print-sheet .guide-title{font-size:26pt}
+#print-root .print-sheet .subtitle{font-size:14pt}
+#print-root .print-sheet.content h1{font-size:16pt;break-after:avoid-page}
+#print-root .print-sheet.content h2{font-size:18pt;line-height:1.23;letter-spacing:-.02em;margin:16pt 0 9pt;padding:0 0 9pt;border-bottom:2px solid var(--rule-strong);break-after:avoid-page}
+#print-root .print-sheet.content h2::before{content:attr(data-chapter-label);display:inline-block;background:var(--accent);color:var(--on-accent);border-radius:5px;font-size:8pt;font-weight:800;letter-spacing:.06em;padding:4px 7px;margin-right:10px;vertical-align:middle}
+#print-root .print-sheet.content h3{font-size:12pt;margin:16pt 0 6pt;break-after:avoid-page}
+#print-root .print-sheet.content h4{font-size:10pt;margin:12pt 0 6pt;break-after:avoid-page}
+#print-root .print-sheet table{font-size:9pt;line-height:1.4;margin:10pt 0 13pt;table-layout:fixed}
+#print-root .print-sheet th,#print-root .print-sheet td{padding:6px 7px}
+#print-root .print-sheet pre{font-size:8.5pt;white-space:pre-wrap;overflow-wrap:anywhere;padding:9px;line-height:1.4;break-inside:avoid-page}
+#print-root .print-sheet tr,#print-root .print-sheet th,#print-root .print-sheet td{break-inside:avoid-page;page-break-inside:avoid}
+#print-root .print-sheet table{break-inside:avoid-page}
+#print-root .print-sheet thead{display:table-header-group}
+#print-root .print-sheet .continued-paragraph{margin-top:0!important}
+#print-root .print-sheet .continued-list{margin-top:0!important}
+#print-root .print-sheet .continued-table{margin-top:0!important}
+#print-root .print-sheet .continued-table tbody tr:nth-child(even){background:var(--zebra)}
+#print-root .print-sheet .table-end{margin-bottom:13pt}
+#print-root .print-sheet.preface{border:0;padding:0;margin:0;background:var(--paper)}
+#print-root .print-sheet .toc{border-top:1px solid var(--line);padding-top:12pt;margin-top:14pt}
+#print-root .print-sheet .toc li{padding:7px 3px}
+@media print{
+ body.pdf-ready > .app-stage{display:none!important}
+ body.pdf-ready > #print-root{display:block!important;position:static!important;visibility:visible!important;width:186mm!important;margin:0!important;padding:0!important}
+ #print-root .cover{width:210mm!important;height:297mm!important;break-after:page!important;margin:0!important}
+ #print-root .print-sheet{display:flow-root;width:186mm!important;height:269mm!important;min-height:269mm!important;max-height:269mm!important;break-after:page!important;page-break-after:always!important;overflow:visible!important;page:auto;margin:0!important}
+ #print-root .print-sheet:last-child{break-after:auto!important;page-break-after:auto!important}
+ #print-root .print-sheet.preface{break-after:page!important}
+ #print-root .print-sheet.preface:last-child{break-after:auto!important}
+ #print-root{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+</style>
+</head>
+<body>
+<header class="app-header">
+    <div class="logo">The Architect's Field Notes <small>Offline Markdown → PDF
+        publisher</small></div>
+    <div class="actions">
+        <label class="file-picker"><span class="btn primary" tabindex="0">Add Markdown files</span><input
+                id="files" type="file"
+                accept=".md,.markdown,text/markdown,text/plain" multiple
+                aria-label="Add Markdown files"></label>
+        <select id="guide" aria-label="Select a guide" disabled>
+            <option>No guides selected</option>
+        </select>
+        <button class="btn primary" id="print" disabled>Print / Save as PDF
+        </button>
+        <button class="btn" id="html-export" disabled>Download styled HTML
+        </button>
+    </div>
+</header>
+<div class="app-subhead">
+    <div class="app-status" id="status" role="status">Your files remain on this
+        device. No uploads or internet required.
+    </div>
+    <div class="app-settings"><label for="theme">Accent theme</label><select
+            id="theme">
+        <option value="auto">Auto by topic</option>
+        <option value="teal">Teal — Collaboration</option>
+        <option value="green" selected>Green — Forest</option>
+        <option value="amber">Amber — Warm gold</option>
+        <option value="lavender">Lavender — Communication</option>
+        <option value="coral">Coral — Time management</option>
+        <option value="cyan">Cyan — Problem solving</option>
+    </select></div>
+</div>
+<p class="guidance">PDF settings: choose <b>Save as PDF</b>, <b>A4</b>, <b>100%
+    scale</b>, <b>margins: None</b>, <b>background graphics: On</b>, and <b>browser
+    headers/footers: Off</b>. Print each guide separately.</p>
+<div class="app-stage">
+    <section class="app-empty" id="empty"><h1>Publish beautiful study
+        guides</h1>
+        <p>Select one or more Markdown files. Every guide gets a theme-matched cover, a light-mode study-guide layout,
+            sidebar navigation, linked contents, tables, callouts, and A4 PDF pages.</p>
+        <div class="helper">Offline, single-file publisher. Choose or change Accent Theme before or after loading Markdown.
+            Print and HTML export use the same palette.
+        </div>
+    </section>
+    <div class="app-preview" id="preview" hidden></div>
+</div>
+<!-- PDF-only paginated layout. It inherits the active theme tokens. -->
+<div id="print-root" aria-hidden="true"></div>
+<script id="theme-engine">
+/* Single-file theme module. All screen, print, and HTML-export colors share these tokens. */
+window.FieldNotesThemes = (() => {
+    'use strict';
+    const defaultName = 'green';
+    const themes = {
+        green: {
+            accent:'#205d49', dark:'#174c3a', wash:'#eff8f3',
+            ink:'#25362e', muted:'#596c61', line:'#d5e6db', bg:'#f3f8f5',
+            soft:'#f8fcf9', zebra:'#f7fbf8', rule:'#e0ece4', strong:'#d3e5d9',
+            border:'#bad3c4', codeBg:'#f3f9f5', codeBorder:'#d2e5d8', codeInk:'#214d3a', codeInline:'#e8f4eb',
+            shadowSoft:'rgba(28,77,53,.05)', shadowStrong:'rgba(28,77,53,.18)',
+            coverBg:'#205d49', coverAccent:'#89d2a9',
+            coverBrand:'#eaf8ef', coverSeries:'#b9dacb', coverSub:'#e2f2e9', coverNote:'#c4e4d3', coverBottom:'#d5ebdf'
+        },
+        teal: {
+            accent:'#207d70', dark:'#145b51', wash:'#eaf7f3',
+            ink:'#243832', muted:'#566f68', line:'#d3e8e1', bg:'#f2f9f6',
+            soft:'#f8fcfa', zebra:'#f5fbf8', rule:'#e0eee8', strong:'#cde5db',
+            border:'#b6d8ca', codeBg:'#f2faf6', codeBorder:'#cce5db', codeInk:'#205447', codeInline:'#e6f4ed',
+            shadowSoft:'rgba(24,79,70,.05)', shadowStrong:'rgba(24,79,70,.18)',
+            coverBg:'#144d47', coverAccent:'#91dbc9',
+            coverBrand:'#e7f8f2', coverSeries:'#a5d5c8', coverSub:'#d5efe6', coverNote:'#b6ded2', coverBottom:'#c8e9de'
+        },
+        amber: {
+            accent:'#79551e', dark:'#664416', wash:'#fff8e8',
+            ink:'#332d24', muted:'#736451', line:'#e9deca', bg:'#faf7ef',
+            soft:'#fdfaf4', zebra:'#fdfaf4', rule:'#f0e6d4', strong:'#e6d8bc',
+            border:'#d9c7a7', codeBg:'#fcf8ed', codeBorder:'#e9dbbd', codeInk:'#674a1f', codeInline:'#f7ecd5',
+            shadowSoft:'rgba(96,67,25,.05)', shadowStrong:'rgba(96,67,25,.18)',
+            coverBg:'#79551e', coverAccent:'#f0c676',
+            coverBrand:'#fff2d8', coverSeries:'#ecd5ac', coverSub:'#fff0d3', coverNote:'#f1dfbe', coverBottom:'#f9e8ca'
+        },
+        lavender: {
+            accent:'#596ab0', dark:'#424f8d', wash:'#f0f2ff',
+            ink:'#2c3045', muted:'#656c83', line:'#dfe2ef', bg:'#f6f7fc',
+            soft:'#fbfbfe', zebra:'#f8f9fe', rule:'#e9eaf5', strong:'#dcdfef',
+            border:'#c6cce4', codeBg:'#f6f7fd', codeBorder:'#dcdff0', codeInk:'#434f86', codeInline:'#eceefa',
+            shadowSoft:'rgba(59,69,121,.05)', shadowStrong:'rgba(59,69,121,.18)',
+            coverBg:'#303961', coverAccent:'#b3bcff',
+            coverBrand:'#f1f0ff', coverSeries:'#c8c8e8', coverSub:'#e2e3fa', coverNote:'#c4c9eb', coverBottom:'#d6daf3'
+        },
+        coral: {
+            accent:'#ad604d', dark:'#8b4433', wash:'#fff1ed',
+            ink:'#3d2e2a', muted:'#795f59', line:'#ebdad4', bg:'#fcf6f3',
+            soft:'#fffbf9', zebra:'#fff8f5', rule:'#f2e5df', strong:'#e8d7d0',
+            border:'#dfbdb2', codeBg:'#fcf6f3', codeBorder:'#ecd4ca', codeInk:'#834d3d', codeInline:'#faeae3',
+            shadowSoft:'rgba(109,59,44,.05)', shadowStrong:'rgba(109,59,44,.18)',
+            coverBg:'#633b36', coverAccent:'#ffc0a9',
+            coverBrand:'#fff0e9', coverSeries:'#e7c2b6', coverSub:'#fbe0d6', coverNote:'#eac5b8', coverBottom:'#f2d6ca'
+        },
+        cyan: {
+            accent:'#205a7c', dark:'#17445f', wash:'#eaf2f7',
+            ink:'#1c2936', muted:'#566776', line:'#d7e1e8', bg:'#f4f7f9',
+            soft:'#fafbfc', zebra:'#fafbfd', rule:'#e3eaf0', strong:'#e1eaf0',
+            border:'#cbd7dc', codeBg:'#f8fafc', codeBorder:'#d9e4eb', codeInk:'#17334b', codeInline:'#eef3f6',
+            shadowSoft:'rgba(25,53,73,.05)', shadowStrong:'rgba(25,53,73,.18)',
+            coverBg:'#112c3a', coverAccent:'#9bd4f4',
+            coverBrand:'#dceaf0', coverSeries:'#98b3c1', coverSub:'#bdcdd5', coverNote:'#91aab7', coverBottom:'#cfdae0'
+        }
+    };
+    const tokenNames = {
+        accent:'accent', dark:'accent-dark', wash:'wash', ink:'ink', muted:'muted', line:'line',
+        bg:'bg', soft:'soft', zebra:'zebra', rule:'rule', strong:'rule-strong', border:'control-border',
+        codeBg:'code-block-bg', codeBorder:'code-border', codeInk:'code-ink', codeInline:'code-inline-bg',
+        shadowSoft:'shadow-soft', shadowStrong:'shadow-strong', coverBg:'cover-bg', coverAccent:'cover-accent',
+        coverBrand:'cover-brand', coverSeries:'cover-series', coverSub:'cover-sub',
+        coverNote:'cover-note', coverBottom:'cover-bottom'
+    };
+    function infer(name) {
+        const text = String(name || '').toLowerCase();
+        if (/collaboration|teamwork/.test(text)) return 'teal';
+        if (/adaptab/.test(text)) return 'amber';
+        if (/communicat/.test(text)) return 'lavender';
+        if (/time.management|prioriti/.test(text)) return 'coral';
+        if (/problem.solv|making.decisions/.test(text)) return 'cyan';
+        return defaultName;
+    }
+    function resolve(selection, guide = {}) {
+        if (Object.hasOwn(themes, selection)) return selection;
+        if (selection === 'auto') {
+            const metadataTheme = String(guide.meta?.theme || '').toLowerCase().trim();
+            if (Object.hasOwn(themes, metadataTheme)) return metadataTheme;
+            return infer(guide.title || guide.name);
+        }
+        return defaultName;
+    }
+    function printLabel(text) {
+        // CSS string escaping; protects both @page content and the exported <style> element.
+        return String(text || '').replace(/[<>&"\\\r\n\f]/g, ' ').trim();
+    }
+    function cssFor(selection, guide = {}) {
+        const name = resolve(selection, guide);
+        const tokens = themes[name];
+        const vars = Object.entries(tokenNames).map(([key, cssName]) => '--' + cssName + ':' + tokens[key]).join(';');
+        const right = printLabel(guide.meta?.footer_right || (guide.title || '').toUpperCase());
+        const left = printLabel(guide.meta?.footer_left || 'SENIOR / PRINCIPAL SOLUTION ARCHITECT');
+        return ':root{' + vars + ';--accent-soft:var(--wash);--heading:var(--accent-dark);--header:var(--accent-dark)}' +
+            '@page{@top-right{content:"' + right + '";}@bottom-left{content:"' + left + '";}}';
+    }
+    function apply(selection, guide = {}) {
+        const effective = resolve(selection, guide);
+        document.getElementById('theme-style').textContent = cssFor(selection, guide);
+        document.documentElement.dataset.accentTheme = effective;
+        return effective;
+    }
+    return Object.freeze({defaultName, resolve, cssFor, apply});
+})();
+</script>
+<script id="converter-engine">
+    'use strict';
+    // Guide parsing and rendering do not own palettes. See the theme-engine module.
+    const $ = id => document.getElementById(id), files = [];
+    let activeGuide = null;
+    let current = -1;
+    const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    const plain = s => String(s || '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`~]/g, '').trim();
+    const slug = s => plain(s).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-') || 'section';
+    const isURL = s => /^(https?:\/\/|mailto:|#|\.\.?\/)/i.test(s);
+
+    function inl(s) {
+        s = String(s).replace(/&#x20;|&nbsp;/gi, ' ').replace(/\\([\\`*{}\[\]()#+\-.!_>])/g, '$1');
+        let code = [];
+        s = s.replace(/`([^`]+)`/g, (_, v) => {
+            code.push('<code>' + esc(v) + '</code>');
+            return '\u0001' + (code.length - 1) + '\u0002'
+        });
+        s = esc(s).replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+        s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, (_, alt, u) => isURL(u) ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + (alt || 'Image link') + '</a>' : esc(alt));
+        s = s.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, (_, label, u) => isURL(u) ? '<a href="' + esc(u) + '"' + (/^https?:/i.test(u) ? ' target="_blank" rel="noopener"' : '') + '>' + label + '</a>' : label);
+        s = s.replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>').replace(/__([^_]+?)__/g, '<strong>$1</strong>');
+        s = s.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>').replace(/(?<!_)_([^_\n]+)_(?!_)/g, '<em>$1</em>');
+        s = s.replace(/~~([^~]+)~~/g, '<s>$1</s>');
+        return s.replace(/\u0001(\d+)\u0002/g, (_, n) => code[Number(n)] || '');
+    }
+
+    const hpat = /^ {0,3}(#{1,6})\s+(.+?)\s*#*\s*$/;
+    const lpat = /^( {0,20})([-*+]|\d+[.)])\s+(.*)$/;
+    const separator = s => /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(s);
+    const hr = s => /^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/.test(s);
+    const startsBlock = s => !!(hpat.test(s) || /^\s*>/.test(s) || /^\s*(```|~~~)/.test(s) || lpat.test(s) || hr(s));
+
+    function cells(s) {
+        return s.trim().replace(/^\|/, '').replace(/\|$/, '').split(/(?<!\\)\|/).map(x => x.trim().replace(/\\\|/g, '|'))
+    }
+
+    function parseMarkdown(source) {
+        const lines = source.replace(/\r\n?/g, '\n').split('\n');
+        let out = [], i = 0;
+        while (i < lines.length) {
+            let l = lines[i], t = l.trim();
+            if (!t) { i++; continue }
+            let fence = l.match(/^\s*(`{3,}|~{3,})(.*)$/);
+            if (fence) {
+                const marker = fence[1][0], len = fence[1].length, body = [];
+                i++;
+                while (i < lines.length && !new RegExp('^\\s*' + marker + '{' + len + ',}\\s*$').test(lines[i])) body.push(lines[i++]);
+                if (i < lines.length) i++;
+                out.push('<pre><code>' + esc(body.join('\n')) + '</code></pre>');
+                continue
+            }
+            let head = l.match(hpat);
+            if (head) {
+                const lev = head[1].length;
+                out.push('<h' + lev + '>' + inl(head[2]) + '</h' + lev + '>');
+                i++;
+                continue
+            }
+            if (hr(t)) { out.push('<hr>'); i++; continue }
+            if (i + 1 < lines.length && t.includes('|') && separator(lines[i + 1])) {
+                const hdr = cells(l), cls = hdr.length >= 5 ? ' class="wide"' : '';
+                i += 2;
+                let table = '<table' + cls + '><thead><tr>' + hdr.map(x => '<th>' + inl(x) + '</th>').join('') + '</tr></thead><tbody>';
+                while (i < lines.length && lines[i].trim() && lines[i].includes('|')) {
+                    let vals = cells(lines[i++]);
+                    table += '<tr>' + hdr.map((_, k) => '<td>' + inl(vals[k] ?? '') + '</td>').join('') + '</tr>'
+                }
+                out.push(table + '</tbody></table>');
+                continue
+            }
+            if (/^\s*>/.test(l)) {
+                let quoted = [];
+                while (i < lines.length && (/^\s*>/.test(lines[i]) || (!lines[i].trim() && i + 1 < lines.length && /^\s*>/.test(lines[i + 1])))) {
+                    quoted.push(lines[i].replace(/^\s*>\s?/, ''));
+                    i++
+                }
+                out.push('<blockquote>' + parseMarkdown(quoted.join('\n')) + '</blockquote>');
+                continue
+            }
+            let lm = l.match(lpat);
+            if (lm) {
+                let base = lm[1].length, ordered = /\d/.test(lm[2]), items = [];
+                let firstNum = ordered ? parseInt(lm[2], 10) : 1;
+                while (i < lines.length) {
+                    let now = lines[i].match(lpat);
+                    if (!now || now[1].length !== base || /\d/.test(now[2]) !== ordered) break;
+                    let inner = [now[3]];
+                    i++;
+                    while (i < lines.length) {
+                        let next = lines[i], nmatch = next.match(lpat);
+                        if (nmatch && nmatch[1].length === base) break;
+                        if (!next.trim()) {
+                            let j = i + 1;
+                            while (j < lines.length && !lines[j].trim()) j++;
+                            if (j >= lines.length) { i = j; break }
+                            let aft = lines[j].match(lpat);
+                            let ind = (lines[j].match(/^\s*/) || [''])[0].length;
+                            if ((aft && aft[1].length === base) || ind <= base) { i = j; break }
+                            inner.push(''); i++; continue
+                        }
+                        let ind = (next.match(/^ */) || [''])[0].length;
+                        if (ind <= base && !/^\s+/.test(next)) break;
+                        let strip = Math.min(ind, base + 2);
+                        inner.push(next.slice(strip)); i++;
+                    }
+                    let innerHTML = parseMarkdown(inner.join('\n'));
+                    if (/^<p>[\s\S]*<\/p>$/.test(innerHTML) && !innerHTML.includes('</p><p>')) innerHTML = innerHTML.slice(3, -4);
+                    innerHTML = innerHTML.replace(/^<p>\s*\[([ xX])\]\s*/, (m, c) => '<p><span class="task-box' + (c.toLowerCase() === 'x' ? ' checked' : '') + '"></span>');
+                    if (/^\[([ xX])\]\s*/.test(inner[0])) {
+                        innerHTML = innerHTML.replace(/^\[([ xX])\]\s*/, (m, c) => '<span class="task-box' + (c.toLowerCase() === 'x' ? ' checked' : '') + '"></span>')
+                    }
+                    items.push('<li' + (/^\[([ xX])\]/.test(inner[0]) ? ' class="task-list-item"' : '') + '>' + innerHTML + '</li>');
+                    while (i < lines.length && !lines[i].trim()) i++;
+                }
+                out.push('<' + (ordered ? 'ol start="' + firstNum + '"' : 'ul') + '>' + items.join('') + '</' + (ordered ? 'ol' : 'ul') + '>');
+                continue
+            }
+            let paragraph = [l]; i++;
+            while (i < lines.length && lines[i].trim() && !startsBlock(lines[i]) && !(i + 1 < lines.length && lines[i].includes('|') && separator(lines[i + 1]))) paragraph.push(lines[i++]);
+            let body = paragraph.map(v => v.trimEnd()).join('\n').replace(/ {2,}\n/g, '\u0003').replace(/\n/g, ' ').replace(/\u0003/g, '<br>');
+            out.push('<p>' + inl(body).replace(/&lt;br&gt;/g, '<br>') + '</p>');
+        }
+        return out.join('\n');
+    }
+
+    function removeOldToc(md) {
+        let lines = md.split('\n'), out = [], old = false;
+        for (let l of lines) {
+            if (/^#{1,3}\s+(?:Table of contents|Contents|Navigation)\s*$/i.test(l)) { old = true; continue }
+            if (old) { if (/^#{1,2}\s+/.test(l)) old = false; else continue }
+            out.push(l)
+        }
+        return out.join('\n')
+    }
+
+    function parseMetadata(raw) {
+        raw = raw.replace(/^\uFEFF/, '');
+        const meta = {};
+        if (!raw.startsWith('---\n')) return {meta, body: raw};
+        let end = raw.indexOf('\n---', 4);
+        if (end === -1) return {meta, body: raw};
+        const rows = raw.slice(4, end).split('\n');
+        let arrKey = '';
+        for (let row of rows) {
+            const match = row.match(/^([a-zA-Z_][\w-]*):\s*(.*)$/);
+            if (match) {
+                arrKey = match[1];
+                let val = match[2].trim();
+                if (val.startsWith('[') && val.endsWith(']')) meta[arrKey] = val.slice(1, -1).split(',').map(v => v.trim().replace(/^['"]|['"]$/g, '')); else meta[arrKey] = val.replace(/^['"]|['"]$/g, '');
+            } else if (arrKey && /^\s+-\s+/.test(row)) {
+                if (!Array.isArray(meta[arrKey])) meta[arrKey] = [];
+                meta[arrKey].push(row.trim().replace(/^-\s*/, '').replace(/^['"]|['"]$/g, ''));
+            }
+        }
+        return {meta, body: raw.slice(end + 4).replace(/^\s*\n/, '')};
+    }
+
+    function filenameTitle(name) {
+        return name.replace(/\.markdown$|\.md$/i, '').replace(/^\d+[_ .-]*/, '').replace(/(?:_Study_Guide|_Expanded|\(\d+\))+/gi, '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/_/g, ' ').replace(/\s+/g, ' ').trim()
+    }
+
+    function labelForTitle(name) {
+        const n = name.toLowerCase();
+        if (/collaboration|teamwork/.test(n)) return 'Collaboration & Teamwork';
+        if (/adaptab/.test(n)) return 'Adaptability';
+        if (/communicat/.test(n)) return 'Communication Skills';
+        if (/problem.solv|making.decisions/.test(n)) return 'Problem Solving & Decision Making';
+        if (/time.management|prioriti/.test(n)) return 'Time Management & Prioritization';
+        return filenameTitle(name)
+    }
+
+    function balanced(title) {
+        if (title.includes(' & ')) {
+            let [a, ...b] = title.split(' & ');
+            return [a, '& ' + b.join(' & ')]
+        }
+        if (title.length <= 19) return [title];
+        let p = title.split(' '), idx = 1, best = Infinity;
+        for (let i = 1; i < p.length; i++) {
+            let score = Math.abs(p.slice(0, i).join(' ').length - title.length / 2);
+            if (score < best) best = score, idx = i
+        }
+        return [p.slice(0, idx).join(' '), p.slice(idx).join(' ')]
+    }
+
+    function sourceParts(raw, name) {
+        let {meta, body} = parseMetadata(raw);
+        const h1 = body.match(/^#\s+(.+)$/m);
+        let title = String(meta.title || labelForTitle(name));
+        if (!meta.title && !/Collaboration|Adaptab|Communication|Problem Solving|Time Management/i.test(title) && h1) title = plain(h1[1]);
+        if (h1) body = body.slice(0, h1.index) + body.slice(h1.index + h1[0].length);
+        body = removeOldToc(body);
+        let numbered = Array.from(body.matchAll(/^##\s+\d+[.\s]\s*.+$/gm));
+        let chapters = numbered.length ? numbered : Array.from(body.matchAll(/^##\s+(.+)$/gm));
+        let first = chapters.length ? chapters[0].index : 0;
+        let content = body.slice(first).trim();
+        let bodyChapters = Array.from(content.matchAll(/^##\s+(.+)$/gm));
+        return {
+            meta,
+            title,
+            preface: body.slice(0, first).trim(),
+            content,
+            chapters: bodyChapters.map(x => x[1])
+        }
+    }
+
+    function setupAnchors(root) {
+        let seen = new Map();
+        for (let h of root.querySelectorAll('h1,h2,h3,h4,h5,h6')) {
+            let key = slug(h.textContent);
+            let n = (seen.get(key) || 0) + 1;
+            seen.set(key, n);
+            h.id = n === 1 ? key : key + '-' + n
+        }
+    }
+
+    function navigationTitle(title, index) {
+        // Only remove an existing chapter number when it matches the number
+        // already rendered by the navigation. Preserve all source headings.
+        const match = String(title).match(/^\s*(?:(?:chapter|lesson)\s+)?0*(\d+)(?:[.)]\s+|\s*[:\-–—]\s*|\s+)(.+)$/i);
+        return match && Number(match[1]) === index ? match[2].trim() : String(title);
+    }
+
+    function studyKey(doc) {
+        // Stable, non-secret per-document key. FNV-1a of name + content.
+        const str = doc.name + '\n' + doc.raw;
+        let h = 2166136261;
+        for (let i = 0; i < str.length; i++) {
+            h ^= str.charCodeAt(i);
+            h = Math.imul(h, 16777619);
+        }
+        return 'field-notes-study-v6-' + (h >>> 0).toString(16);
+    }
+
+    function makeGuide(doc, idx) {
+        let src = sourceParts(doc.raw, doc.name);
+        let title = src.title, coverLines = src.meta.cover_lines || balanced(title);
+        if (typeof coverLines === 'string') coverLines = coverLines.split('|').map(x => x.trim());
+        if (!Array.isArray(coverLines) || !coverLines.length) coverLines = balanced(title);
+        coverLines = coverLines.slice(0, 2);
+        let num = String(src.meta.number || idx + 1).padStart(2, '0'),
+            total = String(src.meta.total || files.length).padStart(2, '0');
+        let brand = src.meta.brand || "THE ARCHITECT'S FIELD NOTES",
+            series = src.meta.series || 'STUDY GUIDE';
+        let tagline = src.meta.tagline || 'THINK CLEARLY. DECIDE WITH EVIDENCE. DELIVER WITH CONFIDENCE.';
+        let note = src.meta.cover_note || 'A structured, print-ready study guide.';
+        let audience = src.meta.audience || 'SENIOR / PRINCIPAL SOLUTION ARCHITECT INTERVIEWS';
+        let introLabel = src.meta.intro_label || 'STUDY GUIDE';
+        let cls = Math.max(...coverLines.map(x => x.length)) > 24 ? ' long' : '';
+        let titleMarkup = esc(coverLines[0] || title) + (coverLines[1] ? '<span class="second">' + esc(coverLines[1]) + '</span>' : '');
+        let cover = '<div class="cover-stage"><section class="cover"><div class="cover-brand">' + esc(brand) + '</div><div class="cover-series">' + esc(series) + ' &nbsp;/&nbsp; ' + esc(num) + ' OF ' + esc(total) + '</div><div class="cover-accent-bar"></div><div class="cover-title' + cls + '">' + titleMarkup + '</div><div class="cover-sub">' + esc(tagline) + '<div class="cover-note">' + esc(note) + '</div></div><div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR ' + esc(audience) + '<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div><div class="cover-number">' + esc(num) + '</div></section></div>';
+        let prefaceHTML = src.preface ? parseMarkdown(src.preface).replace(/^(?:\s*<hr>)+/, '').replace(/(?:<hr>\s*)+$/, '') : '<p>Study guide prepared from the selected Markdown file.</p>';
+        let htmlBody = parseMarkdown(src.content);
+        const div = document.createElement('div');
+        div.innerHTML = htmlBody;
+        setupAnchors(div);
+        // The Markdown parser stays unchanged. This is a presentation-only
+        // transformation: chapters become template cards for screen/HTML.
+        const structured = document.createElement('div');
+        let activeChapter = null, chapterIndex = 0;
+        const chapters = [];
+        for (const node of Array.from(div.childNodes)) {
+            if (node.nodeType === Node.ELEMENT_NODE && node.matches('h2')) {
+                chapterIndex++;
+                const chapter = document.createElement('details');
+                chapter.className = 'chapter';
+                chapter.open = chapterIndex === 1;
+                chapter.id = 'chapter-card-' + chapterIndex;
+                const heading = document.createElement('summary');
+                heading.className = 'chapter-summary';
+                const headRow = document.createElement('div');
+                headRow.className = 'section-head';
+                const label = 'CHAPTER ' + String(chapterIndex).padStart(2, '0');
+                node.dataset.chapterLabel = label;
+                const badge = document.createElement('span');
+                badge.className = 'stage'; badge.textContent = label;
+                const indicator = document.createElement('span');
+                indicator.className = 'chapter-complete-indicator';
+                indicator.textContent = 'Completed';
+                const caret = document.createElement('span');
+                caret.className = 'chapter-caret';
+                caret.setAttribute('aria-hidden', 'true');
+                caret.textContent = '⌄';
+                headRow.append(badge, node, indicator, caret);
+                heading.appendChild(headRow);
+                chapter.appendChild(heading);
+                const body = document.createElement('div');
+                body.className = 'chapter-body';
+                chapter.appendChild(body);
+                structured.appendChild(chapter);
+                activeChapter = body;
+                chapters.push({id:chapter.id,title:node.textContent,navTitle:navigationTitle(node.textContent, chapterIndex),label});
+            } else if (node.nodeType === Node.ELEMENT_NODE && node.matches('h1')) {
+                // Part titles must stay outside cards, so the PDF engine can
+                // keep them with the next chapter heading.
+                structured.appendChild(node);
+                activeChapter = null;
+            } else {
+                (activeChapter || structured).appendChild(node);
+            }
+        }
+        // Native Markdown tables remain tables; wrappers only add horizontal
+        // scrolling to the HTML reader and are removed for PDF pagination.
+        for (const table of structured.querySelectorAll('table')) {
+            const wrap = document.createElement('div');
+            wrap.className = 'tablewrap';
+            table.parentNode.insertBefore(wrap, table);
+            wrap.appendChild(table);
+        }
+        // Presentation-only classification. The Markdown parser and source stay unchanged.
+        // Recognizes common quoted labels and GitHub-style admonition markers.
+        for (const quote of structured.querySelectorAll('blockquote')) {
+            const firstParagraph = quote.querySelector('p') || quote;
+            const leadingStrong = firstParagraph.querySelector('strong:first-child, b:first-child');
+            const text = (leadingStrong ? leadingStrong.textContent : firstParagraph.textContent)
+                .trim().slice(0, 130);
+            if (/^(?:\[!?(?:WARNING|CAUTION|IMPORTANT)\]|warning|caution|risk|important|do not|don't|avoid|common mistake|pitfall|watch out|failure mode|security warning|accuracy note|limitation)(?=$|\s|[:—–-])/i.test(text)) {
+                quote.classList.add('caution');
+            } else if (/^(?:\[!?(?:TIP|NOTE|SUCCESS)\]|central lesson|key lesson|key takeaway|lesson learned|good practice|best practice|design principle|success|recommendation|what works|remember)(?=$|\s|[:—–-])/i.test(text)) {
+                quote.classList.add('good');
+            }
+        }
+        for (const [i, chapter] of Array.from(structured.querySelectorAll('details.chapter')).entries()) {
+            const completion = document.createElement('label');
+            completion.className = 'chapter-completion';
+            const check = document.createElement('input');
+            check.type = 'checkbox';
+            check.dataset.chapterComplete = String(i + 1);
+            check.setAttribute('aria-label', 'Mark chapter ' + (i + 1) + ' complete');
+            completion.append(check, document.createTextNode('Mark chapter complete'));
+            chapter.querySelector('.chapter-body').appendChild(completion);
+        }
+        const jumpLinks = '<a class="guide-jump-overview" href="#overview">Overview &amp; contents</a>' +
+            chapters.map((c, i) => {
+                const chapter = structured.querySelector('#' + c.id);
+                const sections = Array.from(chapter.querySelectorAll('.chapter-body h3, .chapter-body h4'));
+                const nested = sections.map((h, j) => {
+                    if (!h.id) h.id = 'chapter-' + (i + 1) + '-section-' + (j + 1);
+                    return '<a class="guide-jump-section" href="#' + esc(h.id) + '">' + esc(h.textContent.trim()) + '</a>';
+                }).join('');
+                return '<a href="#' + esc(c.id) + '">' + esc(c.label.replace('CHAPTER ', '')) + ' · ' + esc(c.navTitle) + '</a>' + nested;
+            }).join('');
+        const toc = chapters.map((c,i) => '<li><span class="toc-num">' + String(i+1).padStart(2,'0') + '</span><a href="#' + esc(c.id) + '">' + esc(c.navTitle) + '</a></li>').join('');
+        const sidebar = '<nav class="guide-side" aria-label="Guide navigation"><h2>Study guide</h2><a href="#overview">Overview &amp; contents</a>' +
+            '<details class="guide-jump"><summary>Jump to section</summary><div class="guide-jump-list" aria-label="Chapter and section links">' + jumpLinks + '</div></details>' +
+            '<label class="guide-search-label" for="guide-search">Search chapters</label><input id="guide-search" class="guide-search" type="search" placeholder="Search all chapters…" autocomplete="off" aria-label="Search chapter content">' +
+            '<div class="guide-search-count" role="status" aria-live="polite"></div>' +
+            '<div class="guide-progress"><div class="guide-progress-head"><span>Study progress</span><span class="guide-progress-text">0 / ' + chapters.length + '</span></div><progress value="0" max="' + chapters.length + '"></progress></div>' +
+            '<div class="guide-study-controls"><button type="button" data-study-action="expand">Expand all</button><button type="button" data-study-action="collapse">Collapse all</button><button type="button" data-study-action="backup">Back up progress</button><button type="button" data-study-action="restore">Restore progress</button><button type="button" data-study-action="reset">Reset progress</button></div>' +
+            '<input class="guide-study-file" type="file" accept=".json,application/json" aria-label="Select study progress backup">' +
+            '<p class="guide-study-status" role="status" aria-live="polite"></p>' +
+
+            chapters.map(c => '<a class="guide-chapter-link" href="#' + esc(c.id) + '">' + esc(c.label.replace('CHAPTER ','')) + ' · ' + esc(c.navTitle) + '</a>').join('') +
+            '<p class="guide-storage-note">Progress is saved in this browser when local storage is available.</p><p class="mini">Offline HTML · No external libraries · Light mode · Print-friendly.</p></nav>';
+        const subtitle = String(src.meta.subtitle || 'A structured reference for study and review');
+        const intro = '<section class="preface" id="overview"><div class="preface-label">' + esc(introLabel) + '</div><h1 class="guide-title">' + esc(title) + '</h1><p class="subtitle">' + esc(subtitle) + '</p><div class="meta"><span class="tag">' + chapters.length + ' chapters</span><span class="tag">Offline reference</span><span class="tag">Print-ready A4</span></div>' + prefaceHTML + '<nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol>' + toc + '</ol></nav></section>';
+        const interior = '<main class="content"><p class="guide-no-results" hidden>No matching chapters. Clear the search to show all chapters.</p>' + structured.innerHTML + '</main>';
+        const layout = '<div class="guide-layout">' + sidebar + '<div class="guide-main">' + intro + interior + '</div></div>';
+        return {html:cover + layout,title,chapters:chapters.length,meta:src.meta,name:doc.name,storageKey:studyKey(doc)};
+    }
+
+    function scaleCover(root) {
+        if (!root) return;
+        for (const stage of root.querySelectorAll('.cover-stage')) {
+            const cover = stage.querySelector('.cover');
+            if (!cover) continue;
+            const nativeWidth = 210 * 96 / 25.4;
+            const ratio = Math.min(1, stage.clientWidth / nativeWidth);
+            cover.style.transformOrigin = 'top left';
+            cover.style.transform = 'scale(' + ratio + ')';
+            stage.style.height = (297 * 96 / 25.4 * ratio) + 'px';
+        }
+    }
+
+    function updateStatus(data) {
+        const theme = FieldNotesThemes.resolve($('theme').value, data);
+        $('status').textContent = files[current].name + ' · ' + data.chapters +
+            ' chapters · ' + theme + ' theme · A4 · ready for PDF';
+    }
+
+    function show(index) {
+        if (!files[index]) return;
+        current = index;
+        const data = makeGuide(files[index], index);
+        activeGuide = data;
+        FieldNotesThemes.apply($('theme').value, data);
+        if (window.__studyCleanup) window.__studyCleanup();
+        $('preview').innerHTML = data.html;
+        window.__studyCleanup = window.initStudyGuide($('preview'), data.storageKey);
+        requestAnimationFrame(() => scaleCover($('preview')));
+        $('preview').hidden = false;
+        $('empty').hidden = true;
+        $('guide').value = String(index);
+        $('print').disabled = false;
+        $('html-export').disabled = false;
+        updateStatus(data);
+        document.title = data.title + ' | Field Notes PDF Publisher';
+    }
+
+    // Apply the green default immediately, before the first Markdown file is selected.
+    FieldNotesThemes.apply($('theme').value);
+    window.addEventListener('resize', () => scaleCover($('preview')));
+    $('files').addEventListener('change', async event => {
+        const added = Array.from(event.target.files || []);
+        for (const file of added) {
+            if (!/\.(md|markdown)$/i.test(file.name)) continue;
+            const raw = await file.text();
+            const pos = files.findIndex(x => x.name === file.name);
+            const obj = {name: file.name, raw};
+            if (pos >= 0) files[pos] = obj;
+            else files.push(obj);
+        }
+        files.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}));
+        $('guide').innerHTML = files.map((f, i) => '<option value="' + i + '">' + esc(labelForTitle(f.name)) + '</option>').join('');
+        $('guide').disabled = !files.length;
+        event.target.value = '';
+        if (files.length) show(0);
+    });
+    $('guide').addEventListener('change', e => show(Number(e.target.value)));
+    $('theme').addEventListener('change', () => {
+        // A CSS-token-only update preserves searches, expanded chapters, and study progress.
+        FieldNotesThemes.apply($('theme').value, activeGuide || {});
+        if (activeGuide) updateStatus(activeGuide);
+    });
+    // PDF button handler is registered below, in the isolated pagination module.
+    $('html-export').addEventListener('click', () => {
+        if (current < 0) return;
+        const item = makeGuide(files[current], current);
+        const base = document.getElementById('skill-css').textContent;
+        const style = base + '\n' + FieldNotesThemes.cssFor($('theme').value, item);
+        const studyJS = document.getElementById('study-engine').textContent;
+        let out = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(item.title) + '</title><style>' + style + '</style></head><body>' + item.html +
+            '<scr' + 'ipt>' + studyJS + '\nwindow.initStudyGuide(document.body,' + JSON.stringify(item.storageKey) + ');' +
+            '\n(function(){function resize(){document.querySelectorAll(".cover-stage").forEach(function(stage){var cover=stage.querySelector(".cover");if(!cover)return;var r=Math.min(1,stage.clientWidth/(210*96/25.4));cover.style.transformOrigin="top left";cover.style.transform="scale("+r+")";stage.style.height=(297*96/25.4*r)+"px";});}window.addEventListener("resize",resize);resize();})();</scr' + 'ipt></body></html>';
+        let blob = new Blob([out], {type: 'text/html;charset=utf-8'}),
+            u = URL.createObjectURL(blob), a = document.createElement('a');
+        a.href = u;
+        a.download = files[current].name.replace(/\.markdown$|\.md$/i, '') + '.html';
+        document.body.appendChild(a);
+        a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(u), 1000);
+    });
+</script>
+<script id="study-engine">
+/* Reusable offline study reader, shared by publisher preview and exported HTML. */
+window.initStudyGuide = function(root, key) {
+    'use strict';
+    const chapters = Array.from(root.querySelectorAll('details.chapter'));
+    const sidebar = root.querySelector('.guide-side');
+    if (!sidebar) return function(){};
+    const search = sidebar.querySelector('.guide-search');
+    const count = sidebar.querySelector('.guide-search-count');
+    const progress = sidebar.querySelector('progress');
+    const progressText = sidebar.querySelector('.guide-progress-text');
+    const noResults = root.querySelector('.guide-no-results');
+    const checks = chapters.map(c => c.querySelector('[data-chapter-complete]'));
+    const links = Array.from(sidebar.querySelectorAll('.guide-chapter-link'));
+    const jump = sidebar.querySelector('.guide-jump');
+    const restoreFile = sidebar.querySelector('.guide-study-file');
+    const status = sidebar.querySelector('.guide-study-status');
+    const format = 'architect-field-notes-study-progress';
+    const version = 1;
+    let saved = {};
+    let storageAvailable = true;
+    try {
+        const parsed = JSON.parse(localStorage.getItem(key) || '{}');
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) saved = parsed;
+    } catch (_) { storageAvailable = false; }
+    const showStatus = (message, error) => {
+        status.textContent = message;
+        status.dataset.error = error ? 'true' : 'false';
+    };
+    if (!storageAvailable) showStatus('Browser storage is unavailable. Use Back up progress to save a copy.', true);
+    const persist = () => {
+        try { localStorage.setItem(key, JSON.stringify(saved)); storageAvailable = true; }
+        catch (_) { storageAvailable = false; showStatus('Browser storage is unavailable. Back up progress before closing this page.', true); }
+    };
+    const updateProgress = () => {
+        const n = checks.filter(c => c && c.checked).length;
+        progress.value = n;
+        progressText.textContent = n + ' / ' + chapters.length + ' complete';
+        progress.setAttribute('aria-label', n + ' of ' + chapters.length + ' chapters complete');
+        chapters.forEach((chapter, i) => {
+            const indicator = chapter.querySelector('.chapter-complete-indicator');
+            if (indicator) indicator.classList.toggle('is-done', !!(checks[i] && checks[i].checked));
+        });
+    };
+    const syncChecks = () => {
+        checks.forEach((check, i) => { if (check) check.checked = saved[String(i + 1)] === true; });
+        updateProgress();
+    };
+    checks.forEach((check, i) => {
+        if (!check) return;
+        check.addEventListener('change', () => {
+            if (check.checked) saved[String(i + 1)] = true;
+            else delete saved[String(i + 1)];
+            persist(); updateProgress();
+        });
+    });
+    syncChecks();
+    let originalOpen = null;
+    const applySearch = () => {
+        const q = search.value.trim().toLocaleLowerCase();
+        if (q && !originalOpen) originalOpen = chapters.map(c => c.open);
+        let visible = 0;
+        chapters.forEach((chapter, i) => {
+            const match = !q || chapter.textContent.toLocaleLowerCase().includes(q);
+            chapter.hidden = !match;
+            if (links[i]) links[i].hidden = !match;
+            if (match) { visible++; if (q) chapter.open = true; }
+        });
+        if (!q && originalOpen) {
+            chapters.forEach((chapter, i) => { chapter.open = originalOpen[i]; });
+            originalOpen = null;
+        }
+        count.textContent = q ? visible + ' of ' + chapters.length + ' chapters match' : 'All ' + chapters.length + ' chapters shown';
+        if (noResults) noResults.hidden = visible !== 0;
+    };
+    search.addEventListener('input', applySearch);
+    applySearch();
+    sidebar.querySelector('[data-study-action="expand"]').addEventListener('click', () => {
+        chapters.filter(c => !c.hidden).forEach(c => { c.open = true; });
+        if (originalOpen) originalOpen = chapters.map(c => c.open);
+    });
+    sidebar.querySelector('[data-study-action="collapse"]').addEventListener('click', () => {
+        chapters.filter(c => !c.hidden).forEach(c => { c.open = false; });
+        if (originalOpen) originalOpen = chapters.map(c => c.open);
+    });
+    const safeName = (root.querySelector('.guide-title')?.textContent || 'study-guide')
+        .toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 65) || 'study-guide';
+    sidebar.querySelector('[data-study-action="backup"]').addEventListener('click', () => {
+        const completed = checks.flatMap((check, i) => check && check.checked ? [i + 1] : []);
+        const payload = {format, version, documentKey:key, title:root.querySelector('.guide-title')?.textContent || '',
+            chapterCount:chapters.length, completed};
+        const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'}));
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = safeName + '-progress.json';
+        document.body.appendChild(anchor);
+        anchor.click(); anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showStatus('Progress backup downloaded (' + completed.length + ' completed).', false);
+    });
+    sidebar.querySelector('[data-study-action="restore"]').addEventListener('click', () => restoreFile.click());
+    restoreFile.addEventListener('change', async () => {
+        const file = restoreFile.files && restoreFile.files[0];
+        if (!file) return;
+        try {
+            if (file.size > 1024 * 1024) throw new Error('The backup file is too large.');
+            const data = JSON.parse(await file.text());
+            if (!data || data.format !== format || data.version !== version ||
+                data.documentKey !== key || data.chapterCount !== chapters.length ||
+                !Array.isArray(data.completed) ||
+                data.completed.some(n => !Number.isInteger(n) || n < 1 || n > chapters.length) ||
+                new Set(data.completed).size !== data.completed.length) {
+                throw new Error('This is not a valid backup for this exact Markdown guide.');
+            }
+            if (!window.confirm('Replace current study progress with the backup (' + data.completed.length + ' completed chapters)?')) return;
+            saved = {};
+            data.completed.forEach(n => { saved[String(n)] = true; });
+            syncChecks(); persist();
+            if (storageAvailable) showStatus('Progress restored: ' + data.completed.length + ' chapters completed.', false);
+        } catch (error) {
+            showStatus(error.message || 'Could not restore progress.', true);
+        } finally { restoreFile.value = ''; }
+    });
+    sidebar.querySelector('[data-study-action="reset"]').addEventListener('click', () => {
+        if (!window.confirm('Reset all completed chapters for this guide? Back up first if you want to restore them later.')) return;
+        saved = {};
+        syncChecks(); persist();
+        if (storageAvailable) showStatus('Progress reset for this guide.', false);
+    });
+    const onNavClick = event => {
+        const anchor = event.target.closest('a[href^="#"]');
+        if (!anchor || !root.contains(anchor)) return;
+        const id = anchor.getAttribute('href').slice(1);
+        const target = root.querySelector('#' + (window.CSS && CSS.escape ? CSS.escape(id) : id));
+        if (!target) return;
+        const chapter = target.closest('details.chapter');
+        if (chapter) {
+            if (chapter.hidden) { search.value = ''; applySearch(); }
+            chapter.open = true;
+        }
+        if (jump && jump.open) jump.open = false;
+        // Opening a collapsed chapter changes document geometry. Scroll after layout.
+        event.preventDefault();
+        requestAnimationFrame(() => {
+            target.scrollIntoView({block:'start', behavior:'smooth'});
+            try { history.replaceState(null, '', '#' + encodeURIComponent(id)); } catch (_) {}
+        });
+    };
+    root.addEventListener('click', onNavClick);
+    const onStorage = event => {
+        if (event.key !== key) return;
+        try {
+            const parsed = JSON.parse(event.newValue || '{}');
+            saved = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+        } catch (_) { saved = {}; }
+        syncChecks();
+    };
+    window.addEventListener('storage', onStorage);
+    let printSnapshot = null;
+    const openForPrint = () => {
+        if (printSnapshot) return;
+        printSnapshot = chapters.map(c => ({open:c.open,hidden:c.hidden}));
+        chapters.forEach(c => { c.hidden = false; c.open = true; });
+    };
+    const restoreAfterPrint = () => {
+        if (!printSnapshot) return;
+        chapters.forEach((c, i) => { c.open = printSnapshot[i].open; c.hidden = printSnapshot[i].hidden; });
+        printSnapshot = null;
+    };
+    window.addEventListener('beforeprint', openForPrint);
+    window.addEventListener('afterprint', restoreAfterPrint);
+    return () => {
+        window.removeEventListener('storage', onStorage);
+        window.removeEventListener('beforeprint', openForPrint);
+        window.removeEventListener('afterprint', restoreAfterPrint);
+    };
+};
+</script>
+<script id="pdf-pagination-engine">
+/*
+ * Offline, page-aware PDF pagination layer.
+ * Uses the same theme tokens and guide renderer as preview and HTML export.
+ * This creates explicit A4 content pages only when Print / Save as PDF is used.
+ * All layouts are measured with the browser that will print them. No CDN required.
+ */
+(() => {
+    'use strict';
+
+    const PRINTABLE_MM = 268;              // A4 has 259mm usable; leave 1mm rounding guard.
+    const FIT_TOLERANCE_PX = 1.25;
+    const MAX_PAGE_COUNT = 1000;
+    let building = false;
+    let paginationWarnings = [];
+    let forcedBreaks = new Set();
+    class PaginationRetry extends Error {
+        constructor(key, message) {
+            super(message);
+            this.name = 'PaginationRetry';
+            this.headingKey = key;
+        }
+    }
+    function retryHeading(state, message) {
+        const key = state.keepHeadingKey;
+        if (key && !forcedBreaks.has(key)) throw new PaginationRetry(key, message);
+        return false;
+    }
+    const pageRoot = document.getElementById('print-root');
+
+    function mmToPx(mm) {
+        const measure = document.createElement('div');
+        measure.style.cssText = 'position:absolute;width:1mm;height:1mm;visibility:hidden';
+        pageRoot.appendChild(measure);
+        const px = measure.getBoundingClientRect().height * mm;
+        measure.remove();
+        return px;
+    }
+
+    function newSheet(kind) {
+        if (pageRoot.querySelectorAll('.print-sheet').length >= MAX_PAGE_COUNT)
+            throw new Error('Document exceeded the PDF pagination safety limit.');
+        const el = document.createElement(kind === 'preface' ? 'section' : 'main');
+        el.className = kind + ' print-sheet';
+        pageRoot.appendChild(el);
+        return el;
+    }
+
+    function newState(kind, maxHeight) {
+        return {kind, maxHeight, sheet:newSheet(kind), keepWithHeading:null, keepHeadingKey:null};
+    }
+
+    function sheetHeight(sheet) {
+        // scrollHeight includes borders and rounding; rect height includes margins
+        // of children because the page wrapper establishes a flow-root.
+        return Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height);
+    }
+
+    function fits(state) {
+        return sheetHeight(state.sheet) <= state.maxHeight + FIT_TOLERANCE_PX;
+    }
+
+    function hasContent(state) {
+        return state.sheet.children.length > 0;
+    }
+
+    function nextSheet(state) {
+        if (!hasContent(state))
+            throw new Error('A PDF element is larger than the full printable area.');
+        state.sheet = newSheet(state.kind);
+        state.keepWithHeading = null;
+        state.keepHeadingKey = null;
+    }
+
+    function appendAndCheck(state, element) {
+        state.sheet.appendChild(element);
+        const ok = fits(state);
+        if (!ok) element.remove();
+        return ok;
+    }
+
+    function reportOversize(type) {
+        throw new Error(type + ' does not fit on a single A4 page without being split. ' +
+            'Shorten it or reduce its content before printing. Nothing was clipped.');
+    }
+
+    function placeWhole(element, state, type) {
+        if (appendAndCheck(state, element)) return;
+        if (hasContent(state)) {
+            nextSheet(state);
+            if (appendAndCheck(state, element)) return;
+        }
+        reportOversize(type);
+    }
+
+    function placePre(source, state) {
+        const mustStay = state.keepWithHeading === source && state.keepSheet === state.sheet;
+        state.keepWithHeading = null;
+        const pre = source.cloneNode(true);
+        if (appendAndCheck(state, pre)) return;
+        if (hasContent(state) && mustStay)
+            retryHeading(state, 'Move heading and its ASCII/code block together.');
+        if (hasContent(state) && !mustStay) {
+            nextSheet(state);
+            if (appendAndCheck(state, pre)) return;
+        }
+        // Oversized diagrams remain atomic. Compact only these exceptional blocks.
+        for (const pt of [7.7, 7.1, 6.5, 6, 5.5]) {
+            pre.style.fontSize = pt + 'pt';
+            pre.style.lineHeight = '1.3';
+            pre.style.padding = '2.2mm 2.6mm';
+            if (appendAndCheck(state, pre)) {
+                paginationWarnings.push('One oversized code/ASCII block was reduced to ' + pt + 'pt.');
+                return;
+            }
+        }
+        reportOversize('An ASCII diagram or fenced code block');
+    }
+
+    // Build HTML fragments from DOM ranges. Unlike textContent slicing, this
+    // preserves strong/em/code/link markup when a very long paragraph must split.
+    function paragraphRange(source, from, to) {
+        const walker = document.createTreeWalker(source, NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        let node;
+        while ((node = walker.nextNode())) nodes.push(node);
+        if (!nodes.length) return null;
+        const total = nodes.reduce((n, n2) => n + n2.length, 0);
+        let a = Math.max(0, Math.min(total, from));
+        let b = Math.max(a, Math.min(total, to));
+        const position = offset => {
+            for (const item of nodes) {
+                if (offset <= item.length) return [item, offset];
+                offset -= item.length;
+            }
+            return [nodes[nodes.length - 1], nodes[nodes.length - 1].length];
+        };
+        const [sNode, sOffset] = position(a);
+        const [eNode, eOffset] = position(b);
+        const range = document.createRange();
+        range.setStart(sNode, sOffset);
+        range.setEnd(eNode, eOffset);
+        const part = source.cloneNode(false);
+        part.appendChild(range.cloneContents());
+        return part;
+    }
+
+    function wordBoundaries(text) {
+        const boundaries = [];
+        const r = /\S+\s*/g;
+        let m;
+        while ((m = r.exec(text))) boundaries.push(m.index + m[0].length);
+        if (boundaries[boundaries.length - 1] !== text.length) boundaries.push(text.length);
+        return boundaries;
+    }
+
+    function splitLongParagraph(element, state) {
+        let remaining = element;
+        let guard = 0;
+        while (remaining && guard++ < 2000) {
+            if (appendAndCheck(state, remaining)) return;
+            const txt = remaining.textContent;
+            const stops = wordBoundaries(txt);
+            if (stops.length < 2) {
+                if (hasContent(state)) { nextSheet(state); continue; }
+                reportOversize('A paragraph');
+            }
+            // Move a short paragraph to the next page rather than leave an
+            // isolated one-line fragment on the old page.
+            if (hasContent(state)) {
+                const safeLead = Math.min(remaining.textContent.length, 20);
+                const test = paragraphRange(remaining, 0, safeLead);
+                if (test && !appendAndCheck(state, test)) {
+                    nextSheet(state);
+                    continue;
+                }
+                if (test) test.remove();
+            }
+            let lo = 0, hi = stops.length - 1, best = -1;
+            while (lo <= hi) {
+                const mid = (lo + hi) >> 1;
+                const candidate = paragraphRange(remaining, 0, stops[mid]);
+                const ok = candidate && appendAndCheck(state, candidate);
+                if (ok) {
+                    best = mid;
+                    candidate.remove();
+                    lo = mid + 1;
+                } else hi = mid - 1;
+            }
+            if (best < 0) {
+                if (hasContent(state)) { nextSheet(state); continue; }
+                reportOversize('A paragraph');
+            }
+            const n = stops[best];
+            if (n >= txt.length) {
+                const all = remaining;
+                if (!appendAndCheck(state, all)) reportOversize('A paragraph');
+                return;
+            }
+            const first = paragraphRange(remaining, 0, n);
+            const tail = paragraphRange(remaining, n, txt.length);
+            // Approximate a two-line minimum for regular paragraph fragments.
+            const fullStyle = getComputedStyle(first);
+            const linePx = parseFloat(fullStyle.lineHeight) || 19;
+            if (hasContent(state)) {
+                if (appendAndCheck(state, first)) {
+                    const height = first.getBoundingClientRect().height;
+                    first.remove();
+                    if (height < linePx * 1.9) {
+                        nextSheet(state);
+                        continue;
+                    }
+                }
+            }
+            first.style.marginBottom = '0';
+            if (!appendAndCheck(state, first)) reportOversize('A paragraph fragment');
+            nextSheet(state);
+            tail.classList.add('continued-paragraph');
+            remaining = tail;
+        }
+        if (guard >= 2000) throw new Error('Paragraph pagination exceeded its safety limit.');
+    }
+
+    function createListFragment(original, index, items, first) {
+        const list = original.cloneNode(false);
+        if (!first) list.classList.add('continued-list');
+        if (list.tagName === 'OL') {
+            list.setAttribute('start', String((Number(original.getAttribute('start')) || 1) + index));
+        }
+        for (const item of items) list.appendChild(item.cloneNode(true));
+        return list;
+    }
+
+    function placeList(source, state) {
+        const mustStay = state.keepWithHeading === source && state.keepSheet === state.sheet;
+        state.keepWithHeading = null;
+        if (appendAndCheck(state, source.cloneNode(true))) return;
+        if (hasContent(state)) {
+            const emptyProbe = newSheet(state.kind);
+            const full = source.cloneNode(true);
+            emptyProbe.appendChild(full);
+            const wholeFits = sheetHeight(emptyProbe) <= state.maxHeight + FIT_TOLERANCE_PX;
+            emptyProbe.remove();
+            if (wholeFits && mustStay)
+                retryHeading(state, 'Move heading and its list together.');
+            if (wholeFits && !mustStay) {
+                nextSheet(state);
+                if (appendAndCheck(state, source.cloneNode(true))) return;
+            }
+        }
+        const items = Array.from(source.children);
+        let i = 0;
+        while (i < items.length) {
+            const start = i;
+            let fragment = createListFragment(source, start, [], start === 0);
+            state.sheet.appendChild(fragment);
+            let placed = 0;
+            while (i < items.length) {
+                const item = items[i].cloneNode(true);
+                fragment.appendChild(item);
+                if (!fits(state)) { item.remove(); break; }
+                placed++; i++;
+            }
+            // Prevent a long list starting at page bottom with one item.
+            if (placed === 1 && start === 0 && items.length > 2 &&
+                state.sheet.children.length > 1) {
+                if (mustStay) retryHeading(state, 'Move heading and the first list items together.');
+                fragment.remove(); i = start; nextSheet(state); continue;
+            }
+            if (!placed) {
+                fragment.remove();
+                if (hasContent(state)) { nextSheet(state); continue; }
+                reportOversize('A list item');
+            }
+            if (i < items.length) nextSheet(state);
+        }
+    }
+
+    function makeTableFragment(source, start, rows, isFirst) {
+        const table = source.cloneNode(false);
+        if (!isFirst) table.classList.add('continued-table');
+        if (source.tHead) table.appendChild(source.tHead.cloneNode(true));
+        const body = document.createElement('tbody');
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i].cloneNode(true);
+            // Preserve original zebra parity even when a table spans pages.
+            row.style.backgroundColor = ((start + i) % 2 === 1) ? 'var(--zebra)' : 'transparent';
+            body.appendChild(row);
+        }
+        table.appendChild(body);
+        return table;
+    }
+
+    function placeTable(source, state) {
+        const mustStay = state.keepWithHeading === source && state.keepSheet === state.sheet;
+        state.keepWithHeading = null;
+        if (appendAndCheck(state, source.cloneNode(true))) return;
+        // Prefer moving any entire table that fits on a fresh page.
+        if (hasContent(state)) {
+            const probe = document.createElement('div');
+            probe.className = state.kind + ' print-sheet';
+            pageRoot.appendChild(probe);
+            probe.appendChild(source.cloneNode(true));
+            const tableWouldFit = sheetHeight(probe) <= state.maxHeight + FIT_TOLERANCE_PX;
+            probe.remove();
+            if (tableWouldFit && mustStay)
+                retryHeading(state, 'Move heading and its complete table together.');
+            if (tableWouldFit && !mustStay) {
+                nextSheet(state);
+                if (appendAndCheck(state, source.cloneNode(true))) return;
+            }
+        }
+        const rows = Array.from(source.tBodies[0]?.rows || []);
+        if (!rows.length) return placeWhole(source.cloneNode(true), state, 'The table header');
+        let index = 0;
+        while (index < rows.length) {
+            const firstIndex = index;
+            const isFirst = index === 0;
+            const fragment = makeTableFragment(source, firstIndex, [], isFirst);
+            state.sheet.appendChild(fragment);
+            const tbody = fragment.tBodies[0];
+            let count = 0;
+            while (index < rows.length) {
+                const row = rows[index].cloneNode(true);
+                row.style.backgroundColor = (index % 2 === 1) ? 'var(--zebra)' : 'transparent';
+                tbody.appendChild(row);
+                if (!fits(state)) { row.remove(); break; }
+                count++; index++;
+            }
+            // Meaningful beginning: if only one row fits, restart on a fresh
+            // page when it can reasonably hold more. A table should never
+            // leave just the header plus its first row at the page bottom.
+            if (count < Math.min(2, rows.length - firstIndex) &&
+                state.sheet.children.length > 1) {
+                if (mustStay && firstIndex === 0)
+                    retryHeading(state, 'Move heading and first two table rows together.');
+                fragment.remove();
+                index = firstIndex;
+                nextSheet(state);
+                continue;
+            }
+            if (!count) {
+                fragment.remove();
+                if (mustStay && firstIndex === 0)
+                    retryHeading(state, 'Move heading and first table row together.');
+                if (hasContent(state)) { nextSheet(state); continue; }
+                // This one row is larger than the available full page. Try
+                // modest compaction; do not split or clip a cell.
+                const dense = makeTableFragment(source, firstIndex, [rows[index]], isFirst);
+                dense.style.fontSize = '6pt';
+                dense.style.lineHeight = '1.23';
+                for (const cell of dense.querySelectorAll('th,td')) cell.style.padding = '1mm';
+                if (!appendAndCheck(state, dense)) reportOversize('A table row/cell');
+                paginationWarnings.push('One oversized table row was compacted to 6pt.');
+                index++;
+                if (index < rows.length) nextSheet(state);
+                continue;
+            }
+            if (index < rows.length) nextSheet(state);
+        }
+    }
+
+    // Preview the *actual leading content*, not an estimated line count.
+    // A table preview includes its header plus two intact rows; an ASCII
+    // diagram is always atomic. This preview is removed before final layout.
+    function leadPreview(source, state, capParagraph) {
+        const tag = source.tagName.toLowerCase();
+        if (tag === 'table') {
+            const preview = source.cloneNode(false);
+            if (source.tHead) preview.appendChild(source.tHead.cloneNode(true));
+            const tbody = document.createElement('tbody');
+            for (const row of Array.from(source.tBodies[0]?.rows || []).slice(0, 2))
+                tbody.appendChild(row.cloneNode(true));
+            preview.appendChild(tbody);
+            return preview;
+        }
+        if (tag === 'ul' || tag === 'ol') {
+            const preview = source.cloneNode(false);
+            for (const item of Array.from(source.children).slice(0, 2))
+                preview.appendChild(item.cloneNode(true));
+            return preview;
+        }
+        const preview = source.cloneNode(true);
+        if (tag === 'p' && capParagraph) {
+            const probe = source.cloneNode(true);
+            state.sheet.appendChild(probe);
+            const style = getComputedStyle(probe);
+            const lineHeight = parseFloat(style.lineHeight) || 19;
+            const isLong = probe.getBoundingClientRect().height > lineHeight * 4.25;
+            probe.remove();
+            if (isLong) {
+                preview.style.maxHeight = (lineHeight * 4) + 'px';
+                preview.style.overflow = 'hidden';
+            }
+        }
+        return preview;
+    }
+
+    function placeHeading(source, followingBlocks, state) {
+        const heading = source.cloneNode(true);
+        const wasEmpty = !hasContent(state);
+        state.sheet.appendChild(heading);
+        let tooLittle = !fits(state);
+        const [following, second] = followingBlocks;
+        let keepTarget = null;
+        if (!tooLittle && following) {
+            const previews = [];
+            // A part/major-section heading may be followed by a chapter
+            // heading, not directly by prose. A second heading by itself is
+            // NOT meaningful content: preview the next heading AND its lead.
+            // This also handles multiple nested heading levels.
+            const headingChain = [];
+            for (const candidate of followingBlocks) {
+                if (!/^H[1-6]$/.test(candidate.tagName)) break;
+                headingChain.push(candidate);
+            }
+            if (headingChain.length) {
+                for (const nestedHeading of headingChain)
+                    previews.push(nestedHeading.cloneNode(true));
+                const firstBody = followingBlocks[headingChain.length];
+                if (firstBody)
+                    previews.push(leadPreview(firstBody, state, true));
+                else
+                    tooLittle = true; // A heading chain with no body is orphaned.
+            }
+            // Short introductory paragraphs must stay with the meaningful
+            // block they introduce. A 1-2 line intro alone is not enough.
+            let includeSecond = false;
+            if (!headingChain.length && following.matches('p') && second &&
+                second.matches('table, pre, ul, ol')) {
+                const probe = following.cloneNode(true);
+                state.sheet.appendChild(probe);
+                const line = parseFloat(getComputedStyle(probe).lineHeight) || 19;
+                includeSecond = probe.getBoundingClientRect().height <= line * 3.25;
+                probe.remove();
+            }
+            if (!headingChain.length) {
+                previews.push(leadPreview(following, state, !includeSecond));
+                if (includeSecond) previews.push(leadPreview(second, state, false));
+            }
+            for (const el of previews) state.sheet.appendChild(el);
+            tooLittle = tooLittle || !fits(state);
+            for (const el of previews) el.remove();
+            const bound = includeSecond ? second : following;
+            if (bound && bound.matches('table, pre, ul, ol')) {
+                keepTarget = bound;
+                // Prefer a completely intact table/diagram on the next page
+                // when the heading + short introduction + whole block fit
+                // there. Do not trade this for a two-row fragment here.
+                const group = [following, ...(includeSecond ? [second] : [])];
+                const currentClones = group.map(node => node.cloneNode(true));
+                for (const el of currentClones) state.sheet.appendChild(el);
+                const fullFitsHere = fits(state);
+                for (const el of currentClones) el.remove();
+                if (!fullFitsHere && !wasEmpty) {
+                    const probe = document.createElement('main');
+                    probe.className = state.kind + ' print-sheet';
+                    pageRoot.appendChild(probe);
+                    probe.appendChild(source.cloneNode(true));
+                    for (const node of group) probe.appendChild(node.cloneNode(true));
+                    const fullFitsFresh = sheetHeight(probe) <= state.maxHeight + FIT_TOLERANCE_PX;
+                    probe.remove();
+                    if (fullFitsFresh) tooLittle = true;
+                }
+            }
+        }
+        if (tooLittle && !wasEmpty) {
+            heading.remove();
+            nextSheet(state);
+            placeWhole(heading, state, 'A heading');
+        } else if (tooLittle && wasEmpty && !fits(state)) {
+            heading.remove();
+            reportOversize('A heading');
+        }
+        // The next atomic block must not subsequently be moved by the
+        // whole-table/whole-diagram preference, stranding this heading.
+        if (keepTarget) {
+            state.keepWithHeading = keepTarget;
+            state.keepHeadingKey = source.dataset.paginationKey || null;
+            state.keepSheet = state.sheet;
+        }
+    }
+
+    function placeBlocks(elements, state) {
+        for (let i = 0; i < elements.length; i++) {
+            const block = elements[i];
+            if (!block || block.nodeType !== Node.ELEMENT_NODE) continue;
+            const tag = block.tagName.toLowerCase();
+            if (/^h[1-6]$/.test(tag)) {
+                const key = block.dataset.paginationKey;
+                // A retry moves the *source* heading before laying out its
+                // introduction/table/diagram, not just the rendered clone.
+                if (key && forcedBreaks.has(key) && hasContent(state)) nextSheet(state);
+                const following = elements.slice(i + 1).filter(n => n.nodeType === Node.ELEMENT_NODE).slice(0, 4);
+                placeHeading(block, following, state);
+            } else if (tag === 'table') {
+                placeTable(block, state);
+            } else if (tag === 'pre') {
+                placePre(block, state);
+            } else if (tag === 'p') {
+                splitLongParagraph(block.cloneNode(true), state);
+            } else if (tag === 'ul' || tag === 'ol') {
+                placeList(block, state);
+            } else if (tag === 'nav' && block.classList.contains('toc')) {
+                placeToc(block, state);
+            } else {
+                placeWhole(block.cloneNode(true), state, 'A ' + tag + ' block');
+            }
+        }
+    }
+
+    function placeToc(toc, state) {
+        if (appendAndCheck(state, toc.cloneNode(true))) return;
+        if (hasContent(state)) {
+            const probe = newSheet(state.kind);
+            const c = toc.cloneNode(true);
+            probe.appendChild(c);
+            const wholeFits = sheetHeight(probe) <= state.maxHeight + FIT_TOLERANCE_PX;
+            probe.remove();
+            if (wholeFits) {
+                nextSheet(state);
+                if (appendAndCheck(state, toc.cloneNode(true))) return;
+            }
+        }
+        // Very long TOCs: split between entries while preserving links.
+        const sourceOl = toc.querySelector('ol');
+        if (!sourceOl) return placeWhole(toc.cloneNode(true), state, 'The table of contents');
+        const items = Array.from(sourceOl.children);
+        let i = 0;
+        while (i < items.length) {
+            const nav = toc.cloneNode(false);
+            for (const el of toc.children) if (el !== sourceOl) nav.appendChild(el.cloneNode(true));
+            const ol = sourceOl.cloneNode(false);
+            nav.appendChild(ol);
+            state.sheet.appendChild(nav);
+            let count = 0;
+            while (i < items.length) {
+                ol.appendChild(items[i].cloneNode(true));
+                if (!fits(state)) { ol.lastElementChild.remove(); break; }
+                i++; count++;
+            }
+            if (!count) {
+                nav.remove();
+                if (hasContent(state)) { nextSheet(state); continue; }
+                reportOversize('One table-of-contents entry');
+            }
+            if (i < items.length) nextSheet(state);
+        }
+    }
+
+    function preflight(root, maxHeight) {
+        let sheets = Array.from(root.querySelectorAll('.print-sheet'));
+        for (const [index, sheet] of sheets.entries()) {
+            // Detect semantic orphans after all table/diagram placement choices.
+            // This catches future changes that inadvertently move an atomic
+            // block away from the heading that introduces it.
+            const next = sheets[index + 1];
+            const children = Array.from(sheet.children);
+            const last = children.at(-1);
+            // Include H1 part titles. They are often followed immediately by
+            // an H2 chapter title and were previously missed by this check.
+            if (next && last && last.matches('h1,h2,h3,h4,h5,h6'))
+                throw new PaginationRetry(last.dataset.paginationKey, 'An orphan heading was detected on page ' + (index + 2) + '.');
+            if (next && last && last.matches('p') &&
+                next.firstElementChild?.matches('table,pre,ul,ol')) {
+                const prior = children.at(-2);
+                if (prior?.matches('h1,h2,h3,h4,h5,h6')) {
+                    const line = parseFloat(getComputedStyle(last).lineHeight) || 19;
+                    if (last.getBoundingClientRect().height <= line * 3.25)
+                        throw new PaginationRetry(prior.dataset.paginationKey, 'A heading and its short introduction were separated from their content on page ' + (index + 2) + '.');
+                }
+            }
+            if (sheetHeight(sheet) > maxHeight + FIT_TOLERANCE_PX)
+                throw new Error('Page ' + (index + 2) + ' exceeds its printable area. Printing cancelled.');
+            for (const row of sheet.querySelectorAll('tbody tr')) {
+                const top = row.getBoundingClientRect().top;
+                const bottom = row.getBoundingClientRect().bottom;
+                const rect = sheet.getBoundingClientRect();
+                if (top < rect.top - FIT_TOLERANCE_PX || bottom > rect.top + maxHeight + FIT_TOLERANCE_PX)
+                    throw new Error('A table row would cross a page boundary. Printing cancelled.');
+            }
+            for (const pre of sheet.querySelectorAll('pre')) {
+                if (pre.getBoundingClientRect().bottom > sheet.getBoundingClientRect().top + maxHeight + FIT_TOLERANCE_PX)
+                    throw new Error('A code/ASCII block would cross a page boundary. Printing cancelled.');
+            }
+        }
+        return sheets.length + 1; // Cover page.
+    }
+
+    async function preparePrintLayout() {
+        const item = makeGuide(files[current], current);
+        const documentClone = document.createElement('div');
+        documentClone.innerHTML = item.html;
+        const cover = documentClone.querySelector('.cover');
+        const preface = documentClone.querySelector('.preface');
+        const content = documentClone.querySelector('.content');
+        if (!cover || !preface || !content) throw new Error('Failed to prepare the print document.');
+        // Flatten screen-only chapter cards into the exact block sequence
+        // expected by the tested v4 pagination engine. All headings and
+        // tables retain their IDs, text and semantic ordering.
+        const flattened = [];
+        function flattenBlock(node) {
+            if (node.matches && (node.matches('.chapter') || node.matches('.chapter-body'))) {
+                for (const child of Array.from(node.children)) flattenBlock(child);
+            } else if (node.matches && node.matches('.chapter-summary')) {
+                for (const child of Array.from(node.children)) flattenBlock(child);
+            } else if (node.matches && node.matches('.section-head')) {
+                for (const child of Array.from(node.children)) {
+                    if (child.matches('h1,h2,h3,h4,h5,h6')) flattened.push(child.cloneNode(true));
+                }
+            } else if (node.matches && node.matches('.tablewrap')) {
+                for (const child of Array.from(node.children)) flattened.push(child.cloneNode(true));
+            } else if (node.matches && node.matches('.stage,.chapter-caret,.chapter-complete-indicator,.chapter-completion,.guide-no-results')) {
+                // Stage badges are rendered by the heading's CSS pseudo-element.
+            } else {
+                flattened.push(node.cloneNode(true));
+            }
+        }
+        for (const node of Array.from(content.children)) flattenBlock(node);
+        content.replaceChildren(...flattened);
+        // Stable identifiers make layout retries deterministic. This metadata
+        // exists only in the print DOM, never the preview or HTML export.
+        for (const [kind, root] of [['preface', preface], ['content', content]]) {
+            Array.from(root.children).forEach((el, i) => {
+                if (/^H[1-6]$/.test(el.tagName)) el.dataset.paginationKey = kind + '-' + i;
+            });
+        }
+        const maxHeight = mmToPx(PRINTABLE_MM);
+        forcedBreaks = new Set();
+        const headingCount = documentClone.querySelectorAll('.preface h1,.preface h2,.preface h3,.content h1,.content h2,.content h3,.content h4,.content h5,.content h6').length;
+        for (let attempt = 0; attempt < headingCount + 3; attempt++) {
+            pageRoot.replaceChildren();
+            paginationWarnings = [];
+            pageRoot.appendChild(cover.cloneNode(true));
+            try {
+                const prefaceState = newState('preface', maxHeight);
+                placeBlocks(Array.from(preface.children), prefaceState);
+                const contentState = newState('content', maxHeight);
+                placeBlocks(Array.from(content.children), contentState);
+                for (const sheet of pageRoot.querySelectorAll('.print-sheet'))
+                    if (sheet.children.length === 0) sheet.remove();
+                const numberOfPages = preflight(pageRoot, maxHeight);
+                return {numberOfPages, warnings:paginationWarnings.slice()};
+            } catch (error) {
+                if (!(error instanceof PaginationRetry)) throw error;
+                if (!error.headingKey || forcedBreaks.has(error.headingKey)) {
+                    throw new Error(error.message + ' This heading cannot be kept with its content on one A4 page.');
+                }
+                forcedBreaks.add(error.headingKey);
+                // Reflow from the original source. Never move rendered nodes
+                // across pages after measuring them: that can corrupt layout.
+            }
+        }
+        throw new Error('Unable to stabilize page breaks after checking all headings.');
+    }
+
+    const printButton = document.getElementById('print');
+    printButton.addEventListener('click', async () => {
+        if (current < 0 || building) return;
+        building = true;
+        printButton.disabled = true;
+        const fileName = files[current].name;
+        $('status').textContent = fileName + ' · preparing page-aware PDF layout…';
+        try {
+            await document.fonts.ready;
+            const result = await preparePrintLayout();
+            $('status').textContent = fileName + ' · ' + result.numberOfPages +
+                ' A4 pages · rows/diagrams kept intact' +
+                (result.warnings.length ? ' · ' + result.warnings.join(' ') : '');
+            document.body.classList.add('pdf-ready');
+            // Two frames allow style recalculation before the native print dialog.
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            window.print();
+        } catch (err) {
+            console.error('PDF pagination failed:', err);
+            document.body.classList.remove('pdf-ready');
+            $('status').textContent = fileName + ' · PDF layout warning: ' + err.message;
+            alert('PDF layout could not be completed safely.\n\n' + err.message);
+        } finally {
+            building = false;
+            printButton.disabled = false;
+        }
+    });
+
+    window.addEventListener('afterprint', () => {
+        document.body.classList.remove('pdf-ready');
+    });
+
+    // Test hook: no UI, no uploads, no network; ignored by normal users.
+    window.__fieldNotesPagination = {prepare: preparePrintLayout,
+        getPages: () => Array.from(pageRoot.querySelectorAll('.print-sheet'))};
+})();
+</script>
+</body>
+</html>
