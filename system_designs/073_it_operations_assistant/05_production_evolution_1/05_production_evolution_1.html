@@ -1,0 +1,900 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Design #73 — Unified Enterprise Agentic Platform</title><style>
+        /* The original PDF skill style sheet is embedded below. */
+        /* Architect's Field Notes — original study-guide design recreation.
+           Standalone builder embeds this file into its generated HTML. */
+        :root {
+            --navy: #112c3a;
+            --header: #193a4b;
+            --ink: #273944;
+            --heading: #17313e;
+            --muted: #75838d;
+            --line: #d9e2e7;
+            --zebra: #f6f8f9;
+            --accent: #64c8e6;
+            --accent-soft: #eaf8fc;
+        }
+
+        @page {
+            size: A4;
+            margin: 19mm 19mm 19mm;
+            @top-left {
+                content: "INTERVIEW / FIELD GUIDE";
+                color: #75838d;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 7pt;
+                letter-spacing: .05em;
+                vertical-align: middle;
+            }
+            @top-right {
+                content: string(running-topic);
+                color: #75838d;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 7pt;
+                letter-spacing: .02em;
+                vertical-align: middle;
+            }
+            @bottom-left {
+                content: "SENIOR / PRINCIPAL SOLUTION ARCHITECT";
+                color: #9aa5ae;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-size: 6.3pt;
+                letter-spacing: .03em;
+                vertical-align: middle;
+            }
+            @bottom-right {
+                content: counter(page, decimal-leading-zero);
+                color: #394b56;
+                font-family: "Inter", "DejaVu Sans", sans-serif;
+                font-weight: 700;
+                font-size: 7pt;
+                vertical-align: middle;
+            }
+        }
+
+        @page cover {
+            size: A4;
+            margin: 0;
+            @top-left {
+                content: none;
+            }
+            @top-right {
+                content: none;
+            }
+            @bottom-left {
+                content: none;
+            }
+            @bottom-right {
+                content: none;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", "DejaVu Sans", sans-serif;
+            font-size: 9.4pt;
+            font-weight: 400;
+            line-height: 1.55;
+            color: var(--ink);
+            background: #fff;
+            overflow-wrap: break-word;
+        }
+
+        .cover {
+            page: cover;
+            break-after: page;
+            height: 297mm;
+            width: 210mm;
+            overflow: hidden;
+            position: relative;
+            background: var(--navy);
+            color: #fff;
+            padding: 29.6mm 26mm;
+        }
+
+        .cover::before, .cover::after {
+            content: "";
+            position: absolute;
+            border: .55pt solid rgba(255, 255, 255, .08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .cover::before {
+            width: 158mm;
+            height: 158mm;
+            right: -84mm;
+            top: -61mm;
+        }
+
+        .cover::after {
+            width: 108mm;
+            height: 108mm;
+            right: -28mm;
+            bottom: -75mm;
+        }
+
+        .cover-brand {
+            font-size: 9.5pt;
+            font-weight: 800;
+            letter-spacing: .31em;
+            text-transform: uppercase;
+            color: #dceaf0;
+        }
+
+        .cover-series {
+            font-size: 8pt;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: #98b3c1;
+            margin-top: 7mm;
+        }
+
+        .cover-accent-bar {
+            position: absolute;
+            left: 26mm;
+            top: 80mm;
+            height: 3.5mm;
+            width: 21mm;
+            background: var(--accent);
+        }
+
+        .cover-title {
+            position: absolute;
+            left: 25.5mm;
+            right: 25mm;
+            top: 97mm;
+            font-family: "Inter Display", "Inter", "DejaVu Sans", sans-serif;
+            font-size: 42pt;
+            font-weight: 800;
+            letter-spacing: -.043em;
+            line-height: 1.08;
+            color: #fff;
+        }
+
+        .cover-title .second {
+            display: block;
+            color: var(--accent);
+        }
+
+        .cover-title.long {
+            font-size: 37pt;
+        }
+
+        .cover-sub {
+            position: absolute;
+            left: 26mm;
+            right: 31mm;
+            top: 173.5mm;
+            color: #bdcdd5;
+            font-size: 11.5pt;
+            line-height: 1.7;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+        }
+
+        .cover-note {
+            color: #91aab7;
+            text-transform: none;
+            font-size: 9pt;
+            letter-spacing: .01em;
+            margin-top: 7mm;
+            line-height: 1.6;
+        }
+
+        .cover-bottom {
+            position: absolute;
+            bottom: 31mm;
+            left: 26mm;
+            font-size: 7.8pt;
+            line-height: 1.9;
+            letter-spacing: .065em;
+            color: #cfdae0;
+        }
+
+        .cover-rule {
+            position: absolute;
+            bottom: 62mm;
+            height: .35pt;
+            left: 26mm;
+            right: 26mm;
+            background: rgba(255, 255, 255, .15);
+        }
+
+        .cover-number {
+            position: absolute;
+            bottom: 29mm;
+            right: 26mm;
+            color: var(--accent);
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 39pt;
+            font-weight: 800;
+            letter-spacing: -.04em;
+        }
+
+        /* Introduction + automatically generated navigable contents. */
+        .preface {
+            break-after: page;
+        }
+
+        .preface-label, .toc-overline {
+            color: var(--accent);
+            font-size: 7.6pt;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+
+        .preface h1 {
+            display: none;
+        }
+
+        .preface h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -.02em;
+            color: var(--heading);
+            margin: 5mm 0 5mm;
+            border-bottom: .5pt solid var(--line);
+            padding-bottom: 2.5mm;
+        }
+
+        .preface p {
+            font-size: 9.5pt;
+            line-height: 1.6;
+        }
+
+        .toc {
+            border-top: .5pt solid var(--line);
+            margin-top: 8mm;
+            padding-top: 6.5mm;
+        }
+
+        .toc h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 21pt;
+            letter-spacing: -.03em;
+            margin: 2mm 0 5mm;
+            border: 0;
+            padding: 0;
+        }
+
+        .toc ol {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc li {
+            display: flex;
+            align-items: baseline;
+            gap: 5mm;
+            font-size: 9.1pt;
+            padding: 2.7mm 1mm;
+            border-top: .5pt solid #e7ecef;
+            break-inside: avoid;
+        }
+
+        .toc li:last-child {
+            border-bottom: .5pt solid #e7ecef;
+        }
+
+        .toc .toc-num {
+            width: 8mm;
+            flex: 0 0 8mm;
+            font-size: 7.5pt;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .toc a {
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        /* Continuous editorial body: sections can flow across pages. */
+        .content {
+            padding: 0;
+        }
+
+        .content h2 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 17.2pt;
+            font-weight: 700;
+            color: var(--heading);
+            line-height: 1.28;
+            letter-spacing: -.024em;
+            margin: 11mm 0 5mm;
+            padding-top: 5.5mm;
+            border-top: .6pt solid var(--line);
+            break-after: avoid;
+        }
+
+        .content h2::before {
+            content: "CHAPTER";
+            display: block;
+            color: var(--accent);
+            font-size: 7pt;
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: .19em;
+            margin-bottom: 2.2mm;
+        }
+
+        .content h2:first-child {
+            margin-top: 0;
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .content h3 {
+            font-family: "Inter Display", "Inter", sans-serif;
+            font-size: 11.6pt;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -.012em;
+            color: var(--heading);
+            margin: 7mm 0 2.5mm;
+            break-after: avoid;
+        }
+
+        .content h4, .preface h3 {
+            font-size: 10pt;
+            color: var(--heading);
+            margin: 5mm 0 2mm;
+            break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 3.15mm;
+            orphans: 2;
+            widows: 2;
+        }
+
+        strong, b {
+            font-weight: 700;
+            color: #1a3341;
+        }
+
+        a {
+            color: #23778e;
+            text-decoration: none;
+        }
+
+        hr {
+            height: 0;
+            border: none;
+            border-top: .55pt solid #d9e2e7;
+            margin: 7mm 0;
+        }
+
+        ul, ol {
+            margin: 2.5mm 0 4mm;
+            padding-left: 6mm;
+        }
+
+        li {
+            padding-left: .5mm;
+            margin: 1.5mm 0;
+        }
+
+        li::marker {
+            color: var(--accent);
+        }
+
+        li p {
+            margin: 0;
+        }
+
+        blockquote {
+            background: var(--accent-soft);
+            border-left: 2.5pt solid var(--accent);
+            margin: 4mm 0 6mm;
+            padding: 4mm 5.2mm;
+            color: #2b4654;
+            font-size: 9.4pt;
+            line-height: 1.56;
+        }
+
+        blockquote p {
+            margin-bottom: 2.3mm;
+        }
+
+        blockquote p:last-child {
+            margin-bottom: 0;
+        }
+
+        blockquote strong {
+            color: #143743;
+        }
+
+        table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+            font-size: 8pt;
+            line-height: 1.42;
+            color: var(--ink);
+            margin: 3.6mm 0 4.8mm;
+            overflow-wrap: anywhere;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        thead th {
+            background: var(--header);
+            color: #fff;
+            text-align: left;
+            font-weight: 700;
+            padding: 2.2mm 2.4mm;
+            vertical-align: top;
+            border-right: 1pt solid rgba(255, 255, 255, .04);
+        }
+
+        thead th strong {
+            color: #fff;
+        }
+
+        tbody td {
+            border-bottom: .35pt solid #e3e9ed;
+            padding: 2.3mm 2.4mm;
+            vertical-align: top;
+        }
+
+        tbody tr:nth-child(even) {
+            background: var(--zebra);
+        }
+
+        tr {
+            break-inside: avoid;
+        }
+
+        table.wide {
+            font-size: 7.15pt;
+        }
+
+        table.wide th, table.wide td {
+            padding: 1.8mm;
+        }
+
+        code {
+            font-family: "DejaVu Sans Mono", monospace;
+            font-size: .91em;
+            color: #22445a;
+        }
+
+        pre {
+            color: #dce9f0;
+            background: #173746;
+            padding: 4mm 5mm;
+            font-size: 8.3pt;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin: 4mm 0;
+        }
+
+        pre code {
+            color: inherit;
+        }
+
+        .task-list-item {
+            list-style: none;
+            margin-left: -5mm;
+        }
+
+        .task-box {
+            display: inline-block;
+            border: .85pt solid #7b8b93;
+            width: 2.6mm;
+            height: 2.6mm;
+            margin-right: 3mm;
+            vertical-align: baseline;
+        }
+
+        .task-box.checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .caption {
+            color: var(--muted);
+            font-size: 7.8pt;
+        }
+
+        @media screen {
+            body {
+                max-width: 210mm;
+                margin: 0 auto;
+                box-shadow: 0 0 25px #ddd;
+            }
+        }
+
+    
+:root{--accent:#64C8E6;--accent-soft:#EAF8FC;}@page{@top-right{content:"AI DESIGN #73 — UNIFIED ENTERPRISE AGENTIC PLATFORM";}@bottom-left{content:"SENIOR / PRINCIPAL SOLUTION ARCHITECT";}}
+@media screen{body{max-width:210mm;margin:0 auto;box-shadow:0 0 20px #dce2e6;}}</style></head><body><section class="cover"><div class="cover-brand">THE ARCHITECT&#39;S FIELD NOTES</div><div class="cover-series">BEHAVIORAL INTERVIEW STUDY GUIDE &nbsp;/&nbsp; 01 OF 01</div><div class="cover-accent-bar"></div><div class="cover-title long">AI Design #73 — Unified<span class="second">Enterprise Agentic Platform</span></div><div class="cover-sub">THINK CLEARLY. DECIDE WITH EVIDENCE. DELIVER WITH CONFIDENCE.<div class="cover-note">Evidence-based STAR answers, senior-level judgment, and focused interview rehearsal.</div></div><div class="cover-rule"></div><div class="cover-bottom">PREPARED FOR SENIOR / PRINCIPAL SOLUTION ARCHITECT INTERVIEWS<br>READ &nbsp; · &nbsp; REFLECT &nbsp; · &nbsp; PRACTICE</div><div class="cover-number">01</div></section><section class="preface"><div class="preface-label">YOUR STUDY COMPANION</div><p><code>Stage 5 of 6 — Production Evolution</code></p>
+<nav class="toc"><div class="toc-overline">NAVIGATION</div><h2>Inside this guide</h2><ol><li><span class="toc-num">01</span><a href="#1-new-requirement-adaptive-investigation">1. New requirement: Adaptive investigation</a></li><li><span class="toc-num">02</span><a href="#2-revised-architecture">2. Revised architecture</a></li><li><span class="toc-num">03</span><a href="#3-the-new-tool-execution-contract">3. The new tool execution contract</a></li><li><span class="toc-num">04</span><a href="#4-failure-scenario-the-model-requests-a-dangerous-action">4. Failure scenario: The model requests a dangerous action</a></li><li><span class="toc-num">05</span><a href="#5-working-stage-5a-implementation">5. Working Stage 5A implementation</a></li><li><span class="toc-num">06</span><a href="#6-what-did-we-improve">6. What did we improve?</a></li><li><span class="toc-num">07</span><a href="#7-next-production-requirement">7. Next production requirement</a></li><li><span class="toc-num">08</span><a href="#stage-5-progress">Stage 5 — Progress</a></li><li><span class="toc-num">09</span><a href="#51-new-requirement">5.1 New requirement</a></li><li><span class="toc-num">10</span><a href="#52-revised-architecture">5.2 Revised architecture</a></li><li><span class="toc-num">11</span><a href="#53-tool-request-contract-no-model-provided-scope">5.3 Tool request contract: no model-provided scope</a></li><li><span class="toc-num">12</span><a href="#54-controller-policy">5.4 Controller policy</a></li><li><span class="toc-num">13</span><a href="#55-modeltool-request-flow">5.5 Model/tool request flow</a></li><li><span class="toc-num">14</span><a href="#56-failure-scenario-model-proposes-a-dangerous-action">5.6 Failure scenario: model proposes a dangerous action</a></li><li><span class="toc-num">15</span><a href="#57-failure-scenario-missing-evidence">5.7 Failure scenario: missing evidence</a></li><li><span class="toc-num">16</span><a href="#58-stage-5a-implementation-structure">5.8 Stage 5A implementation structure</a></li><li><span class="toc-num">17</span><a href="#59-reported-stage-5a-verification">5.9 Reported Stage 5A verification</a></li><li><span class="toc-num">18</span><a href="#510-requirement-change-check-trade-off">5.10 Requirement → Change → Check → Trade-off</a></li><li><span class="toc-num">19</span><a href="#what-changed-across-the-completed-work">What changed across the completed work?</a></li><li><span class="toc-num">20</span><a href="#reusable-principles-established">Reusable principles established</a></li><li><span class="toc-num">21</span><a href="#glossary-and-source-map">Glossary and source map</a></li><li><span class="toc-num">22</span><a href="#next-planned-increment-not-included">Next planned increment (not included)</a></li></ol></nav></section><main class="content"><h2 id="1-new-requirement-adaptive-investigation">1. New requirement: Adaptive investigation</h2>
+<p>In Stage 4, we built a working investigation simulator for <code>INC-42</code>.</p>
+<p><strong>Evolution 1:</strong> Real model reasoning and safe tool execution Now we will improve it one requirement at a time.</p>
+<p>An engineer asks:</p>
+<blockquote><p>Investigate INC-42. Checkout API latency increased after deployment. Find the likely cause.</p></blockquote>
+<p>In Stage 4, Python always executed the same two tool calls, then generated a deterministic summary.</p>
+<p>That works for predictable incidents. However, future investigations may need different evidence depending on the symptoms.</p>
+<p>New requirement: Allow an LLM to choose approved diagnostic tools and analyze their results, without granting it operational authority.</p>
+<table><thead><tr><th></th><th>Stage 4</th><th>Stage 5 — Evolution 1</th></tr></thead><tbody><tr><td>Tool selection</td><td>Fixed Python sequence</td><td>Model proposes approved tool calls</td></tr><tr><td>Analysis</td><td>Deterministic mock</td><td>Optional real LLM</td></tr><tr><td>Tool execution</td><td>Application controlled</td><td>Still application controlled</td></tr><tr><td>Permissions</td><td>Synthetic authorization</td><td>Same boundaries, with stronger validation</td></tr><tr><td>Production changes</td><td>Not allowed</td><td>Still not allowed</td></tr></tbody></table>
+<p>The critical principle remains:</p>
+<p>The model decides what to request. The application decides what is permitted and executed.</p>
+<h2 id="2-revised-architecture">2. Revised architecture</h2>
+<pre><code>+----------------------------------+
+| On-call Engineer                 |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Investigation Application        |
+| Verify user and incident access  |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Bounded Agent Controller         |
+|                                  |
+| - Approved tool allowlist        |
+| - Argument validation            |
+| - Tool-call budget               |
+| - Timeout and failure handling   |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| LLM                              |
+| Select next diagnostic operation |
++----------------------------------+
+                 |
+                 | Proposed tool call
+                 v
++----------------------------------+
+| Application Authorization Gate   |
+| Validate tool and incident scope |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Read-Only Operational Tools      |
+| get_metrics / get_deployments    |
++----------------------------------+
+                 |
+                 | Verified evidence
+                 v
++----------------------------------+
+| LLM Analysis + Report Validation |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Engineer Reviews Findings        |
++----------------------------------+</code></pre>
+<p>The controller manages the loop. It may return evidence to the model for another decision, but it stops when the request is complete or a defined budget is reached.</p>
+<p>This follows the official tool-calling pattern: a model returns a function-call request, application code executes it, and the result is passed back to the model.</p>
+<h3 id="important-design-decision">Important design decision</h3>
+<p>We will not expose a tool such as <code>restart_service</code> or <code>rollback_deployment</code> to this investigation agent.</p>
+<p>Without those capabilities, the model cannot execute remediation through the approved tool interface, even if it requests it.</p>
+<p>This is a stronger boundary than relying only on prompt instructions.</p>
+<h2 id="3-the-new-tool-execution-contract">3. The new tool execution contract</h2>
+<p>For this increment, we deliberately give both tools zero model-supplied arguments.</p>
+<pre><code>{
+  "name": "get_metrics",
+  "arguments": {}
+}</code></pre>
+<p>The server derives the service and tenant from the already-authorized incident.</p>
+<p>This prevents the model from choosing an unrelated service by supplying another service ID.</p>
+<p>The application also checks the tool name, argument structure, duplicate calls and maximum call count before executing anything.</p>
+<h2 id="4-failure-scenario-the-model-requests-a-dangerous-action">4. Failure scenario: The model requests a dangerous action</h2>
+<p>Suppose the model proposes:</p>
+<pre><code>{
+  "name": "restart_service",
+  "arguments": {
+    "service": "checkout-api"
+  }
+}</code></pre>
+<p>The controller must reject that request.</p>
+<pre><code>+-----------------------------+
+| Model proposes restart      |
++-----------------------------+
+               |
+               v
++-----------------------------+
+| Application checks allowlist|
++-----------------------------+
+               |
+               v
++-----------------------------+
+| Tool not approved           |
+| REJECT REQUEST              |
++-----------------------------+
+               |
+               v
++-----------------------------+
+| No production action        |
+| Security event recorded     |
++-----------------------------+</code></pre>
+<p>A correct implementation does not let the model bypass this validation by changing its instructions.</p>
+<h2 id="5-working-stage-5a-implementation">5. Working Stage 5A implementation</h2>
+<p>Stage 5A — Bounded Agent Upgrade [23 automated tests passed]</p>
+<p>Python source, synthetic fixtures, model adapter, execution controls and automated tests</p>
+<p>Read setup instructions</p>
+<h3 id="run-locally">Run locally</h3>
+<p>After extracting the project:</p>
+<pre><code>python app_agent.py</code></pre>
+<p>To simulate missing metrics:</p>
+<pre><code>python app_agent.py --fail-metrics</code></pre>
+<p>To run the tests:</p>
+<pre><code>python -m unittest discover -s tests -v</code></pre>
+<h3 id="optional-real-llm-integration">Optional real LLM integration</h3>
+<p>The package includes <code>openai_provider.py</code>, an optional adapter using the OpenAI Responses API.</p>
+<p>It supports a tool-proposal call, followed by a structured analysis call using the tool results. The tool-call response format and structured-output approach were checked against official documentation.</p>
+<p>Configure it using environment variables:</p>
+<pre><code>export OPENAI_API_KEY="your-api-key"
+export OPENAI_MODEL="your-supported-model"
+
+python app_agent.py --real-model</code></pre>
+<p>A supported API model and separate API credentials are required. Calls may incur charges.</p>
+<p>Verification boundary: The scripted path and offline adapter tests passed. A live model request was not tested, so model-specific behavior is not yet verified.</p>
+<h2 id="6-what-did-we-improve">6. What did we improve?</h2>
+<table><thead><tr><th>Requirement</th><th>Verification</th><th>Trade-off</th></tr></thead><tbody><tr><td>Model proposes read tools</td><td>Scripted proposal tests</td><td>More flexible than fixed sequence</td></tr><tr><td>Unknown tool rejected</td><td><code>restart_service</code> negative test</td><td>Only approved capabilities available</td></tr><tr><td>Incident scope protected</td><td>Model-supplied service rejected</td><td>Less freedom for the model</td></tr><tr><td>Tool calls bounded</td><td>Excessive and duplicate calls rejected</td><td>Investigation may stop early</td></tr><tr><td>Missing evidence handled</td><td>Timeout simulation</td><td>May produce incomplete results</td></tr><tr><td>Citations checked</td><td>Fabricated evidence ID rejected</td><td>Valid IDs can still support incorrect claims</td></tr></tbody></table>
+<p>That last limitation is important: checking that a citation exists does not prove that the cited evidence supports the claim. A production version needs stronger grounding evaluation and factual verification.</p>
+<p>The mock identity registry also remains unsuitable for real deployment. Real authentication and authorization are still required.</p>
+<h2 id="7-next-production-requirement">7. Next production requirement</h2>
+<p>We have improved the behavior of one investigation assistant. However, we still have ordinary Python tools tightly coupled to that application.</p>
+<p>Imagine three teams:</p>
+<ul><li>IT Operations wants to investigate incidents.</li><li>Security Operations wants to inspect service alerts.</li><li>Platform Engineering wants to inspect deployment health.</li></ul>
+<p>All three need some of the same monitoring capabilities.</p>
+<p>Duplicating these integrations creates maintenance and governance problems.</p>
+<p>This gives us the next architectural question:</p>
+<p>Should each AI application own its monitoring integrations, or should we expose approved tools through a shared interface?</p>
+<p>That is where we will evaluate MCP against direct APIs.</p>
+<h2 id="stage-5-progress">Stage 5 — Progress</h2>
+<p>Evolution 1 — Bounded model tool calling [Local tests passed]</p>
+<p>Evolution 2 — Shared tools and MCP       [Next]</p>
+<p>Later: evidence retrieval, durable workflows, approvals, UI integrations, specialist agents and enterprise operations.</p>
+<hr>
+<h1 id="stage-5-evolution-1-bounded-model-driven-tool-calling">Stage 5 Evolution 1 — Bounded Model-Driven Tool Calling</h1>
+<h2 id="51-new-requirement">5.1 New requirement</h2>
+<p>Stage 4 always reads the same two sources. A more flexible incident assistant may need to decide which approved diagnostic tool to inspect first.</p>
+<p><strong>New requirement:</strong> Let a model <strong>propose</strong> approved diagnostic tool calls and analyze their results, without letting it control service scope or perform production writes.</p>
+<h3 id="why-the-baseline-is-insufficient">Why the baseline is insufficient</h3>
+<table><thead><tr><th>Stage 4 baseline</th><th>New need</th></tr></thead><tbody><tr><td>Python always selects both tools</td><td>Model can propose useful tools</td></tr><tr><td>Deterministic mock interpretation</td><td>Optional real LLM reasoning</td></tr><tr><td>Tool execution stays in Python</td><td>Must remain in Python</td></tr><tr><td>Two known sources</td><td>Preserve authorized incident scope</td></tr><tr><td>No write tools</td><td>Continue to prohibit remediation</td></tr></tbody></table>
+<p>This is the <strong>first</strong> Stage 5 increment only. It is not a completed enterprise platform.</p>
+<h2 id="52-revised-architecture">5.2 Revised architecture</h2>
+<pre><code>+----------------------------------+
+| On-call engineer                 |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Investigation application        |
+| Trusted incident authorization   |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Bounded agent controller         |
+| Tool allowlist, schema, budget   |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Model proposes tool calls        |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Application validation gate      |
+| Reject unknown tools/arguments   |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Approved read-only tools         |
+| Metrics / deployments            |
++----------------------------------+
+                 |
+                 | Tool outputs returned to model
+                 v
++----------------------------------+
+| Model analysis                   |
+| Structured evidence-based output |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Output validation                |
+| Evidence IDs and required fields |
++----------------------------------+
+                 |
+                 v
++----------------------------------+
+| Engineer reviews report          |
+| No production action             |
++----------------------------------+</code></pre>
+<p>The important change is <strong>model-driven proposal</strong>, not model-driven authorization.</p>
+<h2 id="53-tool-request-contract-no-model-provided-scope">5.3 Tool request contract: no model-provided scope</h2>
+<p>Allowed tool names:</p>
+<ul><li><code>get_metrics</code></li><li><code>get_deployments</code></li></ul>
+<p>Their model-facing arguments are intentionally empty:</p>
+<pre><code>{
+  "name": "get_metrics",
+  "arguments": {}
+}</code></pre>
+<p><strong>Why empty arguments?</strong> The controller gets the service and tenant from the incident already authorized by application code. The model cannot override them with <code>payroll-api</code>, a different tenant, or a guessed user identity.</p>
+<p>Example rejected request:</p>
+<pre><code>{
+  "name": "get_metrics",
+  "arguments": {
+    "service": "payroll-api"
+  }
+}</code></pre>
+<p>The controller rejects this because unexpected arguments are not allowed.</p>
+<h2 id="54-controller-policy">5.4 Controller policy</h2>
+<table><thead><tr><th>Guard</th><th>Stage 5 Evolution 1 behavior</th></tr></thead><tbody><tr><td>Tool allowlist</td><td>Only the two named read-only tools</td></tr><tr><td>Arguments</td><td>Empty JSON object only</td></tr><tr><td>Call budget</td><td>At most two distinct tool calls per request</td></tr><tr><td>Duplicate names / IDs</td><td>Reject proposed batch</td></tr><tr><td>Authorization</td><td>Incident-scoped at API and source-tool boundaries</td></tr><tr><td>Missing tool result</td><td>Return incomplete-evidence status</td></tr><tr><td>Unknown tool</td><td>Reject before executing any tool</td></tr><tr><td>Model-generated evidence IDs</td><td>Validate against retrieved records</td></tr><tr><td>Remediation tools</td><td>None registered</td></tr></tbody></table>
+<p>The proposed batch is validated <strong>before any tool executes</strong>. This prevents partially executing a batch that also contains a prohibited action.</p>
+<p>Conceptual controller logic:</p>
+<pre><code>ALLOWED_TOOLS = {"get_metrics", "get_deployments"}
+MAX_TOOL_CALLS = 2
+
+
+def validate_requests(requests):
+    if len(requests) &gt; MAX_TOOL_CALLS:
+        raise RejectedToolRequest("TOOL_BUDGET_EXCEEDED")
+
+    seen_names = set()
+    seen_ids = set()
+    for request in requests:
+        if request.name not in ALLOWED_TOOLS:
+            raise RejectedToolRequest("UNKNOWN_TOOL")
+        if request.arguments != {}:
+            raise RejectedToolRequest("UNEXPECTED_ARGUMENTS")
+        if request.name in seen_names or request.call_id in seen_ids:
+            raise RejectedToolRequest("DUPLICATE_TOOL_REQUEST")
+        seen_names.add(request.name)
+        seen_ids.add(request.call_id)</code></pre>
+<p>This excerpt illustrates the contract; the earlier Stage 5A project contained the full implementation and additional input-type checks.</p>
+<h2 id="55-modeltool-request-flow">5.5 Model/tool request flow</h2>
+<p>The Stage 5A adapter uses <strong>two model phases</strong>:</p>
+<ol start="1"><li>Ask the model to propose up to two approved read-only tool calls.</li><li>After application-side validation and tool execution, supply matching tool  outputs and request a structured investigation report.</li></ol>
+<p>An actual tool-call response includes a <strong>call identifier</strong>. The application pairs the result with that identifier when returning the tool output to the model.</p>
+<p>Conceptual tool response handed back to the model:</p>
+<pre><code>{
+  "type": "function_call_output",
+  "call_id": "call-01",
+  "output": "{\"evidence_id\":\"METRIC-07\",\"p95_latency_ms\":1800}"
+}</code></pre>
+<p>The model does <strong>not</strong> directly invoke Python functions. The controller executes the authorized function and supplies its output.</p>
+<p><strong>Important limitation:</strong> The Stage 5A adapter demonstrated <strong>one proposal phase plus one analysis phase</strong>, not an unlimited autonomous agent loop. A full iterative tool-selection loop was explicitly deferred.</p>
+<h2 id="56-failure-scenario-model-proposes-a-dangerous-action">5.6 Failure scenario: model proposes a dangerous action</h2>
+<p>The model proposes:</p>
+<pre><code>{
+  "name": "restart_service",
+  "arguments": {
+    "service": "checkout-api"
+  }
+}</code></pre>
+<p>Safe behavior:</p>
+<pre><code>+------------------------------+
+| Model requests restart       |
++------------------------------+
+               |
+               v
++------------------------------+
+| Controller checks allowlist  |
++------------------------------+
+               |
+               v
++------------------------------+
+| Tool not registered          |
+| Reject entire proposal       |
++------------------------------+
+               |
+               v
++------------------------------+
+| No production action         |
++------------------------------+</code></pre>
+<p>Prompt instructions such as “do not restart services” are useful defense-in-depth, but the <strong>absence of a registered write capability</strong> and independent tool validation are the stronger controls.</p>
+<h2 id="57-failure-scenario-missing-evidence">5.7 Failure scenario: missing evidence</h2>
+<p>If the model skips <code>get_metrics</code> or monitoring times out:</p>
+<ol start="1"><li>The controller records metrics as missing.</li><li>Other authorized evidence can still be used.</li><li>The resulting status is <code>insufficient_evidence</code>.</li><li>A deployment-related hypothesis is not treated as confirmed root cause.</li><li>No production write is possible.</li></ol>
+<p>A denied user is handled earlier: no protected evidence should be retrieved and no unnecessary model request should occur.</p>
+<h2 id="58-stage-5a-implementation-structure">5.8 Stage 5A implementation structure</h2>
+<pre><code>it-ops-assistant-stage5a/
+|
++-- app_agent.py
+|   Entry point for scripted or optional model mode
+|
++-- stage5_agent.py
+|   Tool-request validation and guarded dispatcher
+|
++-- openai_provider.py
+|   Optional hosted model adapter
+|
++-- auth.py
++-- tools.py
++-- investigator.py
++-- data/
+|   +-- metrics.json
+|   +-- deployments.json
+|
++-- tests/
+    +-- test_investigation.py
+    +-- test_stage5_agent.py
+    +-- test_openai_adapter_offline.py</code></pre>
+<p>The default provider, <code>ScriptedProvider</code>, simulates a model request but <strong>is not an LLM</strong>.</p>
+<p><code>OpenAIProvider</code> was provided as an optional adapter for the OpenAI Responses API using function calls and structured output. It uses an API key and a configured supported model. The adapter's <strong>transport behavior was tested with offline fake responses</strong>, but no real hosted model was called in the lesson.</p>
+<h3 id="local-commands-from-the-lab">Local commands from the lab</h3>
+<pre><code>python app_agent.py
+python app_agent.py --fail-metrics
+python app_agent.py --user operator-9
+python -m unittest discover -s tests -v</code></pre>
+<p>Optional real-model path (requires separate API credentials and a compatible model):</p>
+<pre><code>export OPENAI_API_KEY="your-api-key"
+export OPENAI_MODEL="your-supported-model"
+python app_agent.py --real-model</code></pre>
+<p><strong>Do not put real secrets into study files or source control.</strong> The real-model path sends only synthetic incident data in this exercise, may incur API costs, and was <strong>not validated live</strong>.</p>
+<h2 id="59-reported-stage-5a-verification">5.9 Reported Stage 5A verification</h2>
+<p>The earlier lesson reported <strong>23 automated tests passing</strong>, including Stage 4 regressions, Stage 5 controller checks, and offline provider-adapter tests. The reported coverage included:</p>
+<ul><li>Successful read-only investigation.</li><li>Rejecting unknown write tool <code>restart_service</code>.</li><li>Rejecting model-supplied service arguments.</li><li>Rejecting excessive or duplicate tool calls.</li><li>Handling no tool requests and monitoring timeouts.</li><li>Denying unauthorized service or tenant access.</li><li>Rejecting fabricated evidence IDs.</li><li>Parsing structured model output in an offline stub.</li><li>Pairing <code>function_call_output</code> with the correct <code>call_id</code>.</li></ul>
+<p><strong>Verification boundary:</strong> These are previously reported software-test outcomes, not a new test run for this Markdown export. The actual hosted-model request path remains unverified.</p>
+<h2 id="510-requirement-change-check-trade-off">5.10 Requirement → Change → Check → Trade-off</h2>
+<table><thead><tr><th>New requirement / risk</th><th>Change made</th><th>Check used</th><th>Trade-off</th></tr></thead><tbody><tr><td>Need flexible evidence selection</td><td>Model proposes tools</td><td>Scripted tool-proposal tests</td><td>More flexibility; extra model complexity</td></tr><tr><td>Model may request unsafe tool</td><td>Application allowlist</td><td><code>restart_service</code> rejection</td><td>Cannot run arbitrary actions</td></tr><tr><td>Model may target another service</td><td>Scope fixed from authorized incident</td><td>Unexpected service-argument rejection</td><td>Less model autonomy</td></tr><tr><td>Model may loop or over-call</td><td>Two distinct tool-call limit</td><td>Excess/duplicate tests</td><td>Investigation can stop early</td></tr><tr><td>Metrics may be unavailable</td><td>Partial-result status</td><td>Timeout test</td><td>Not every investigation gets a conclusion</td></tr><tr><td>Model may invent evidence IDs</td><td>Citation-ID validator</td><td>Fabricated citation test</td><td>Does not establish semantic truth</td></tr><tr><td>Model/API might be unavailable</td><td>Error path rather than an invented answer</td><td>Offline adapter and application errors</td><td>No guaranteed useful response during provider outage</td></tr></tbody></table>
+<h3 id="what-is-still-missing-for-production">What is still missing for production?</h3>
+<ul><li>Real authentication, delegated identity, and service-level authorization tokens.</li><li>Semantic verification that cited evidence actually supports each claim.</li><li>Persistent, protected audit records and distributed tracing.</li><li>Tool timeouts, retry policies, cancellation, and resource quotas for real infrastructure.</li><li>Version-pinned models, evaluation datasets, rollout gates, and cost budgets.</li><li>Data classification, retention, and privacy review before sending real operational evidence to a hosted model.</li><li>Durable approval workflows if future phases add write actions.</li><li>Shared MCP integration, RAG, AG-UI/A2UI/MCP Apps, or A2A <strong>only when a concrete requirement warrants them</strong>.</li></ul>
+<h3 id="stage-5-evolution-1-result">Stage 5 Evolution 1 result</h3>
+<p>The model can <strong>propose</strong> approved evidence reads. The application still owns execution and permissions. Reports are checked for structure and existing evidence IDs. All available operational tools remain <strong>read-only</strong>.</p>
+<hr>
+<h1 id="consolidated-architecture-decisions-and-next-step">Consolidated Architecture Decisions and Next Step</h1>
+<h2 id="what-changed-across-the-completed-work">What changed across the completed work?</h2>
+<table><thead><tr><th>Stage</th><th>Main decision</th><th>Proven or demonstrated</th></tr></thead><tbody><tr><td>Stage 1</td><td>Investigation copilot, not autonomous operator</td><td>Requirements and scope defined</td></tr><tr><td>Stage 2</td><td>Fixed workflow before adaptive agent</td><td>Concepts and trade-offs explained</td></tr><tr><td>Stage 3</td><td>One application with two guarded reads</td><td>Contracts, sequence and failure path defined</td></tr><tr><td>Stage 4</td><td>Local deterministic Python mock</td><td>Synthetic workflow and negative tests reported</td></tr><tr><td>Stage 5 Evolution 1</td><td>Model proposes tools; app authorizes and executes</td><td>Guarded dispatcher and offline model-adapter tests reported</td></tr></tbody></table>
+<h2 id="reusable-principles-established">Reusable principles established</h2>
+<ol start="1"><li><strong>Source of truth:</strong> The monitoring and deployment systems own business  facts.</li><li><strong>Trust boundary:</strong> The model is not the authorizer and retrieved records are  not instructions.</li><li><strong>Least privilege:</strong> Initial tools read only the specific incident's  authorized service.</li><li><strong>Evidence:</strong> Separate observed measurements, hypotheses, and unknowns.</li><li><strong>Failure honesty:</strong> Missing evidence must produce an incomplete response,  not a confident diagnosis.</li><li><strong>Bounded execution:</strong> Tool allowlists, argument schemas, and budgets are  application controls.</li><li><strong>Incremental complexity:</strong> Add protocols and distributed services only when  justified by requirements.</li></ol>
+<h3 id="decisions-made-through-stage-5a">Decisions made through Stage 5A</h3>
+<table><thead><tr><th>Decision</th><th>Reason</th><th>Current result</th></tr></thead><tbody><tr><td>One incident before many products</td><td>Keep scope testable.</td><td>INC-42 synthetic case.</td></tr><tr><td>Read-only tools</td><td>Prevent accidental high-impact actions.</td><td>No production write capability.</td></tr><tr><td>Source-system ownership</td><td>AI text is not authoritative operational data.</td><td>Metrics and changes owned by fixtures/source adapters.</td></tr><tr><td>Access checks in application and tools</td><td>Model/request data are not credentials.</td><td>Incident/tenant/service denial tests.</td></tr><tr><td>Evidence IDs and uncertainty</td><td>A hypothesis needs support and limitations.</td><td>Missing-evidence states and citation checks.</td></tr><tr><td>Bounded model proposals</td><td>Introduce useful flexibility with safe limits.</td><td>Two approved, no-argument tool names.</td></tr><tr><td>Defer platform protocols</td><td>No demonstrated reuse/delegation need yet.</td><td>MCP/A2A/GenUI not required in current implementation.</td></tr></tbody></table>
+<h3 id="what-we-have-deliberately-not-built">What we have deliberately not built</h3>
+<table><thead><tr><th>Future capability</th><th>Introduce when this requirement appears</th></tr></thead><tbody><tr><td>MCP / tool governance</td><td>Several independent AI clients need interoperable, reusable governed tools.</td></tr><tr><td>RAG / runbook retrieval</td><td>Large, permissioned and changing document collections become necessary.</td></tr><tr><td>Durable orchestration / approvals</td><td>Long-running work or production writes must survive interruption and require approved action.</td></tr><tr><td>AG-UI, A2UI or MCP Apps</td><td>Specific frontend streaming, declarative rendering or embedded-host UI needs emerge.</td></tr><tr><td>Multi-agent / A2A</td><td>Independent specialist teams or services require delegated tasks with their own lifecycle.</td></tr><tr><td>Enterprise operations</td><td>Real users, tenants, model changes and traffic justify IAM, tracing, eval gates, quotas and recovery.</td></tr></tbody></table>
+<h2 id="glossary-and-source-map">Glossary and source map</h2>
+<ul><li><strong>p95 latency</strong> — 95th percentile of request latency; 95% of measured requests are at or below this value.</li><li><strong>Evidence ID</strong> — Stable reference to a record retrieved from an approved source.</li><li><strong>Grounding</strong> — Supporting generated claims with retrieved evidence.</li><li><strong>Authorization (AuthZ)</strong> — Decision that a verified actor may perform a specified operation on a resource.</li><li><strong>Tool allowlist</strong> — Explicit set of permitted executable operations.</li><li><strong>Tool budget</strong> — Limit on number or cost of tool calls during one run.</li><li><strong>Structured output</strong> — Model response shaped according to a defined schema.</li><li><strong>Trust boundary</strong> — Point where input/data crosses into a system with different authority.</li><li><strong>MCP</strong> — Tool/data interoperability boundary between compatible AI host clients and servers.</li><li><strong>A2A</strong> — Agent-to-agent communication across independently operating services.</li><li><strong>AG-UI</strong> — Agent-to-frontend run/event protocol, distinct from MCP tool transport.</li><li><strong>Idempotency</strong> — Property that retrying the same logical action does not create duplicate effects; needed when writes arrive later.</li></ul>
+<h3 id="source-materials">Source materials</h3>
+<p>This consolidated guide is based on the earlier lessons through Stage 5 Evolution 1 and the flat project sources that defined the teaching context:</p>
+<ul><li><code>SKILL.md</code> — progressive teaching contract.</li><li><code>sdt-catalog.md</code> — design #73 route.</li><li><code>sdt-module-09-advanced-ai.md</code> — primary capstone module.</li><li><code>sdt-anchor-73-unified-enterprise-agentic-platform.md</code> — case-specific sequence and trade-offs.</li><li><code>concept-protocol-boundaries.md</code> — why MCP, A2A and UI protocols solve different needs.</li><li><code>concept-production-controls.md</code> — authorization, grounding, observability, and failure controls.</li></ul>
+<p><strong>Official documentation for future implementation checks:</strong> <a href="https://developers.openai.com/api/docs/guides/function-calling" target="<em>blank" rel="noopener">OpenAI function calling</a> · <a href="https://developers.openai.com/api/docs/guides/structured-outputs" target="</em>blank" rel="noopener">OpenAI structured outputs</a> · <a href="https://modelcontextprotocol.io/specification" target="_blank" rel="noopener">MCP specification</a>. Version-dependent SDK behavior should be checked again before production use.</p>
+<blockquote><p><strong>Accuracy note</strong> All incident figures are fictional. The Stage 4 and Stage 5A test counts are taken from earlier lesson reports, not re-run as part of generating this consolidated source. This document includes no credentials, complete Python code, or live API calls.</p></blockquote>
+<h2 id="next-planned-increment-not-included">Next planned increment (not included)</h2>
+<p><strong>Stage 5 Evolution 2 — Shared tools and MCP.</strong> The next problem is tool reuse across several AI products. We would compare direct Python/API integrations with an approved MCP server and catalog, then derive compatibility, ownership, and authorization requirements before implementing the extra boundary.</p>
+<p>No MCP server, agent-to-agent protocol, production approval workflow, or full unified platform has been implemented in the stages covered by this file.</p>
+<hr>
+<h1 id="curriculum-and-documentation-sources">Curriculum and Documentation Sources</h1>
+<p>This consolidated guide is based on the previous lesson's Stage 1–4 and Stage 5 Evolution 1 explanations, supplemented by the following <strong>project reference files</strong>:</p>
+<ul><li><code>SKILL.md</code> — progressive teaching, mock implementation, and safety rules.</li><li><code>sdt-catalog.md</code> — maps AI design #73 to Module 09 and anchor #73.</li><li><code>sdt-module-09-advanced-ai.md</code> — #73 platform case brief.</li><li><code>sdt-anchor-73-unified-enterprise-agentic-platform.md</code> — focused capstone scope, staged evolution, and design trade-offs.</li><li><code>concept-production-controls.md</code> — authorization, grounding, audit, retries, and evaluation principles.</li><li><code>concept-protocol-boundaries.md</code> — distinctions between MCP, MCP Apps, AG-UI, A2UI, A2A, and Skills.</li></ul>
+<p>Official documentation links used as references in the earlier Stage 5 lesson:</p>
+<ul><li>OpenAI function calling: &lt;https://developers.openai.com/api/docs/guides/function-calling&gt;</li><li>OpenAI structured outputs: &lt;https://developers.openai.com/api/docs/guides/structured-outputs&gt;</li></ul>
+<p>These are <strong>reference URLs</strong>, not a claim that the optional live-model adapter has been re-tested against a hosted service in this document-generation turn.</p>
+<p><strong>Document scope ends at Stage 5, Evolution 1.</strong></p>
+<hr>
+<h3 id="next-stage-5-evolution-2-mcp">Next — Stage 5 — Evolution 2: MCP</h3>
+<p>Continue to Stage 5</p></main></body></html>
