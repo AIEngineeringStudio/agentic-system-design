@@ -17,6 +17,15 @@ These are complementary architecture layers, not competing technologies.
 | MCP           | Access to external tools (Agent/host ↔ tools) and data | Read incident metrics or query tickets                           |                                                    
 | A2A           | Connects independent agent ↔ agent                     | Delegate root-cause analysis to a separate specialist            |                                                         
 
+TODO: Delete below tabel after creating prompt to learn Gen UI
+
+| Technology    | Concern                                                |
+|---------------|--------------------------------------------------------|
+| A2UI          | Declarative UI specification and renderer contract     |                                         
+| AG-UI         | Agent ↔ frontend/user communication                    |
+| MCP Apps      | Embedded application UI in a compatible AI host        |                                                       
+| A2A           | Connects independent agent ↔ agent                     |                                                         
+
 **Important:**
 
 1. The two top-level interfaces are alternative entry points, not two mandatory
